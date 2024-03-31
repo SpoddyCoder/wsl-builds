@@ -14,7 +14,7 @@ Install AI Projects & Tools.
 * Build Arguments
   * No additional arguments for this build
 * Requires
-  * `./build resource-ai conda,cuda124`
+  * `./build biscuit-ai conda,cuda124`
 
 
 ## StyleGan3
