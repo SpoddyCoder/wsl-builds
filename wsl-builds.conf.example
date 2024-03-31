@@ -1,0 +1,12 @@
+# wsl-builds
+CACHE_DIR=/mnt/c/WSL/cache  # cache large downloads on Windows host
+
+# biscuit
+WIN_HOME=/mnt/c/Users/me
+WIN_HOME_SYMLINK=/home/me/c-home
+CODE_HOME=/mnt/c/code
+CODE_HOME_SYMLINK=/home/me/code
+
+# stylegan
+STYLEGAN3_PKL_CACHE=/mnt/c/cached-pkls/stylegan3    # cache pkls on Windows host
+STYLEGAN3_PYTORCH_CACHE=/mnt/c/cached-pytorch/stylegan3  # cache pytorch extensions
