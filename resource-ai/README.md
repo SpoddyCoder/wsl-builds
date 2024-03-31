@@ -1,5 +1,5 @@
-# `stylegan`
-Stylegan & related AI visualisation projects.
+# `resource-ai`
+Install AI Projects & Tools.
 
 * Build Options;
   * `sg3`
@@ -7,11 +7,14 @@ Stylegan & related AI visualisation projects.
     * Setup pkl & pytorch cache on host: `STYLEGAN3_PKL_CACHE` & `STYLEGAN3_PYTORCH_CACHE` in `wsl-builds.conf`
     * This can save time re-donwloading pkls you may use between builds
   * `lsd`
-    * Clone nerdy rodent's lucid-sonic-dreams fork (most recently maintained, python 3.9 compat) and fix deps to make it run for our build
+    * Clone nerdy rodent's lucid-sonic-dreams fork (most recently maintained, python 3.9 compat) and initialise the `lucid-sonic-dreams` conda environment
+    * Fix the deps to make it run for our build
+  * `spleeter`
+    * Clone Deezer spleeter repo and initialise the `spleeter` conda environment
 * Build Arguments
   * No additional arguments for this build
 * Requires
-  * `./build biscuit-ai conda,cuda124`
+  * `./build resource-ai conda,cuda124`
 
 
 ## StyleGan3
@@ -36,4 +39,9 @@ python gen_video.py --output ../ai-music-viz/expt-renders/lerp.mp4 --trunc=1 --s
   * https://github.com/nerdyrodent/lucid-sonic-dreams
   * https://www.youtube.com/watch?v=tdhiTL2NWSo
 * Useful description of how LSD works: https://towardsdatascience.com/introducing-lucid-sonic-dreams-sync-gan-art-to-music-with-a-few-lines-of-python-code-b04f88722de1
+* See also: https://github.com/SpoddyCoder/visualizing-music
+
+
+## Spleeter
+* https://github.com/deezer/spleeter
 * See also: https://github.com/SpoddyCoder/visualizing-music
