@@ -2,10 +2,12 @@
 Stylegan & related AI visualisation projects.
 
 * Build Options;
-  * `sg3` clone stylegan3 & stylegan3-fun and initialise the `stylegan3` conda environment 
+  * `sg3`
+    * Clone stylegan3 & stylegan3-fun and initialise the `stylegan3` conda environment 
     * Setup pkl & pytorch cache on host: `STYLEGAN3_PKL_CACHE` & `STYLEGAN3_PYTORCH_CACHE` in `wsl-builds.conf`
     * This can save time re-donwloading pkls you may use between builds
-  * `lsd` clone nerdy rodent's lucid-sonic-dreams fork (most recently maintained, python 3.9 compat) and fix deps to make it run for our build
+  * `lsd`
+    * Clone nerdy rodent's lucid-sonic-dreams fork (most recently maintained, python 3.9 compat) and fix deps to make it run for our build
 * Build Arguments
   * No additional arguments for this build
 * Requires
