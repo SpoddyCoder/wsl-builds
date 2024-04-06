@@ -47,3 +47,7 @@ python gen_video.py --output ../ai-music-viz/expt-renders/lerp.mp4 --trunc=1 --s
 ## Spleeter
 * https://github.com/deezer/spleeter
 * See also: https://github.com/SpoddyCoder/visualizing-music
+
+
+## ru-dalle
+* https://github.com/ai-forever/ru-dalle
