@@ -11,6 +11,8 @@ Install AI Projects & Tools.
     * Fix the deps to make it run for our build
   * `spleeter`
     * Clone Deezer spleeter repo and initialise the `spleeter` conda environment
+  * `rudalle`
+    * Clone ru-dalle repo and initialise the `spleeter` conda environment
 * Build Arguments
   * No additional arguments for this build
 * Requires
