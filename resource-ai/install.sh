@@ -12,6 +12,11 @@ if [ ! -z $INSTALL_LSD ] && [ ! -f ${PROJECT_DIR}/lucid-sonic-dreams ]; then
 fi
 
 if [ ! -z $INSTALL_SPLEETER ] && [ ! -f ${PROJECT_DIR}/spleeter ]; then
-    source spleeter/install_spleeter.sh    
+    source spleeter/install_spleeter.sh
+    BUILD_UPDATED=true
+fi
+
+if [ ! -z $INSTALL_RUDALLE ] && [ ! -f ${PROJECT_DIR}/ru-dalle ]; then
+    source rudalle/install_ru-dalle.sh
     BUILD_UPDATED=true
 fi
