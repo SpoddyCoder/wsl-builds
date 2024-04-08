@@ -93,6 +93,19 @@ Examples:
 * Install VSCode WSL extension
   * https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack
 
+### Resource Allocation
+* Default memory is 50% of windows memory.
+* https://learn.microsoft.com/en-us/windows/wsl/wsl-config
+  * Careful with CLRF line endings when editing this file
+  * Do it on a WSL instance, eg: `nano /mnt/c/Users/me/.wslconfig`
+* For ai work in particular you may find it useful to increase default memory & swap space, eg...
+
+```
+[wsl2]
+memory=24GB
+swap=8GB
+```
+
 
 ## Creating, Exporting and Importing WSL Instances
 ```
