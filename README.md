@@ -22,6 +22,7 @@ This project contains clean, simple builds that use Windows host native implemen
   * stylegan3
   * lucid-sonic-dreams
   * spleeter
+  * rudalle
 
 
 ## Install
