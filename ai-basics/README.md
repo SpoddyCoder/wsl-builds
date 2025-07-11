@@ -1,4 +1,4 @@
-# `biscuit-ai`
+# `ai-basics`
 A good basic base for AI work using Python and CUDA.
 
 * Build Options;

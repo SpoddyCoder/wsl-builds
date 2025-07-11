@@ -15,10 +15,10 @@ This project contains clean, simple builds that use Windows host native implemen
   * qol bits
   * x11 apps
   * vscode
-* [biscuit-ai](biscuit-ai/)
+* [ai-basics](ai-basics/)
   * conda
   * cuda 12.4
-* [resource-ai](resource-ai/)
+* [ai-resources](ai-resources/)
   * stylegan3
   * lucid-sonic-dreams
   * spleeter
@@ -48,7 +48,7 @@ Examples:
 ```
 ./build.sh biscuit upgrade,qol
 ./build.sh biscuit x11,vscode --force
-./build.sh biscuit-ai conda,cuda124
+./build.sh ai-basics conda,cuda124
 ```
 
 ### Assembling and Stacking Builds
@@ -57,13 +57,13 @@ Examples:
 * Eg, a Python environemnt for coding...
 ```
 ./build.sh biscuit vscode
-./build.sh biscuit-ai conda
+./build.sh ai-basics conda
 ```
-* Eg, `resource-ai` builds upon `biscuit-ai`...
+* Eg, `ai-resources` builds upon `ai-basics`...
 ```
 ./build.sh biscuit vscode
-./build.sh biscuit-ai conda,cuda124
-./build.sh resource-ai sg3
+./build.sh ai-basics conda,cuda124
+./build.sh ai-resources sg3
 ```
 * Build history is kept in `~/.wsl-build.info`
 

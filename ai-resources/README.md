@@ -1,4 +1,4 @@
-# `resource-ai`
+# `ai-resources`
 Install AI Projects & Tools.
 
 * Build Options;
@@ -16,7 +16,7 @@ Install AI Projects & Tools.
 * Build Arguments
   * No additional arguments for this build
 * Requires
-  * `./build biscuit-ai conda,cuda124`
+  * `./build ai-basics conda,cuda124`
 
 
 ## StyleGan3
