@@ -35,7 +35,6 @@ git clone https://github.com/SpoddyCoder/wsl-builds.git ~/wsl-builds
 cd ~/wsl-builds
 cp wsl-builds.conf.example wsl-builds.conf
 # update the conf with your own details / paths
-nano wsl-builds.conf
 ```
 
 
@@ -46,7 +45,7 @@ nano wsl-builds.conf
 * `build-dir` valid build directory, containing `conf.sh` & `install.sh`
 * `buildoptions,...` comma seperated list of build options (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
-* `--force` by default the installer will not run if any version of the build has already been installed. Use this to force the install. It is generally better / safer to do clean installs, but this can be useful.
+* `--force` by default the installer will not run if any of the requested build options have already been installed for that build version. Use this to force the reinstall when there are option conflicts. This prevents installing duplicate options while allowing you to stack new options.
 
 Examples:
 ```
@@ -59,6 +58,15 @@ Examples:
 ### Assembling and Stacking Builds
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
 * Use the build tool to add components / packages / features from different builds as you need.
+* The installer tracks specific build + options combinations, so you can safely stack different options from the same build without conflicts.
+* For example, you can run multiple installations of the same build with different options:
+```
+./build.sh biscuit upgrade,qol     # Installs biscuit with upgrade and qol options
+./build.sh biscuit vscode,cursor   # Stacks vscode and cursor options
+./build.sh biscuit vscode,x11      # This would be blocked (vscode already installed)
+./build.sh biscuit x11             # This would be allowed (x11 not installed yet)
+./build.sh biscuit vscode,x11 --force  # This would reinstall both options
+```
 * Eg, a general development environment...
 ```
 ./build.sh biscuit vscode,cursor

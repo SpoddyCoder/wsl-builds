@@ -41,22 +41,51 @@ fi
 
 BUILD_NAME="${HOSTNAME} v${BUILD_VER}"
 
-# check if already installed
-check_build="${HOSTNAME} v"
-if grep -qs "${check_build}" ${BUILD_INFO_FILE} && ! (isBuildForced $@); then
-
-    printError "${HOSTNAME} is already installed..."
-    cat ${BUILD_INFO_FILE}
-    exit 1
-
-fi
-
 # build arg checks
 min_num_args=$(($NUM_ADDITIONAL_ARGS + 1))  # we require min 1 arg in any scenario
 options_passed=false
 if (containsValidOption $2); then
     min_num_args=$(($NUM_ADDITIONAL_ARGS + 2))  # if passing options, then we require min 2 args
     options_passed=true
+fi
+
+# check if already installed (check for individual option conflicts)
+if [ "$options_passed" == "true" ]; then
+    # Check if this build version exists and if any requested options are already installed
+    build_pattern="${HOSTNAME} v${BUILD_VER}"
+    
+    if grep -qs "^${build_pattern}" ${BUILD_INFO_FILE} && ! (isBuildForced $@); then
+        # Get all installed options for this build (from all installations)
+        installed_options=$(grep "^${build_pattern}" ${BUILD_INFO_FILE} | sed 's/.*(\([^)]*\)).*/\1/' | tr ',' '\n' | sort -u | tr '\n' ' ')
+        
+        # Check each requested option against installed options
+        requested_options=$(echo "$2" | tr ',' ' ')
+        conflicts=()
+        
+        for requested_option in $requested_options; do
+            # Remove any whitespace
+            requested_option=$(echo "$requested_option" | xargs)
+            if echo "$installed_options" | grep -q "\b${requested_option}\b"; then
+                conflicts+=("$requested_option")
+            fi
+        done
+        
+        if [ ${#conflicts[@]} -gt 0 ]; then
+            printError "The following options are already installed for ${HOSTNAME} v${BUILD_VER}: ${conflicts[*]}"
+            echo "Either remove these options from your command or use --force to reinstall."
+            cat ${BUILD_INFO_FILE}
+            exit 1
+        fi
+    fi
+else
+    # Check for build without options (exact match)
+    check_build_without_options="${HOSTNAME} v${BUILD_VER}$"
+    if grep -qs "^${check_build_without_options}$" ${BUILD_INFO_FILE} && ! (isBuildForced $@); then
+        printError "${HOSTNAME} v${BUILD_VER} is already installed..."
+        echo "Use --force to reinstall this build."
+        cat ${BUILD_INFO_FILE}
+        exit 1
+    fi
 fi
 if [ "$#" -lt "$min_num_args" ]; then
 
