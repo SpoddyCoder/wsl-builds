@@ -1,5 +1,5 @@
 # `ai-resources`
-Install AI Projects & Tools.
+Install AI Projects & Tools. Creates an `~/ai-resources` directory containing project repos / files etc.
 
 * Build Options;
   * `sg3`
