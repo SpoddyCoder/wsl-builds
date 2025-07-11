@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 if [ ! -z $INSTALL_UPDATE ]; then
     # update all
     printInfo "Updating system"
@@ -48,5 +51,10 @@ fi
 if [ ! -z $INSTALL_VSCODE ]; then
     printInfo "Launching VSCode"
     code .  # launching for the first time will install the extensions
+    BUILD_UPDATED=true
+fi
+
+if [ ! -z $INSTALL_CURSOR ] && ! (tree --version) > /dev/null 2>&1; then
+    source ${SCRIPT_DIR}/cursor/install_cursor.sh
     BUILD_UPDATED=true
 fi

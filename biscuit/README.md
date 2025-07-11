@@ -11,6 +11,8 @@ This is our base install, with very little extra added.
     * Install the X11-Apps package for native Windows GUI support
   * `vscode`
     * Install the VSCode extensions for native Windows VSCode integration
+  * `cursor`
+    * Install basic packages that Cursor editor likes to use (includes `tree`)
 * Build Arguments
   * No additional arguments for this build
 * Requires
@@ -37,7 +39,7 @@ echo 'CODE_HOME_SYMLINK=/home/me/e-apps' >> ~/wsl-builds/wsl-builds.conf
   * copy + paste will result in CLRF issues: https://github.com/bostrot/wsl2-distro-manager/issues/237
 * Run the snippet on the instance
 * Use the builder to build the buttery biscuit base;
-  * `./build.sh biscuit x11,vscode`
+  * `./build.sh biscuit x11,vscode,cursor`
 * Make a template from the build and kill the instance. It's now ready to use as a base for future instances.
 
 
@@ -54,7 +56,7 @@ echo 'CODE_HOME_SYMLINK=/home/me/e-apps' >> ~/wsl-builds/wsl-builds.conf
 * Clone this repo on the instance and add config file (update names / paths to suit);
   * See the `biscuit-config` snippet in the WSL2 Distro Manager instructions
 * Add the buttery base;
-  * `./build.sh biscuit x11,vscode`
+  * `./build.sh biscuit x11,cursor`
 * Shutdown the instance, export it to your build dir and kill it;
   * `wsl --shutdown`
   * `wsl --export Ubuntu-22.04 E:\WSL\builds\biscuit`

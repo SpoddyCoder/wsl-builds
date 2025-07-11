@@ -1,4 +1,4 @@
 HOSTNAME="biscuit"
 BUILD_VER="1.0.10"
-VALID_INSTALL_OPTIONS="update,qol,x11,vscode"
+VALID_INSTALL_OPTIONS="update,qol,x11,vscode,cursor"
 NUM_ADDITIONAL_ARGS=0

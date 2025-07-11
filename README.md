@@ -15,6 +15,10 @@ This project contains clean, simple builds that use Windows host native implemen
   * qol bits
   * x11 apps
   * vscode
+  * cursor editor support
+* [dev-basics](dev-basics/)
+  * essential development tools
+  * python3 development environment
 * [ai-basics](ai-basics/)
   * conda
   * cuda 12.4
@@ -48,13 +52,19 @@ Examples:
 ```
 ./build.sh biscuit upgrade,qol
 ./build.sh biscuit x11,vscode --force
+./build.sh dev-basics essentials,python3
 ./build.sh ai-basics conda,cuda124
 ```
 
 ### Assembling and Stacking Builds
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
 * Use the build tool to add components / packages / features from different builds as you need.
-* Eg, a Python environemnt for coding...
+* Eg, a general development environment...
+```
+./build.sh biscuit vscode,cursor
+./build.sh dev-basics essentials,python3
+```
+* Eg, a Python environemnt for AI coding...
 ```
 ./build.sh biscuit vscode
 ./build.sh ai-basics conda
