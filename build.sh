@@ -28,6 +28,17 @@ fi
 # source the build conf
 BUILD_DIR="${TOOL_DIR}/$1"
 source ${BUILD_DIR}/conf.sh
+
+# show available options if only build dir is provided
+if [ "$#" == "1" ]; then
+    echo
+    echo "Usage: $0 <build-dir> [buildoptions,...] [additionalargs]... [--force]"
+    echo
+    echo "Available options for $1: $VALID_INSTALL_OPTIONS"
+    echo
+    exit 1
+fi
+
 BUILD_NAME="${HOSTNAME} v${BUILD_VER}"
 
 # check if already installed
