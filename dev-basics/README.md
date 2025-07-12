@@ -1,18 +1,22 @@
 # `dev-basics`
 A good basic base for general purpose development work.
 
-* Build Options;
-  * `essentials`
-    * All the basics: git, rsync, curl, htop etc
-  * `python3`
-    * Install python3, pip and essential python3 packages
-* Build Arguments
-  * No additional arguments for this build
-* Requires
-  * `Ubuntu 22.04+`
+## Requires
+* `Ubuntu 22.04` or greater
 
+## Build Options
+### `essentials`
+* All the basics: git, rsync, curl, htop etc
 
-## Install Details
+### `python3`
+* Install python3, pip and essential python3 packages
+
+## Build Arguments
+* No additional arguments for this build
+
+---
+
+## Installation Details & Additional Info
 
 ### `essentials`
 Essential development tools for any development workflow:
