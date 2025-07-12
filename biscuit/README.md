@@ -17,7 +17,7 @@ This is our base install, with very little extra added.
 * Install the X11-Apps package for native Windows GUI support
 
 ### `vscode`
-* Install the VSCode extensions for native Windows VSCode integration
+* Launch VSCode to automatically install extensions for native Windows VSCode integration
 
 ### `cursor`
 * Adds a bash alias to launch cursor when using `code .`

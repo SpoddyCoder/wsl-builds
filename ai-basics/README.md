@@ -6,10 +6,10 @@ A good basic base for AI work using Python and CUDA.
 
 ## Build Options
 ### `conda`
-* Install Anaconda for Python support
+* Install Anaconda distribution for Python package management and environment support
 
 ### `cuda124`
-* Install WSL version of CUDA 12.4
+* Install WSL-specific version of CUDA 12.4 toolkit for GPU computing support
 
 ## Build Arguments
 * No additional arguments for this build
