@@ -73,10 +73,13 @@ Examples:
 * [dev-basics](dev-basics/)
   * essential development tools
   * python3 development environment
+* [devops-aws](devops-aws/)
+  * aws cli v2
+  * quality of life bits
 * [system-basics](system-basics/)
   * smb client tools
   * nfs client tools
-  * fstab mounting configuration
+  * fstab mounting config
   * systemd service management
 * [ai-basics](ai-basics/)
   * conda
@@ -117,7 +120,7 @@ Examples:
 ### Cursor Integration
 * Luanch cursor on Windows machine 
 * Press CTRL + SHIFT + P to bring up the command pallete
-* Search for and run: `Shell Command: Install 'cursor' comman`
+* Search for and run: `Shell Command: Install 'cursor' command`
 * You can now simply type `cursor` on the WSL instance to launch the current directory in a cursor editor in Windows with a remote connection.
 
 ### VSCode Integration
@@ -165,7 +168,7 @@ wsl --distribution my-project-name
 * Create a new WSL instance;
   * `wsl --install Ubuntu-22.04`
   * Complete the basic install steps
-* On the instance, setup git for WSL;
+* On the WSL instance, setup git for WSL;
   * `git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"`
   * `git config --global user.email "my@email.com"`
   * `git config --global user.name "me"`
@@ -174,7 +177,7 @@ wsl --distribution my-project-name
 * Clone this repo on the instance and add config file (update names / paths to suit);
   * See the `biscuit-config` snippet in the WSL2 Distro Manager instructions
 * Add the buttery base;
-  * `./build.sh biscuit cursor`
+  * `./build.sh biscuit update,qol,cursor`
 
 ### Snapshots
 This is useful if you are expecting to need to restore to a build point frequently and you don't want to go through installation steps every time.
