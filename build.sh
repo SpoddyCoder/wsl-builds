@@ -33,9 +33,7 @@ source ${BUILD_DIR}/conf.sh
 if [ "$#" == "1" ]; then
     echo
     echo "Usage: $0 <build-dir> [buildoptions,...] [additionalargs]... [--force]"
-    echo
-    echo "Available options for $1: $VALID_INSTALL_OPTIONS"
-    echo
+    showAvailableOptions "$1"
     exit 1
 fi
 
@@ -109,9 +107,7 @@ fi
 if [ "$#" == "2" ] && [ "$NUM_ADDITIONAL_ARGS" == "0" ] && ! (containsValidOption $2); then
 
     printError "Invalid build option(s)"
-    echo
-    echo "Available options for $1: $VALID_INSTALL_OPTIONS"
-    echo
+    showAvailableOptions "$1"
     exit 1
 
 fi
