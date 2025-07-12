@@ -18,7 +18,7 @@ if [ "$#" == "0" ]; then
     exit 1
 
 fi
-if [ ! -d "${TOOL_DIR}/$1" ]; then
+if [ ! -d "${TOOL_DIR}/$1" ] || [ ! -f "${TOOL_DIR}/$1/conf.sh" ]; then
 
     printError "Build directory '$1' not found"
     exit 1
