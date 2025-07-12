@@ -16,7 +16,7 @@ cp wsl-builds.conf.example wsl-builds.conf
 # update the conf with your own details / paths
 ```
 
-## Building Instances
+## Building
 ```
 ./build.sh <build-dir> [buildoptions,...] [additionalargs]... [--force]
 ```
@@ -88,18 +88,12 @@ Examples:
 * Open PowerShell as an Administrator
 * `wsl --install`
 
-### CUDA Integration
-* Apply fix to Windows for Nvidia CUDA issues
-  * [https://github.com/microsoft/WSL/issues/5663](https://github.com/microsoft/WSL/issues/5663#issuecomment-1068499676)
-* Run a command line shell as Administrator, type `cmd` to get a non-powershell command line
-* `cd C:\Windows\System32\lxss\lib && del libcuda.so && del libcuda.so.1 && mklink libcuda.so libcuda.so.1.1 && mklink libcuda.so.1 libcuda.so.1.1`
-
 ### Git Integration
 * Install git on the Windows machine, ensure you select the option to use unix line endings.
   * We are coding in linux, not Windows.
 * To use the credentials from your Windows host on the WSL instance, see below.
 
-### Cursor
+### Cursor Integration
 * Luanch cursor on Windows machine 
 * Press CTRL + SHIFT + P to bring up the command pallete
 * Search for and run: `Shell Command: Install 'cursor' comman`
@@ -111,6 +105,12 @@ Examples:
 * The first time this command is run, will install the package on the WSL instance.
 * Install VSCode WSL extension
   * https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack
+
+### CUDA Integration
+* Apply fix to Windows for Nvidia CUDA issues
+  * [https://github.com/microsoft/WSL/issues/5663](https://github.com/microsoft/WSL/issues/5663#issuecomment-1068499676)
+* Run a command line shell as Administrator, type `cmd` to get a non-powershell command line
+* `cd C:\Windows\System32\lxss\lib && del libcuda.so && del libcuda.so.1 && mklink libcuda.so libcuda.so.1.1 && mklink libcuda.so.1 libcuda.so.1.1`
 
 ### Resource Allocation
 * Default memory is 50% of windows memory.
@@ -174,6 +174,14 @@ Useful GUI for managing instances: https://github.com/bostrot/wsl2-distro-manage
   * Name: `biscuit`
   * Distro: `Ubuntu 22.04`
   * Username: `yourusername`
+* Save this snippet as `git-config`, updating names / paths to suit you;
+```
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
+git config --global user.email "my@email.com"
+git config --global user.name "me"
+git config --global pull.rebase false
+```
+* Run the snippet on the WSL instance
 * Save this snippet as `biscuit-config`, update the names / paths to suit you;
 ```
 git clone https://github.com/SpoddyCoder/wsl-builds.git ~/wsl-builds
@@ -183,9 +191,9 @@ echo 'WIN_HOME_SYMLINK=/home/me/c-home' >> ~/wsl-builds/wsl-builds.conf
 echo 'CODE_HOME=/mnt/e/Apps' >> ~/wsl-builds/wsl-builds.conf
 echo 'CODE_HOME_SYMLINK=/home/me/e-apps' >> ~/wsl-builds/wsl-builds.conf
 ```
-* Run the snippet on the instance
-* Use the builder to build the buttery biscuit base;
-  * `./build.sh biscuit cursor`
+* Run the snippet on the WSL instance
+* Finally, Use the builder to build the buttery biscuit base;
+* `./build.sh biscuit update,qol,cursor`
 
 ### Snapshots
 * Make a template from the build and kill the instance.
