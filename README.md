@@ -82,6 +82,22 @@ Examples:
   * spleeter
   * rudalle
 
+### `change-hostname.sh` Utility
+A simple standalone utility to change the WSL instance hostname.
+
+```
+./change-hostname.sh <new-hostname>
+```
+
+This utility updates both `/etc/wsl.conf` and `/etc/hosts` with the new hostname. A restart is required for changes to take effect.
+
+Examples:
+```
+./change-hostname.sh my-dev-box
+./change-hostname.sh ai-workstation
+./change-hostname.sh biscuit
+```
+
 ---
 
 ## Enabling + Configuring WSL2 on the Windows Host

@@ -140,6 +140,3 @@ else
     echo "${BUILD_NAME}" >> ${BUILD_INFO_FILE}
 fi
 printInfo "$(tail -1 ${BUILD_INFO_FILE}) installed!"
-
-# & instance hostname
-updateHostname $HOSTNAME
