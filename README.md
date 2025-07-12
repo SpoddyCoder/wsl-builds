@@ -73,6 +73,11 @@ Examples:
 * [dev-basics](dev-basics/)
   * essential development tools
   * python3 development environment
+* [system-basics](system-basics/)
+  * smb client tools
+  * nfs client tools
+  * fstab mounting configuration
+  * systemd service management
 * [ai-basics](ai-basics/)
   * conda
   * cuda 12.4

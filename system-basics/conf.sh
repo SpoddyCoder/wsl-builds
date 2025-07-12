@@ -1,0 +1,4 @@
+HOSTNAME="system-basics"
+BUILD_VER="1.0.0"
+VALID_INSTALL_OPTIONS="smb,nfs,fstab,systemd"
+NUM_ADDITIONAL_ARGS=0
