@@ -97,13 +97,7 @@ Examples:
 ### Git Integration
 * Install git on the Windows machine, ensure you select the option to use unix line endings.
   * We are coding in linux, not Windows.
-* To use the credentials from your Windows host on the WSL instance, run the following;
-  * `git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"`
-    * Change this if not installed in standard location 
-  * `git config --global user.email "me@my.com"`
-  * `git config --global user.name "Me"`
-  * `git config --global pull.rebase false`  (adjust to your prefernece)
-  * Hint: save this as a snippet in WSL2 Distro Manager to make it easy to apply to newly built instances.
+* To use the credentials from your Windows host on the WSL instance, see below.
 
 ### VSCode Integration
 * Install VSCode on the windows machine, select Additional Tasks, be sure to check the "Add to PATH" option.
@@ -115,8 +109,8 @@ Examples:
 ### Resource Allocation
 * Default memory is 50% of windows memory.
 * https://learn.microsoft.com/en-us/windows/wsl/wsl-config
-  * Careful with CLRF line endings when editing this file
-  * Do it on a WSL instance, eg: `nano /mnt/c/Users/me/.wslconfig`
+* Careful with CLRF line endings when editing this file
+* Do it on a WSL instance, eg: `nano /mnt/c/Users/me/.wslconfig`
 * For ai work in particular you may find it useful to increase default memory & swap space, eg...
 
 ```
@@ -127,17 +121,66 @@ swap=8GB
 
 
 ## Creating, Exporting and Importing WSL Instances
+Some useful WSL commands to run on the windows host...
 ```
 wsl -l -v
 wsl --list --online
 wsl --install Ubuntu-22.04
 wsl --export Ubuntu E:\WSL\builds\build-name
 wsl --unregister Ubuntu-22.04
-wsl --import project-name E:\WSL\instances\project-name D:\WSL\builds\build-name
+wsl --import my-project-name E:\WSL\instances\project-name D:\WSL\builds\build-name
 wsl --shutdown
-wsl --distribution project-name
+wsl --distribution my-project-name
 ```
 
-### WSL2 Distro Manager
-* Useful GUI for managing instances;
-  * https://github.com/bostrot/wsl2-distro-manager
+### Manual Build
+* Create a new WSL instance;
+  * `wsl --install Ubuntu-22.04`
+  * Complete the basic install steps
+* On the instance, setup git for WSL;
+  * `git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"`
+  * `git config --global user.email "my@email.com"`
+  * `git config --global user.name "me"`
+  * `git config --global pull.rebase false`
+  * https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git
+* Clone this repo on the instance and add config file (update names / paths to suit);
+  * See the `biscuit-config` snippet in the WSL2 Distro Manager instructions
+* Add the buttery base;
+  * `./build.sh biscuit cursor`
+
+### Snapshots
+This is useful if you are expecting to need to restore to a build point frequently and you don't want to go through installation steps every time.
+* Shutdown the instance, export it to your build dir and kill it;
+  * `wsl --shutdown`
+  * `wsl --export Ubuntu-22.04 E:\WSL\builds\biscuit`
+  * `wsl --unregister Ubuntu-22.04`
+* Your buttery biscuit base is ready to create new instances from :)
+  * `wsl --import my-new-project E:\WSL\instances\my-new-project E:\WSL\builds\biscuit`
+
+
+---
+
+## WSL2 Distro Manager
+Useful GUI for managing instances: https://github.com/bostrot/wsl2-distro-manager
+
+### Build Using WSL2 Distro Manager
+* Add Instance
+  * Name: `biscuit`
+  * Distro: `Ubuntu 22.04`
+  * Username: `yourusername`
+* Save this snippet as `biscuit-config`, update the names / paths to suit you;
+```
+git clone https://github.com/SpoddyCoder/wsl-builds.git ~/wsl-builds
+echo 'CACHE_DIR=/mnt/c/WSL/cache' >> ~/wsl-builds/wsl-builds.conf
+echo 'WIN_HOME=/mnt/c/Users/me' >> ~/wsl-builds/wsl-builds.conf
+echo 'WIN_HOME_SYMLINK=/home/me/c-home' >> ~/wsl-builds/wsl-builds.conf
+echo 'CODE_HOME=/mnt/e/Apps' >> ~/wsl-builds/wsl-builds.conf
+echo 'CODE_HOME_SYMLINK=/home/me/e-apps' >> ~/wsl-builds/wsl-builds.conf
+```
+* Run the snippet on the instance
+* Use the builder to build the buttery biscuit base;
+  * `./build.sh biscuit cursor`
+
+### Snapshots
+* Make a template from the build and kill the instance.
+* It's now ready to use as a base for future instances.
