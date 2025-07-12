@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="ai-resources"
 PROJECT_DIR=~/ai-resources
 
 if [ ! -z $INSTALL_SG3 ] && [ ! -f ${PROJECT_DIR}/stylegan3 ]; then

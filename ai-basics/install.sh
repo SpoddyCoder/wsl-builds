@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="ai-basics"
 
 if [ ! -z $INSTALL_CONDA ] && ! (conda --version) > /dev/null 2>&1; then
     source ${SCRIPT_DIR}/install_conda.sh

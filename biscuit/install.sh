@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="biscuit"
 
 if [ ! -z $INSTALL_UPDATE ]; then
     source ${SCRIPT_DIR}/install_update.sh

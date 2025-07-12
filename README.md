@@ -23,7 +23,7 @@ cp wsl-builds.conf.example wsl-builds.conf
 * `build-dir` valid build directory, containing `conf.sh` & `install.sh`
 * `buildoptions,...` comma seperated list of build options (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
-* `--force` by default the installer will not run if any of the requested build options have already been installed for that build version. Use this to force the reinstall when there are option conflicts. This prevents installing duplicate options while allowing you to stack new options.
+* `--force` by default the installer will not run if any of the requested build options have already been installed for that build (any version). Use this to force the reinstall when there are option conflicts. This prevents installing duplicate options while allowing you to stack new options.
 
 Examples:
 ```
@@ -37,7 +37,7 @@ Examples:
 * Build history is kept in `~/.wsl-build.info`
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
 * Use the build tool to add components / packages / features from different builds as you need.
-* The installer tracks specific build + options combinations, so you can safely stack different options from the same build without conflicts.
+* The installer tracks specific build + options combinations across all versions, so you can safely stack different options from the same build without conflicts.
 * For example, you can run multiple installations of the same build with different options:
 ```
 ./build.sh biscuit upgrade,qol          # Installs biscuit with upgrade and qol options

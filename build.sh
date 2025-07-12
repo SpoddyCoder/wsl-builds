@@ -51,11 +51,11 @@ fi
 
 # check if already installed (check for individual option conflicts)
 if [ "$options_passed" == "true" ]; then
-    # Check if this build version exists and if any requested options are already installed
-    build_pattern="${HOSTNAME} v${BUILD_VER}"
+    # Check if any version of this build has the requested options installed
+    build_pattern="${HOSTNAME} v"
     
     if grep -qs "^${build_pattern}" ${BUILD_INFO_FILE} && ! (isBuildForced $@); then
-        # Get all installed options for this build (from all installations)
+        # Get all installed options for this build (from all versions)
         installed_options=$(grep "^${build_pattern}" ${BUILD_INFO_FILE} | sed 's/.*(\([^)]*\)).*/\1/' | tr ',' '\n' | sort -u | tr '\n' ' ')
         
         # Check each requested option against installed options
@@ -71,18 +71,21 @@ if [ "$options_passed" == "true" ]; then
         done
         
         if [ ${#conflicts[@]} -gt 0 ]; then
-            printError "The following options are already installed for ${HOSTNAME} v${BUILD_VER}: ${conflicts[*]}"
+            printError "The following options are already installed for ${HOSTNAME}: ${conflicts[*]}"
             echo "Either remove these options from your command or use --force to reinstall."
+            echo "Current build stack:"
             cat ${BUILD_INFO_FILE}
             exit 1
         fi
     fi
 else
-    # Check for build without options (exact match)
-    check_build_without_options="${HOSTNAME} v${BUILD_VER}$"
-    if grep -qs "^${check_build_without_options}$" ${BUILD_INFO_FILE} && ! (isBuildForced $@); then
-        printError "${HOSTNAME} v${BUILD_VER} is already installed..."
+    # Check for build without options (any version)
+    check_build_without_options="${HOSTNAME} v"
+    if grep -qs "^${check_build_without_options}[0-9.]*$" ${BUILD_INFO_FILE} && ! (isBuildForced $@); then
+        existing_version=$(grep "^${check_build_without_options}[0-9.]*$" ${BUILD_INFO_FILE} | sed 's/.*\(v[0-9.]*\).*/\1/' | head -1)
+        printError "${HOSTNAME} ${existing_version} is already installed..."
         echo "Use --force to reinstall this build."
+        echo "Current build stack:"
         cat ${BUILD_INFO_FILE}
         exit 1
     fi
@@ -106,6 +109,9 @@ fi
 if [ "$#" == "2" ] && [ "$NUM_ADDITIONAL_ARGS" == "0" ] && ! (containsValidOption $2); then
 
     printError "Invalid build option(s)"
+    echo
+    echo "Available options for $1: $VALID_INSTALL_OPTIONS"
+    echo
     exit 1
 
 fi
