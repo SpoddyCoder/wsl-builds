@@ -17,10 +17,11 @@ This is our base install, with very little extra added.
 * Install the X11-Apps package for native Windows GUI support
 
 ### `vscode`
-  * Install the VSCode extensions for native Windows VSCode integration
+* Install the VSCode extensions for native Windows VSCode integration
 
 ### `cursor`
-  * Install basic packages that Cursor editor likes to use (includes `tree`)
+* Adds a bash alias to launch cursor when using `code .`
+* Install basic packages that Cursor editor likes to use (includes `tree`)
 
 ## Build Arguments
 * No additional arguments for this build

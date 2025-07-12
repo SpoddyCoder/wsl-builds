@@ -2,6 +2,15 @@
 # helper functions for arg / options checks
 
 # inline command
+# $1 - build name
+# shows available options for the build
+showAvailableOptions() {
+    echo
+    echo "Available options for $1: $VALID_INSTALL_OPTIONS"
+    echo
+}
+
+# inline command
 # $1 - csv list of selected install options
 # declares a variable INSTALL_SOMEOPTION=true if the selected option is valid (case insensitive)
 # exits with error if selected option not valid
@@ -11,7 +20,8 @@ declareInstallOptions() {
         if (isValidOption $option); then
             declare -g "INSTALL_${option^^}=true"
         else
-            printError "Invalid install option '$option'. Valid options: '$VALID_INSTALL_OPTIONS'"
+            printError "Invalid build option(s)"
+            showAvailableOptions "${HOSTNAME}"
             exit 1
         fi
     done
