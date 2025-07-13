@@ -154,7 +154,7 @@ git config --global user.name "me"
 git config --global pull.rebase false
 ```
 
-#### `biscuit-config`
+#### `wsl-builds-config`
 ```bash
 git clone https://github.com/SpoddyCoder/wsl-builds.git ~/wsl-builds
 echo 'CACHE_DIR=/mnt/c/WSL/cache' >> ~/wsl-builds/wsl-builds.conf
@@ -170,8 +170,8 @@ Using the snippets, this becomes so easy...
   * Name: `biscuit`
   * Distro: `Ubuntu 22.04`
   * Username: `yourusername`
-* Run the `git-config` snippet on the WSL instance
-* Run the `biscuit-config` snippet on the WSL instance
+* Run the `git-config` snippet
+* Run the `wsl-builds-config` snippet
 * Finally, open a terminal on the WSL instance and use the builder to cook your buttery biscuit base;
 * `./build.sh biscuit update,qol`
 
