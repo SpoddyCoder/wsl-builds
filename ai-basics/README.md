@@ -1,15 +1,11 @@
 # `ai-basics`
-A good basic base for AI work using Python and CUDA.
+A good basic base for AI work using CUDA.
 
 ## Requires
 * `Ubuntu 22.04` or greater
+* `./biscuit dev-python conda` recommended
 
 ## Build Components
-### `conda`
-* Install Anaconda distribution for Python package management and environment support
-* https://www.anaconda.com/download#downloads
-* NOTE: Select YES when asked about updating environment
-
 ### `cuda124`
 * Install WSL-specific version of CUDA 12.4 toolkit for GPU computing support
 * IMPORTANT: always use the WSL version! Any other CUDA package installs will overwrite the wsl nvidia driver

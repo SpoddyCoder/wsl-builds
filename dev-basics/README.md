@@ -8,19 +8,6 @@ A good basic base for general purpose development work.
 ### `essentials`
 * Essential development tools: curl, wget, git, vim, nano, jq, yq, htop, rsync
 
-### `python3`
-* Install python3 + python3-pip
-* PIP install commonly used python packages:
-  * requests - HTTP library
-  * numpy - Scientific computing
-  * pandas - Data manipulation and analysis
-  * matplotlib - Plotting library
-  * jupyter - Interactive notebook environment
-  * pytest - Testing framework
-  * black - Code formatter
-  * flake8 - Code linting
-  * mypy - Static type checking
-
 ### `qol`
 * Quality of life bits
 * Symlink configuration picked up from your `wsl-builds.conf`:
