@@ -2,8 +2,8 @@
 Install AI Projects & Tools. Creates an `~/ai-resources` directory containing project repos / files etc.
 
 ## Requires
-* `./build dev-basics conda`
-* `./build ai-basics cuda124`
+* `./build dev-python conda`
+* `./build ai cuda124`
 
 ## Build Components
 ### `sg3`

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SCRIPT_DIR="system-basics"
+SCRIPT_DIR="system"
 
 if [ ! -z $INSTALL_SMB ] && ! (smbclient --version) > /dev/null 2>&1; then
     source ${SCRIPT_DIR}/install_smb.sh

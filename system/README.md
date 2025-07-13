@@ -1,4 +1,4 @@
-# `system-basics`
+# `system`
 Basic system utilities and services for system admin and network file sharing.
 
 ## Requires
@@ -6,7 +6,7 @@ Basic system utilities and services for system admin and network file sharing.
 
 ## Build Components
 ### `essentials`
-* Install essential system utilities, htop, rsync
+* Install essential system utilities: htop, rsync
 
 ### `smb`
 * Install SMB/CIFS client tools for Windows file sharing

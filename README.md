@@ -30,7 +30,7 @@ nano wsl-builds.conf
   * system upgrade
   * quality of life bits (includes change-hostname function)
   * x11 apps
-* [dev-basics](dev-basics/)
+* [dev](dev/)
   * essential dev tools
   * quality of life bits (includes code home symlink)
   * vscode editor support
@@ -41,16 +41,16 @@ nano wsl-builds.conf
 * [devops-aws](devops-aws/)
   * aws cli v2
   * quality of life bits
-* [devops-basics](devops-basics/)
+* [devops](devops/)
   * terraform
   * kubectl
-* [system-basics](system-basics/)
+* [system](system/)
   * system essentials (htop, rsync)
   * smb client tools
   * nfs client tools
   * fstab mounting config
   * systemd service management
-* [ai-basics](ai-basics/)
+* [ai](ai/)
   * cuda 12.4
 * [ai-resources](ai-resources/)
   * stylegan3
@@ -76,17 +76,18 @@ nano wsl-builds.conf
 ```bash
 # gen dev env
 ./build.sh biscuit update,qol
-./build.sh dev-basics essentials,qol,vscode,python3
+./build.sh dev essentials,qol,vscode,python3
 change-hostname my-dev-box
 
 # Python environment for AI coding
 ./build.sh biscuit update,qol
-./build.sh dev-basics essentials,qol,cursor
+./build.sh dev essentials,qol,cursor
 ./build dev-python conda
-./build.sh ai-basics cuda124
+./build.sh ai cuda124
 change-hostname python-ai
 
-# ai-resources requires ai-basics (specified in its docs)
+# ai-resources requires ai (specified in its docs)
+./build.sh ai cuda124
 ./build.sh ai-resources sg3,lsd
 change-hostname stylegan-ai-projects
 ```

@@ -1,4 +1,4 @@
-# `devops-basics`
+# `devops`
 Essential DevOps tools for infrastructure management and container orchestration.
 
 ## Requires

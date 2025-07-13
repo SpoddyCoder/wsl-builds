@@ -1,4 +1,4 @@
-# `ai-basics`
+# `ai`
 A good basic base for AI work using CUDA.
 
 ## Requires

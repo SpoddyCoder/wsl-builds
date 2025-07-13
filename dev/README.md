@@ -1,4 +1,4 @@
-# `dev-basics`
+# `dev`
 A good basic base for general purpose development work.
 
 ## Requires

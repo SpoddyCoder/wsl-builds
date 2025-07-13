@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SCRIPT_DIR="devops-basics"
+SCRIPT_DIR="devops"
 
 if [ ! -z $INSTALL_TERRAFORM ] && ! (terraform --version) > /dev/null 2>&1; then
     source ${SCRIPT_DIR}/install_terraform.sh

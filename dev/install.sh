@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SCRIPT_DIR="dev-basics"
+SCRIPT_DIR="dev"
 
 if [ ! -z $INSTALL_ESSENTIALS ] && ! (htop --version) > /dev/null 2>&1; then
     source ${SCRIPT_DIR}/install_essentials.sh
