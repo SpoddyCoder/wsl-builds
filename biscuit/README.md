@@ -4,7 +4,7 @@ This is our base install, with very little extra added.
 ## Requires
 * `Ubuntu 22.04` or greater
 
-## Build Options
+## Build Components
 ### `update`
 * Update apt & upgrade the system
 * Recommended first step

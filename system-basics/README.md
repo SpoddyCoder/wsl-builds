@@ -4,7 +4,7 @@ Basic system utilities and services for system admin and network file sharing.
 ## Requires
 * `Ubuntu 22.04` or greater
 
-## Build Options
+## Build Components
 ### `smb`
 * Install SMB/CIFS client tools for Windows file sharing
 * Includes smbclient and cifs-utils for mounting Windows shares

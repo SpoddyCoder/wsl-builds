@@ -4,7 +4,7 @@ Install AI Projects & Tools. Creates an `~/ai-resources` directory containing pr
 ## Requires
 * `./build ai-basics conda,cuda124`
 
-## Build Options
+## Build Components
 ### `sg3`
 * Clone stylegan3 & stylegan3-fun and initialise the `stylegan3` conda environment 
 * Setup pkl & pytorch cache on host (see below)

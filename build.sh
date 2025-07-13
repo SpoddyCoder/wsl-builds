@@ -13,7 +13,7 @@ BUILD_INFO_FILE=~/.wsl-build.info
 if [ "$#" == "0" ]; then
 
     echo
-    echo "Usage: $0 <build-dir> [buildoptions,...] [additionalargs]... [--force]"
+    echo "Usage: $0 <build-dir> [buildcomponents,...] [additionalargs]... [--force]"
     showAvailableBuildDirs
     exit 1
 
@@ -29,11 +29,11 @@ fi
 BUILD_DIR="${TOOL_DIR}/$1"
 source ${BUILD_DIR}/conf.sh
 
-# show available options if only build dir is provided
+# show available components if only build dir is provided
 if [ "$#" == "1" ]; then
     echo
-    echo "Usage: $0 <build-dir> [buildoptions,...] [additionalargs]... [--force]"
-    showAvailableOptions "$1"
+    echo "Usage: $0 <build-dir> [buildcomponents,...] [additionalargs]... [--force]"
+    showAvailableComponents "$1"
     exit 1
 fi
 
@@ -41,46 +41,46 @@ BUILD_NAME="${HOSTNAME} v${BUILD_VER}"
 
 # build arg checks
 min_num_args=$(($NUM_ADDITIONAL_ARGS + 1))  # we require min 1 arg in any scenario
-options_passed=false
-if (containsValidOption $2); then
-    min_num_args=$(($NUM_ADDITIONAL_ARGS + 2))  # if passing options, then we require min 2 args
-    options_passed=true
+components_passed=false
+if (containsValidComponent $2); then
+    min_num_args=$(($NUM_ADDITIONAL_ARGS + 2))  # if passing components, then we require min 2 args
+    components_passed=true
 fi
 
-# check if already installed (check for individual option conflicts)
-if [ "$options_passed" == "true" ]; then
-    # Check if any version of this build has the requested options installed
+# check if already installed (check for individual component conflicts)
+if [ "$components_passed" == "true" ]; then
+    # Check if any version of this build has the requested components installed
     build_pattern="${HOSTNAME} v"
     
     if grep -qs "^${build_pattern}" ${BUILD_INFO_FILE} && ! (isBuildForced $@); then
-        # Get all installed options for this build (from all versions)
-        installed_options=$(grep "^${build_pattern}" ${BUILD_INFO_FILE} | sed 's/.*(\([^)]*\)).*/\1/' | tr ',' '\n' | sort -u | tr '\n' ' ')
+        # Get all installed components for this build (from all versions)
+        installed_components=$(grep "^${build_pattern}" ${BUILD_INFO_FILE} | sed 's/.*(\([^)]*\)).*/\1/' | tr ',' '\n' | sort -u | tr '\n' ' ')
         
-        # Check each requested option against installed options
-        requested_options=$(echo "$2" | tr ',' ' ')
+        # Check each requested component against installed components
+        requested_components=$(echo "$2" | tr ',' ' ')
         conflicts=()
         
-        for requested_option in $requested_options; do
+        for requested_component in $requested_components; do
             # Remove any whitespace
-            requested_option=$(echo "$requested_option" | xargs)
-            if echo "$installed_options" | grep -q "\b${requested_option}\b"; then
-                conflicts+=("$requested_option")
+            requested_component=$(echo "$requested_component" | xargs)
+            if echo "$installed_components" | grep -q "\b${requested_component}\b"; then
+                conflicts+=("$requested_component")
             fi
         done
         
         if [ ${#conflicts[@]} -gt 0 ]; then
-            printError "The following options are already installed for ${HOSTNAME}: ${conflicts[*]}"
-            echo "Either remove these options from your command or use --force to reinstall."
+            printError "The following components are already installed for ${HOSTNAME}: ${conflicts[*]}"
+            echo "Either remove these components from your command or use --force to reinstall."
             echo "Current build stack:"
             cat ${BUILD_INFO_FILE}
             exit 1
         fi
     fi
 else
-    # Check for build without options (any version)
-    check_build_without_options="${HOSTNAME} v"
-    if grep -qs "^${check_build_without_options}[0-9.]*$" ${BUILD_INFO_FILE} && ! (isBuildForced $@); then
-        existing_version=$(grep "^${check_build_without_options}[0-9.]*$" ${BUILD_INFO_FILE} | sed 's/.*\(v[0-9.]*\).*/\1/' | head -1)
+    # Check for build without components (any version)
+    check_build_without_components="${HOSTNAME} v"
+    if grep -qs "^${check_build_without_components}[0-9.]*$" ${BUILD_INFO_FILE} && ! (isBuildForced $@); then
+        existing_version=$(grep "^${check_build_without_components}[0-9.]*$" ${BUILD_INFO_FILE} | sed 's/.*\(v[0-9.]*\).*/\1/' | head -1)
         printError "${HOSTNAME} ${existing_version} is already installed..."
         echo "Use --force to reinstall this build."
         echo "Current build stack:"
@@ -104,17 +104,17 @@ if [ "$#" -gt "$max_num_args" ]; then
     exit 1
 
 fi
-if [ "$#" == "2" ] && [ "$NUM_ADDITIONAL_ARGS" == "0" ] && ! (containsValidOption $2); then
+if [ "$#" == "2" ] && [ "$NUM_ADDITIONAL_ARGS" == "0" ] && ! (containsValidComponent $2); then
 
-    printError "Invalid build option(s)"
-    showAvailableOptions "$1"
+    printError "Invalid build component(s)"
+    showAvailableComponents "$1"
     exit 1
 
 fi
 
 # install the build
-if [ "$options_passed" == "true" ]; then
-    declareInstallOptions $2
+if [ "$components_passed" == "true" ]; then
+    declareInstallComponents $2
 fi
 printInfo "Building $HOSTNAME v${BUILD_VER}"
 BUILD_UPDATED=false
@@ -134,7 +134,7 @@ if [ ! -f ${BUILD_INFO_FILE} ]; then
     echo "${base_os_id} ${base_os_version}" >> ${BUILD_INFO_FILE}
     cat ${BUILD_INFO_FILE}
 fi
-if [ "$options_passed" == "true" ]; then
+if [ "$components_passed" == "true" ]; then
     echo "${BUILD_NAME} ($2)" >> ${BUILD_INFO_FILE}
 else
     echo "${BUILD_NAME}" >> ${BUILD_INFO_FILE}

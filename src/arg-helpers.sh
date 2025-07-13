@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# helper functions for arg / options checks
+# helper functions for arg / components checks
 
 # inline command
 # $1 - build name
-# shows available options for the build
-showAvailableOptions() {
+# shows available components for the build
+showAvailableComponents() {
     echo
-    echo "Available options for $1:"
-    IFS=',' read -r -a options <<< "$VALID_INSTALL_OPTIONS"
-    for option in "${options[@]}"; do
-        echo "  $option"
+    echo "Available components for $1:"
+    IFS=',' read -r -a components <<< "$VALID_INSTALL_COMPONENTS"
+    for component in "${components[@]}"; do
+        echo "  $component"
     done
     echo
 }
@@ -28,29 +28,29 @@ showAvailableBuildDirs() {
 }
 
 # inline command
-# $1 - csv list of selected install options
-# declares a variable INSTALL_SOMEOPTION=true if the selected option is valid (case insensitive)
-# exits with error if selected option not valid
-declareInstallOptions() {
+# $1 - csv list of selected install components
+# declares a variable INSTALL_SOMECOMPONENT=true if the selected component is valid (case insensitive)
+# exits with error if selected component not valid
+declareInstallComponents() {
     IFS=',' read -r -a selected_opts <<< "$1"
-    for option in "${selected_opts[@]}"; do
-        if (isValidOption $option); then
-            declare -g "INSTALL_${option^^}=true"
+    for component in "${selected_opts[@]}"; do
+        if (isValidComponent $component); then
+            declare -g "INSTALL_${component^^}=true"
         else
-            printError "Invalid build option(s)"
-            showAvailableOptions "${HOSTNAME}"
+            printError "Invalid build component(s)"
+            showAvailableComponents "${HOSTNAME}"
             exit 1
         fi
     done
 }
 
 # faux function call (call as subprocess) 
-# $1 - csv list of selected install options
+# $1 - csv list of selected install components
 # exits 0 or 1
-containsValidOption() {
+containsValidComponent() {
     IFS=',' read -r -a selected_opts <<< "$1"
-    for option in "${selected_opts[@]}"; do
-        if (isValidOption $option); then
+    for component in "${selected_opts[@]}"; do
+        if (isValidComponent $component); then
             exit 0
         fi
     done
@@ -58,13 +58,13 @@ containsValidOption() {
 }
 
 # faux function call (call as subprocess) 
-# $1 - option to check
+# $1 - component to check
 # exits 0 or 1
-isValidOption() {
-    IFS=',' read -r -a valid_opts <<< "$VALID_INSTALL_OPTIONS"
-    for valid_option in "${valid_opts[@]}"; do
+isValidComponent() {
+    IFS=',' read -r -a valid_opts <<< "$VALID_INSTALL_COMPONENTS"
+    for valid_component in "${valid_opts[@]}"; do
         # case insensitive
-        if [ "${1^^}" == "${valid_option^^}" ]; then
+        if [ "${1^^}" == "${valid_component^^}" ]; then
             exit 0
         fi
     done

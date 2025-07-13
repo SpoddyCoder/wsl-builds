@@ -1,4 +1,4 @@
 HOSTNAME="devops-basics"
 BUILD_VER="1.0.0"
-VALID_INSTALL_OPTIONS="terraform,kubectl"
+VALID_INSTALL_COMPONENTS="terraform,kubectl"
 NUM_ADDITIONAL_ARGS=0

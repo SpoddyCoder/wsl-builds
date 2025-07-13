@@ -4,7 +4,7 @@ A good basic base for AI work using Python and CUDA.
 ## Requires
 * `Ubuntu 22.04` or greater
 
-## Build Options
+## Build Components
 ### `conda`
 * Install Anaconda distribution for Python package management and environment support
 

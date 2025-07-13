@@ -4,7 +4,7 @@ A good basic base for general purpose development work.
 ## Requires
 * `Ubuntu 22.04` or greater
 
-## Build Options
+## Build Components
 ### `essentials`
 * Essential development tools: curl, wget, git, vim, nano, jq, yq, htop, rsync
 
