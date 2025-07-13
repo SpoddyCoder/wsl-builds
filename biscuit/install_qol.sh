@@ -12,14 +12,9 @@ default=$LOGNAME
 EOF
 fi
 
-if [ ! -L ${WIN_HOME_SYMLINK} ] && [ ! -z ${WIN_HOME} ]; then
+if [ ! -L ${WIN_HOME_SYMLINK} ] && [ ! -z ${WIN_HOME_TARGET} ]; then
     printInfo "Creating win home symlink"
-    ln -s ${WIN_HOME} ${WIN_HOME_SYMLINK}
-fi
-
-if [ ! -L ${CODE_HOME_SYMLINK} ] && [ ! -z ${CODE_HOME} ]; then
-    printInfo "Creating code home symlink"
-    ln -s ${CODE_HOME} ${CODE_HOME_SYMLINK}
+    ln -s ${WIN_HOME_TARGET} ${WIN_HOME_SYMLINK}
 fi
 
 if ! (cat ~/.bash_aliases | grep -q '# safety aliases') > /dev/null 2>&1; then

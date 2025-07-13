@@ -32,6 +32,7 @@ nano wsl-builds.conf    # update the conf with your own details / paths
 * [dev-basics](dev-basics/)
   * essential development tools
   * python3 development environment
+  * quality of life bits (includes code home symlink)
 * [devops-aws](devops-aws/)
   * aws cli v2
   * quality of life bits
@@ -67,15 +68,20 @@ nano wsl-builds.conf    # update the conf with your own details / paths
 * Pick and choose - use multiple runs of the build tool to add components / packages / features from different builds as you need.
 ```bash
 # gen dev env
-./build.sh biscuit update,cursor
-./build.sh dev-basics essentials,python3
+./build.sh biscuit update,cursor,qol
+./build.sh dev-basics essentials,python3,qol
+change-hostname my-dev-box
 
-# Python environemnt for AI coding
+# Python environment for AI coding
 ./build.sh biscuit update, qol, vscode
 ./build.sh ai-basics conda,cuda124
+change-hostname python-ai
 
 # ai-resources builds upon ai-basics
+./build.sh biscuit update, qol, vscode
+./build.sh ai-basics conda,cuda124
 ./build.sh ai-resources sg3
+change-hostname stylegan-ai-projects
 ```
 
 ---

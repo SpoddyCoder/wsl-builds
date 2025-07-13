@@ -17,10 +17,8 @@ change-hostname <new-hostname>
 ```
 * Symlink definitions picked up from your `wsl-builds.conf`...
 ```bash
-WIN_HOME=/mnt/c/Users/me            # Location of your Windows host home dir on the WSL instance
-WIN_HOME_SYMLINK=/home/me/c-home    # symlink placed in the home dir of the WSL instance
-CODE_HOME=/mnt/c/code               # Location on your Windows host where you store code project
-CODE_HOME_SYMLINK=/home/me/code     # symlink placed in the home dir of the WSL instance
+WIN_HOME_SYMLINK=/home/me/c-home    # Symlink placed in your home dir on the WSL instance
+WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on the WSL instance
 ```
 
 ### `x11`

@@ -11,6 +11,14 @@ A good basic base for general purpose development work.
 ### `python3`
 * Install python3-pip (Python package installer)
 
+### `qol`
+* Quality of life bits
+* Symlink configuration picked up from your `wsl-builds.conf`:
+```bash
+CODE_HOME_SYMLINK=/home/me/code     # Symlink placed in your home dir on the WSL instance
+CODE_HOME_TARGET=/mnt/c/code        # Location on your Windows host where you store code projects
+```
+
 ## Build Arguments
 * No additional arguments for this build
 
@@ -39,16 +47,3 @@ Complete Python 3 development environment:
   * black - Code formatter
   * flake8 - Code linting
   * mypy - Static type checking
-
-## Examples
-
-### General Development Setup
-```bash
-./build.sh dev-basics essentials,python3
-```
-
-### Just the Basics
-```bash
-./build.sh dev-basics essentials
-```
-
