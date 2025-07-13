@@ -28,7 +28,8 @@ WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on 
 * Launch VSCode to automatically install extensions for native Windows VSCode integration
 
 ### `cursor`
-* Adds a bash alias to launch cursor when using `code .`
+* Launch Cursor to automatically install extensions for native Windows Cursor integration
+* Adds a bash alias to launch cursor when using `code`
 * Install basic packages that Cursor editor likes to use (includes `tree`)
 
 ## Build Arguments
