@@ -5,6 +5,9 @@ Basic system utilities and services for system admin and network file sharing.
 * `Ubuntu 22.04` or greater
 
 ## Build Components
+### `essentials`
+* Install essential system utilities, htop, rsync
+
 ### `smb`
 * Install SMB/CIFS client tools for Windows file sharing
 * Includes smbclient and cifs-utils for mounting Windows shares

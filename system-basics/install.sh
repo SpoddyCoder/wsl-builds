@@ -21,3 +21,8 @@ if [ ! -z $INSTALL_SYSTEMD ] && ! (systemctl --version) > /dev/null 2>&1; then
     source ${SCRIPT_DIR}/install_systemd.sh
     BUILD_UPDATED=true
 fi
+
+if [ ! -z $INSTALL_ESSENTIALS ]; then
+    source ${SCRIPT_DIR}/install_essentials.sh
+    BUILD_UPDATED=true
+fi

@@ -8,8 +8,6 @@ sudo apt install -y \
     vim \
     nano \
     jq \
-    yq \
-    htop \
-    rsync
+    yq
 
 printInfo "Essential dev packages installation complete" 

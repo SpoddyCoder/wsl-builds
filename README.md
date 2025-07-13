@@ -43,6 +43,7 @@ nano wsl-builds.conf
   * terraform
   * kubectl
 * [system-basics](system-basics/)
+  * system essentials (htop, rsync)
   * smb client tools
   * nfs client tools
   * fstab mounting config
