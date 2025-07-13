@@ -24,14 +24,6 @@ WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on 
 ### `x11`
 * Install the X11-Apps package for native Windows GUI support
 
-### `vscode`
-* Launch VSCode to automatically install extensions for native Windows VSCode integration
-
-### `cursor`
-* Launch Cursor to automatically install extensions for native Windows Cursor integration
-* Adds a bash alias to launch cursor when using `code`
-* Install basic packages that Cursor editor likes to use (includes `tree`)
-
 ## Build Arguments
 * No additional arguments for this build
 

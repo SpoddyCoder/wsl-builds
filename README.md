@@ -29,13 +29,13 @@ nano wsl-builds.conf
 * [biscuit](biscuit/)
   * system upgrade
   * quality of life bits (includes change-hostname function)
-  * vscode editor support
-  * cursor editor support
   * x11 apps
 * [dev-basics](dev-basics/)
   * essential development tools
   * python3 development environment
   * quality of life bits (includes code home symlink)
+  * vscode editor support
+  * cursor editor support
 * [devops-aws](devops-aws/)
   * aws cli v2
   * quality of life bits
@@ -74,17 +74,19 @@ nano wsl-builds.conf
 * Pick and choose - use multiple runs of the build tool to stack components / packages / features from different builds as you need.
 ```bash
 # gen dev env
-./build.sh biscuit update,cursor,qol
-./build.sh dev-basics essentials,python3,qol
+./build.sh biscuit update,qol
+./build.sh dev-basics essentials,python3,qol,cursor
 change-hostname my-dev-box
 
 # Python environment for AI coding
-./build.sh biscuit update, qol, vscode
+./build.sh biscuit update,qol
+./build.sh dev-basics essentials,qol,vscode
 ./build.sh ai-basics conda,cuda124
 change-hostname python-ai
 
 # ai-resources builds upon ai-basics
-./build.sh biscuit update, qol, vscode
+./build.sh biscuit update,qol
+./build.sh dev-basics essentials,qol,vscode
 ./build.sh ai-basics conda,cuda124
 ./build.sh ai-resources sg3
 change-hostname stylegan-ai-projects
@@ -169,7 +171,7 @@ Using the snippets, this becomes so easy...
 * Run the `git-config` snippet on the WSL instance
 * Run the `biscuit-config` snippet on the WSL instance
 * Finally, open a terminal on the WSL instance and use the builder to cook your buttery biscuit base;
-* `./build.sh biscuit update,qol,cursor`
+* `./build.sh biscuit update,qol`
 
 ### Snapshots
 Useful if you are expecting to need to restore to a build point frequently and don't want to go through installation steps every time...
@@ -194,7 +196,7 @@ The pain point here is needing to add config everytime you build a new instance.
 * Clone this repo on the instance and add config file (update names / paths to suit);
   * See the `biscuit-config` snippet in the WSL2 Distro Manager instructions
 * Add the buttery base;
-  * `./build.sh biscuit update,qol,cursor`
+  * `./build.sh biscuit update,qol`
 
 ### Manual Snapshots
 * Shutdown the instance, export it to your build dir and kill it;

@@ -104,7 +104,8 @@ if [ "$#" -gt "$max_num_args" ]; then
     exit 1
 
 fi
-if [ "$#" == "2" ] && [ "$NUM_ADDITIONAL_ARGS" == "0" ] && ! (containsValidComponent $2); then
+# Validate components if they are provided (regardless of force flag)
+if [ "$#" -ge "2" ] && [ "$NUM_ADDITIONAL_ARGS" == "0" ] && ! (containsValidComponent $2); then
 
     printError "Invalid build component(s)"
     showAvailableComponents "$1"

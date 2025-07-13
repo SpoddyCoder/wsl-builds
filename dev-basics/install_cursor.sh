@@ -17,6 +17,5 @@ fi
 
 printInfo "Launching cursor, this should automatically install the extensions..."
 cursor .
-printInfo "cursor installation complete" 
 
 printInfo "Cursor installation complete" 
