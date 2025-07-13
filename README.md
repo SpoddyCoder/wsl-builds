@@ -25,7 +25,7 @@ nano wsl-builds.conf    # update the conf with your own details / paths
 ## Build List
 * [biscuit](biscuit/)
   * system upgrade
-  * quality of life bits
+  * quality of life bits (includes change-hostname function)
   * vscode editor support
   * cursor editor support
   * x11 apps
@@ -76,13 +76,6 @@ nano wsl-builds.conf    # update the conf with your own details / paths
 
 # ai-resources builds upon ai-basics
 ./build.sh ai-resources sg3
-```
-
-### `change-hostname.sh` Utility
-A simple standalone utility to change the WSL instance hostname - updates both `/etc/wsl.conf` and `/etc/hosts`. A restart is required for changes to take effect.
-
-```bash
-./change-hostname.sh <new-hostname>
 ```
 
 ---
