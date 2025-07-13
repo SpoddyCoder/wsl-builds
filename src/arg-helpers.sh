@@ -6,7 +6,24 @@
 # shows available options for the build
 showAvailableOptions() {
     echo
-    echo "Available options for $1: $VALID_INSTALL_OPTIONS"
+    echo "Available options for $1:"
+    IFS=',' read -r -a options <<< "$VALID_INSTALL_OPTIONS"
+    for option in "${options[@]}"; do
+        echo "  $option"
+    done
+    echo
+}
+
+# inline command
+# shows available build directories
+showAvailableBuildDirs() {
+    echo
+    echo "Available build directories:"
+    for dir in "${TOOL_DIR}"/*/; do
+        if [ -d "$dir" ] && [ -f "$dir/conf.sh" ]; then
+            echo "  $(basename "$dir")"
+        fi
+    done | sort
     echo
 }
 

@@ -14,7 +14,7 @@ if [ "$#" == "0" ]; then
 
     echo
     echo "Usage: $0 <build-dir> [buildoptions,...] [additionalargs]... [--force]"
-    echo
+    showAvailableBuildDirs
     exit 1
 
 fi
