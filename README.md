@@ -8,6 +8,12 @@ This project contains clean, simple builds that use Windows host native implemen
 * Nvidia CUDA
 * GUI Apps
 
+The builder provides an easy way to stack components to create different WSL builds for different purposes.
+
+* Simple installations, often featuring quality of life configurations and helpers
+* Caching of large downloads on the Windows host - so you don't have to re-downlaod install packages for rebuilds.
+* Other build specific cache directories on the Windows host for convenience (eg: AI build .pkl cache)
+
 ## Install
 ```
 git clone https://github.com/SpoddyCoder/wsl-builds.git
@@ -60,20 +66,6 @@ nano wsl-builds.conf    # update the conf with your own details / paths
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
 * Pick and choose - use multiple runs of the build tool to add components / packages / features from different builds as you need.
 ```bash
-./build.sh biscuit upgrade,qol          # Upgrades system, adds qol bits
-./build.sh biscuit cursor               # Adds cursor
-```
-* The builder will block an option that has already been installed.
-```bash
-./build.sh biscuit cursor,x11           # This would be blocked (cursor already installed)
-./build.sh biscuit x11                  # This would be allowed (x11 not installed yet)
-```
-* You can override with `--force` but this is not generally recommended (may have unexpected results)
-```bash
-./build.sh biscuit cursor,x11 --force   # Force reinstall cursor, install x11
-```
-* Examples...
-```bash
 # gen dev env
 ./build.sh biscuit update,cursor
 ./build.sh dev-basics essentials,python3
@@ -85,7 +77,6 @@ nano wsl-builds.conf    # update the conf with your own details / paths
 # ai-resources builds upon ai-basics
 ./build.sh ai-resources sg3
 ```
-
 
 ### `change-hostname.sh` Utility
 A simple standalone utility to change the WSL instance hostname - updates both `/etc/wsl.conf` and `/etc/hosts`. A restart is required for changes to take effect.

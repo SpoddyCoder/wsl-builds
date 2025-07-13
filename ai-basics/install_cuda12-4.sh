@@ -13,7 +13,7 @@ wget ${cuda_wsl_pkg_repo_url}   # small, no need to cache
 sudo mv ${cuda_wsl_pkg_repo_filename} /etc/apt/preferences.d/cuda-repository-pin-600
 # - install the pkg
 sudo apt-key del ${cuda_gpg_key_remove}
-cuda_installer=$(getFile ${cuda_wsl_filename} ${cuda_wsl_url})
+getFile ${cuda_wsl_filename} ${cuda_wsl_url} "/tmp" cuda_installer
 sudo dpkg -i "$cuda_installer"
 sudo cp /var/cuda-repo-wsl-ubuntu-${cuda_version}-local/cuda-*-keyring.gpg /usr/share/keyrings/
 # - install the cuda toolkit

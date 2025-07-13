@@ -6,7 +6,7 @@ printInfo "Installing dependencies..."
 sudo apt-get install -y curl unzip
 
 printInfo "Downloading and installing AWS CLI v2..."
-awscli_zip=$(getFile "awscli-exe-linux-x86_64.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip")
+getFile "awscli-exe-linux-x86_64.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" "/tmp" awscli_zip
 cd /tmp
 unzip "$awscli_zip"
 sudo ./aws/install

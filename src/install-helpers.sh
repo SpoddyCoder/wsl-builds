@@ -30,11 +30,22 @@ EOF
 # $1 - filename
 # $2 - url
 # $3 - download directory (optional, defaults to /tmp)
-# returns: full path to downloaded file
+# $4 - result variable name (required)
+# sets the result variable to the full path of the downloaded file
 getFile() {
     local filename="$1"
     local url="$2" 
     local download_dir="${3:-/tmp}"  # default to /tmp
+    local result_var="$4"
+    
+    # Validate required parameters
+    if [[ -z "$filename" || -z "$url" || -z "$result_var" ]]; then
+        printError "getFile: Missing required parameters (filename, url, result_var)"
+        return 1
+    fi
+    
+    # Create nameref to the result variable
+    declare -n result_ref="$result_var"
     
     printInfo "Getting file: $filename"
     
@@ -46,7 +57,10 @@ getFile() {
     
     if [ -f "$cache_file" ]; then
         printInfo "Using locally cached version"
-        cp "$cache_file" "$target_file"
+        if ! cp "$cache_file" "$target_file"; then
+            printError "Failed to copy cached file to $target_file"
+            return 1
+        fi
     else
         printInfo "Downloading and caching"
         # Download directly to target location
@@ -56,14 +70,24 @@ getFile() {
         fi
         
         # Cache the file
-        cp "$target_file" "$cache_file"
+        if ! cp "$target_file" "$cache_file"; then
+            printWarning "Failed to cache file, continuing anyway"
+        fi
+    fi
+    
+    # Verify the target file exists
+    if [ ! -f "$target_file" ]; then
+        printError "Target file $target_file does not exist after processing"
+        return 1
     fi
     
     # Always track files for potential cleanup
     echo "$target_file" >> "/tmp/.getfile_cleanup_$$"
     
-    # Return the full path
-    echo "$target_file"
+    # Set the result variable to the file path
+    result_ref="$target_file"
+    
+    return 0
 }
 
 # inline command
