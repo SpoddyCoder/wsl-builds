@@ -1,5 +1,5 @@
 # WSL Builds
-Buttery biscuit base builds for WSL2. Native Linux development on Windows facilitates some very easy & comfortable workflows :) 
+Buttery biscuit base builds for WSL2... because native Linux development on Windows facilitates some very easy & comfortable workflows :) 
 
 This project contains clean, simple builds that use Windows host native implementations of core components for maximum performance & flexibility;
 
@@ -10,57 +10,10 @@ This project contains clean, simple builds that use Windows host native implemen
 
 ## Install
 ```
-git clone https://github.com/SpoddyCoder/wsl-builds.git ~/wsl-builds
-cd ~/wsl-builds
+git clone https://github.com/SpoddyCoder/wsl-builds.git
+cd wsl-builds
 cp wsl-builds.conf.example wsl-builds.conf
-# update the conf with your own details / paths
-```
-
-## Building
-```
-./build.sh <build-dir> [buildoptions,...] [additionalargs]... [--force]
-```
-* `build-dir` valid build directory, containing `conf.sh` & `install.sh`
-* `buildoptions,...` comma seperated list of build options (packages to install etc.), varies per build.
-* `additionalargs...` additional arguments required for some builds
-* `--force` by default the installer will not run if any of the requested build options have already been installed for that build (any version). Use this to force the reinstall when there are option conflicts. This prevents installing duplicate options while allowing you to stack new options.
-
-Examples:
-```
-./build.sh biscuit upgrade,qol
-./build.sh biscuit upgrade,vscode --force
-./build.sh dev-basics essentials,python3
-./build.sh ai-basics conda,cuda124
-```
-
-### Assembling and Stacking Builds
-* Build history is kept in `~/.wsl-build.info`
-* Each build is very simple, containing only a few related components intended to deliver a single purpose.
-* Use the build tool to add components / packages / features from different builds as you need.
-* The installer tracks specific build + options combinations across all versions, so you can safely stack different options from the same build without conflicts.
-* For example, you can run multiple installations of the same build with different options:
-```
-./build.sh biscuit upgrade,qol          # Installs biscuit with upgrade and qol options
-./build.sh biscuit cursor               # Stacks cursor
-./build.sh biscuit cursor,x11           # This would be blocked (cursor already installed)
-./build.sh biscuit x11                  # This would be allowed (x11 not installed yet)
-./build.sh biscuit cursor,x11 --force   # This would install / reinstall both options
-```
-* Eg, a general development environment...
-```
-./build.sh biscuit update,vscode,cursor
-./build.sh dev-basics essentials,python3
-```
-* Eg, a Python environemnt for AI coding...
-```
-./build.sh biscuit update, qol, vscode
-./build.sh ai-basics conda
-```
-* Eg, `ai-resources` builds upon `ai-basics`...
-```
-./build.sh biscuit update, qol, cursor
-./build.sh ai-basics conda,cuda124
-./build.sh ai-resources sg3
+nano wsl-builds.conf    # update the conf with your own details / paths
 ```
 
 ## Build List
@@ -90,20 +43,52 @@ Examples:
   * spleeter
   * rudalle
 
+## Building
+```
+./build.sh <build-dir> [buildoptions,...] [additionalargs]... [--force]
+```
+* `build-dir` valid build directory, containing `conf.sh` & `install.sh`
+* `buildoptions,...` comma seperated list of build options (packages to install etc.), varies per build.
+* `additionalargs...` additional arguments required for some builds
+* `--force` by default the build will not run if any of the requested build options have already been installed. Use this to force the build.
+
+### Assembling and Stacking Builds
+* Build history is kept in `~/.wsl-build.info`
+* Each build is very simple, containing only a few related components intended to deliver a single purpose.
+* Pick and choose - use multiple runs of the build tool to add components / packages / features from different builds as you need.
+```bash
+./build.sh biscuit upgrade,qol          # Upgrades system, adds qol bits
+./build.sh biscuit cursor               # Adds cursor
+```
+* The builder will block an option that has already been installed.
+```bash
+./build.sh biscuit cursor,x11           # This would be blocked (cursor already installed)
+./build.sh biscuit x11                  # This would be allowed (x11 not installed yet)
+```
+* You can override with `--force` but this is not generally recommended (may have unexpected results)
+```bash
+./build.sh biscuit cursor,x11 --force   # Force reinstall cursor, install x11
+```
+* Examples...
+```bash
+# gen dev env
+./build.sh biscuit update,cursor
+./build.sh dev-basics essentials,python3
+
+# Python environemnt for AI coding
+./build.sh biscuit update, qol, vscode
+./build.sh ai-basics conda,cuda124
+
+# ai-resources builds upon ai-basics
+./build.sh ai-resources sg3
+```
+
+
 ### `change-hostname.sh` Utility
-A simple standalone utility to change the WSL instance hostname.
+A simple standalone utility to change the WSL instance hostname - updates both `/etc/wsl.conf` and `/etc/hosts`. A restart is required for changes to take effect.
 
-```
+```bash
 ./change-hostname.sh <new-hostname>
-```
-
-This utility updates both `/etc/wsl.conf` and `/etc/hosts` with the new hostname. A restart is required for changes to take effect.
-
-Examples:
-```
-./change-hostname.sh my-dev-box
-./change-hostname.sh ai-workstation
-./change-hostname.sh biscuit
 ```
 
 ---
@@ -121,7 +106,7 @@ Examples:
 * Luanch cursor on Windows machine 
 * Press CTRL + SHIFT + P to bring up the command pallete
 * Search for and run: `Shell Command: Install 'cursor' command`
-* You can now simply type `cursor` on the WSL instance to launch the current directory in a cursor editor in Windows with a remote connection.
+* You can now type `cursor` on the WSL instance to launch the current directory in a cursor editor, running in Windows, with a remote connection to WSL intance - sweet.
 
 ### VSCode Integration
 * Install VSCode on the windows machine, select Additional Tasks, be sure to check the "Add to PATH" option.
@@ -152,17 +137,6 @@ swap=8GB
 ---
 
 ## Creating, Exporting and Importing WSL Instances
-Some useful WSL commands to run on the Windows host...
-```
-wsl -l -v
-wsl --list --online
-wsl --install Ubuntu-22.04
-wsl --export Ubuntu E:\WSL\builds\build-name
-wsl --unregister Ubuntu-22.04
-wsl --import my-project-name E:\WSL\instances\project-name D:\WSL\builds\build-name
-wsl --shutdown
-wsl --distribution my-project-name
-```
 
 ### Manual Build
 * Create a new WSL instance;
@@ -188,26 +162,37 @@ This is useful if you are expecting to need to restore to a build point frequent
 * Your buttery biscuit base is ready to create new instances from :)
   * `wsl --import my-new-project E:\WSL\instances\my-new-project E:\WSL\builds\biscuit`
 
+### Some useful WSL commands for the Windows host...
+```
+wsl -l -v
+wsl --list --online
+wsl --install Ubuntu-22.04
+wsl --export Ubuntu E:\WSL\builds\build-name
+wsl --unregister Ubuntu-22.04
+wsl --import my-project-name E:\WSL\instances\project-name D:\WSL\builds\build-name
+wsl --shutdown
+wsl --distribution my-project-name
+```
+
 ---
 
 ## WSL2 Distro Manager
 Useful GUI for managing instances: https://github.com/bostrot/wsl2-distro-manager
 
-### Build Using WSL2 Distro Manager
-* Add Instance
-  * Name: `biscuit`
-  * Distro: `Ubuntu 22.04`
-  * Username: `yourusername`
-* Save this snippet as `git-config`, updating names / paths to suit you;
-```
+### Add WSL-Builds Snippets
+* This is a one time action - you will use these two snippets on all WSL-Builds you create.
+* Copy + paste each snippet, updating names / paths to suit you. Save it with the specified name.
+
+#### `git-config`
+```bash
 git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
 git config --global user.email "my@email.com"
 git config --global user.name "me"
 git config --global pull.rebase false
 ```
-* Run the snippet on the WSL instance
-* Save this snippet as `biscuit-config`, update the names / paths to suit you;
-```
+
+#### `biscuit-config`
+```bash
 git clone https://github.com/SpoddyCoder/wsl-builds.git ~/wsl-builds
 echo 'CACHE_DIR=/mnt/c/WSL/cache' >> ~/wsl-builds/wsl-builds.conf
 echo 'WIN_HOME=/mnt/c/Users/me' >> ~/wsl-builds/wsl-builds.conf
@@ -215,8 +200,16 @@ echo 'WIN_HOME_SYMLINK=/home/me/c-home' >> ~/wsl-builds/wsl-builds.conf
 echo 'CODE_HOME=/mnt/e/Apps' >> ~/wsl-builds/wsl-builds.conf
 echo 'CODE_HOME_SYMLINK=/home/me/e-apps' >> ~/wsl-builds/wsl-builds.conf
 ```
-* Run the snippet on the WSL instance
-* Finally, Use the builder to build the buttery biscuit base;
+
+### Build Using WSL2 Distro Manager
+Using the snippets, this becomes so easy...
+* Add Instance
+  * Name: `biscuit`
+  * Distro: `Ubuntu 22.04`
+  * Username: `yourusername`
+* Run the `git-config` snippet on the WSL instance
+* Run the `biscuit-config` snippet on the WSL instance
+* Finally, open a terminal on the WSL instance and use the builder to cook the buttery biscuit base;
 * `./build.sh biscuit update,qol,cursor`
 
 ### Snapshots
