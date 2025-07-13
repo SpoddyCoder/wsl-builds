@@ -29,6 +29,9 @@ nano wsl-builds.conf    # update the conf with your own details / paths
 * [devops-aws](devops-aws/)
   * aws cli v2
   * quality of life bits
+* [devops-basics](devops-basics/)
+  * terraform
+  * kubectl
 * [system-basics](system-basics/)
   * smb client tools
   * nfs client tools
