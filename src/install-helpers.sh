@@ -29,16 +29,55 @@ EOF
 # inline command
 # $1 - filename
 # $2 - url
-# retrieves filename from local cache or download from url & cache
+# $3 - download directory (optional, defaults to /tmp)
+# returns: full path to downloaded file
 getFile() {
-    printInfo "Getting file: $1"
-    cache_file="${CACHE_DIR}/$1"
-    if [ -f $cache_file ]; then
+    local filename="$1"
+    local url="$2" 
+    local download_dir="${3:-/tmp}"  # default to /tmp
+    
+    printInfo "Getting file: $filename"
+    
+    # Create download directory if it doesn't exist
+    mkdir -p "$download_dir"
+    
+    local cache_file="${CACHE_DIR}/$filename"
+    local target_file="$download_dir/$filename"
+    
+    if [ -f "$cache_file" ]; then
         printInfo "Using locally cached version"
-        cp $cache_file ./   # use cached version if it exists
+        cp "$cache_file" "$target_file"
     else
         printInfo "Downloading and caching"
-        wget $2             # download & cache
-        cp $1 $cache_file
+        # Download directly to target location
+        if ! wget "$url" -O "$target_file"; then
+            printError "Failed to download $filename from $url"
+            return 1
+        fi
+        
+        # Cache the file
+        cp "$target_file" "$cache_file"
+    fi
+    
+    # Always track files for potential cleanup
+    echo "$target_file" >> "/tmp/.getfile_cleanup_$$"
+    
+    # Return the full path
+    echo "$target_file"
+}
+
+# inline command
+# cleans up files tracked by getFile with cleanup flag
+cleanupGetFiles() {
+    local cleanup_file="/tmp/.getfile_cleanup_$$"
+    if [ -f "$cleanup_file" ]; then
+        printInfo "Cleaning up downloaded files"
+        while IFS= read -r file; do
+            if [ -f "$file" ]; then
+                rm "$file"
+                printInfo "Removed: $file"
+            fi
+        done < "$cleanup_file"
+        rm "$cleanup_file"
     fi
 }

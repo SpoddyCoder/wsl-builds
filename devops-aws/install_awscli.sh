@@ -6,13 +6,12 @@ printInfo "Installing dependencies..."
 sudo apt-get install -y curl unzip
 
 printInfo "Downloading and installing AWS CLI v2..."
-pwd=$(pwd)      # download into tmp so anything not cleaned up is removed at reboot, TODO: should be done by the helper
+awscli_zip=$(getFile "awscli-exe-linux-x86_64.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip")
 cd /tmp
-getFile "awscli-exe-linux-x86_64.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-unzip awscli-exe-linux-x86_64.zip
+unzip "$awscli_zip"
 sudo ./aws/install
-rm -rf awscli-exe-linux-x86_64.zip aws/
-cd $pwd
+rm -rf aws/
+cleanupGetFiles
 
 printInfo "AWS CLI installed successfully..."
 aws --version

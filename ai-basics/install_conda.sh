@@ -4,9 +4,9 @@ printInfo "Installing Anaconda"
 conda_filename="Anaconda3-2024.02-1-Linux-x86_64.sh"
 conda_url="https://repo.anaconda.com/archive/${conda_filename}"
 # install Anaconda: https://www.anaconda.com/download#downloads
-getFile ${conda_filename} ${conda_url}
-bash $conda_filename
-rm $conda_filename
+conda_installer=$(getFile ${conda_filename} ${conda_url})
+bash "$conda_installer"
+cleanupGetFiles
 
 printInfo "Disabling auto_activate_base"
 echo "auto_activate_base: false" > ~/.condarc
