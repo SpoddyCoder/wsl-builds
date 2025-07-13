@@ -1,0 +1,30 @@
+# Contributing
+Requests, advice and PR's are welcome.
+
+## Things To Note
+* Simple by design.
+* This is not a package manager!
+    * WSL instances are disposable
+    * Just quickly build a new clean image with this project instead of messing around trying to solve dep conflicts.
+* Ultimately, it is just a collection simple bash scripts to install / configure common components and useful helpers.
+    * Saves looking up install instructions.
+    * Acts as an NB for quality of life additions.
+    * Automates the install procedure.
+* The builder is there to make it easy to stack together components
+    * Streamlines the process of putting together different WSL instances for different purposes.
+* The `build.sh` tool will exit on any error
+    * This is by choice (simple by design)
+    * But means you cannot cleanup / handle errors inside the install scripts
+    * Use the `getFile` helper function to get any installation files
+    * This will cache the files and use `/tmp` working directory, so if a subsequent command errors they are cleanued up on restart.
+* Helper functions for install scripts
+    * The previously mentioned `getFile()`
+    * The partner function `cleanupGetFiles()`
+
+## FAQ
+* Ubuntu only?
+    * Atm this is completely geared to work on Ubuntu base
+    * A pattern to support other distributions's will probably never come, unless...
+    * I have a need for another base distribution
+    * This repo gets lots of followers/stars and requests for such a feature
+* 
