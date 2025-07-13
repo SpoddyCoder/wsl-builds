@@ -136,46 +136,6 @@ swap=8GB
 
 ---
 
-## Creating, Exporting and Importing WSL Instances
-
-### Manual Build
-* Create a new WSL instance;
-  * `wsl --install Ubuntu-22.04`
-  * Complete the basic install steps
-* On the WSL instance, setup git for WSL;
-  * `git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"`
-  * `git config --global user.email "my@email.com"`
-  * `git config --global user.name "me"`
-  * `git config --global pull.rebase false`
-  * https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git
-* Clone this repo on the instance and add config file (update names / paths to suit);
-  * See the `biscuit-config` snippet in the WSL2 Distro Manager instructions
-* Add the buttery base;
-  * `./build.sh biscuit update,qol,cursor`
-
-### Snapshots
-This is useful if you are expecting to need to restore to a build point frequently and you don't want to go through installation steps every time.
-* Shutdown the instance, export it to your build dir and kill it;
-  * `wsl --shutdown`
-  * `wsl --export Ubuntu-22.04 E:\WSL\builds\biscuit`
-  * `wsl --unregister Ubuntu-22.04`
-* Your buttery biscuit base is ready to create new instances from :)
-  * `wsl --import my-new-project E:\WSL\instances\my-new-project E:\WSL\builds\biscuit`
-
-### Some useful WSL commands for the Windows host...
-```
-wsl -l -v
-wsl --list --online
-wsl --install Ubuntu-22.04
-wsl --export Ubuntu E:\WSL\builds\build-name
-wsl --unregister Ubuntu-22.04
-wsl --import my-project-name E:\WSL\instances\project-name D:\WSL\builds\build-name
-wsl --shutdown
-wsl --distribution my-project-name
-```
-
----
-
 ## WSL2 Distro Manager
 Useful GUI for managing instances: https://github.com/bostrot/wsl2-distro-manager
 
@@ -209,9 +169,50 @@ Using the snippets, this becomes so easy...
   * Username: `yourusername`
 * Run the `git-config` snippet on the WSL instance
 * Run the `biscuit-config` snippet on the WSL instance
-* Finally, open a terminal on the WSL instance and use the builder to cook the buttery biscuit base;
+* Finally, open a terminal on the WSL instance and use the builder to cook your buttery biscuit base;
 * `./build.sh biscuit update,qol,cursor`
 
 ### Snapshots
+Useful if you are expecting to need to restore to a build point frequently and don't want to go through installation steps every time...
 * Make a template from the build and kill the instance.
 * It's now ready to use as a base for future instances.
+
+---
+
+## Manually Creating, Exporting and Importing WSL Instances
+The pain point here is needing to add config everytime you build a new instance. That's what makes snippets so great.
+
+### Manual Build
+* Create a new WSL instance;
+  * `wsl --install Ubuntu-22.04`
+  * Complete the basic install steps
+* On the WSL instance, setup git for WSL;
+  * `git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"`
+  * `git config --global user.email "my@email.com"`
+  * `git config --global user.name "me"`
+  * `git config --global pull.rebase false`
+  * https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git
+* Clone this repo on the instance and add config file (update names / paths to suit);
+  * See the `biscuit-config` snippet in the WSL2 Distro Manager instructions
+* Add the buttery base;
+  * `./build.sh biscuit update,qol,cursor`
+
+### Manual Snapshots
+* Shutdown the instance, export it to your build dir and kill it;
+  * `wsl --shutdown`
+  * `wsl --export Ubuntu-22.04 E:\WSL\builds\biscuit`
+  * `wsl --unregister Ubuntu-22.04`
+* Your buttery biscuit base is ready to create new instances from :)
+  * `wsl --import my-new-project E:\WSL\instances\my-new-project E:\WSL\builds\biscuit`
+
+### Useful WSL commands
+```
+wsl -l -v
+wsl --list --online
+wsl --install Ubuntu-22.04
+wsl --export Ubuntu E:\WSL\builds\build-name
+wsl --unregister Ubuntu-22.04
+wsl --import my-project-name E:\WSL\instances\project-name D:\WSL\builds\build-name
+wsl --shutdown
+wsl --distribution my-project-name
+```
