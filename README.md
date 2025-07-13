@@ -15,11 +15,14 @@ The builder provides an easy way to stack components to create different WSL bui
 * Other build specific cache directories on the Windows host for convenience (eg: AI build .pkl cache)
 
 ## Install
+After provisioning a basic WSL instance, run the following on it...
 ```
 git clone https://github.com/SpoddyCoder/wsl-builds.git
 cd wsl-builds
+# create your config file from the template
 cp wsl-builds.conf.example wsl-builds.conf
-nano wsl-builds.conf    # update the conf with your own details / paths
+# update the conf with your own details / paths
+nano wsl-builds.conf
 ```
 
 ## Build List
@@ -61,11 +64,13 @@ nano wsl-builds.conf    # update the conf with your own details / paths
 * `buildoptions,...` comma seperated list of build options (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
 * `--force` by default the build will not run if any of the requested build options have already been installed. Use this to force the build.
+* The bullder can be run as your current user, but some components will run commands that require escalated priveleges using `sudo`
+* It is not designed to be used non-interactively - some installs may need user input / confirmation.
 
 ### Assembling and Stacking Builds
 * Build history is kept in `~/.wsl-build.info`
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
-* Pick and choose - use multiple runs of the build tool to add components / packages / features from different builds as you need.
+* Pick and choose - use multiple runs of the build tool to stack components / packages / features from different builds as you need.
 ```bash
 # gen dev env
 ./build.sh biscuit update,cursor,qol
