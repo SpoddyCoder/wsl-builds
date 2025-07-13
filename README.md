@@ -23,6 +23,7 @@ git clone https://github.com/SpoddyCoder/wsl-builds.git
 ```
 cd wsl-builds
 cp wsl-builds.conf.example wsl-builds.conf
+nano wsl-builds.conf
 ```
 Tip: you can easily automate this using [WSL2-Distro-Manager snippets](./README.md#wsl2-distro-manager)
 
