@@ -24,6 +24,7 @@ cp wsl-builds.conf.example wsl-builds.conf
 # update the conf with your own details / paths
 nano wsl-builds.conf
 ```
+Tip: this can be easily automated using [WSL2-Distro-Manager snippets](./README.md#build-using-wsl2-distro-manager)
 
 ## Build List
 * [biscuit](biscuit/)
