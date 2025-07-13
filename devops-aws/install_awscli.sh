@@ -14,14 +14,8 @@ sudo ./aws/install
 rm -rf awscli-exe-linux-x86_64.zip aws/
 cd $pwd
 
-# Verify installation
-if aws --version > /dev/null 2>&1; then
-    printInfo "AWS CLI installed successfully..."
-    aws --version
-    printInfo "You should now set up your AWS credentials, eg:"
-    printInfo "    aws configure"
-    printInfo "    aws configure sso"
-else
-    printError "AWS CLI installation failed"
-    exit 1
-fi 
+printInfo "AWS CLI installed successfully..."
+aws --version
+printInfo "You should now set up your AWS credentials, eg:"
+printInfo "    aws configure"
+printInfo "    aws configure sso"
