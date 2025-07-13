@@ -15,16 +15,16 @@ The builder provides an easy way to stack components to create different WSL bui
 * Other build specific cache directories on the Windows host for convenience (eg: AI build .pkl cache)
 
 ## Install
-After provisioning a basic WSL instance, run the following on it...
+After provisioning a basic WSL instance, clone this project repo on it...
 ```
 git clone https://github.com/SpoddyCoder/wsl-builds.git
-cd wsl-builds
-# create your config file from the template
-cp wsl-builds.conf.example wsl-builds.conf
-# update the conf with your own details / paths
-nano wsl-builds.conf
 ```
-Tip: this can be easily automated using [WSL2-Distro-Manager snippets](./README.md#wsl2-distro-manager)
+* Create your config file from the template and update it with your own details / paths
+```
+cd wsl-builds
+cp wsl-builds.conf.example wsl-builds.conf
+```
+Tip: you can easily automate this using [WSL2-Distro-Manager snippets](./README.md#wsl2-distro-manager)
 
 ## Build List
 * [biscuit](biscuit/)
@@ -39,12 +39,12 @@ Tip: this can be easily automated using [WSL2-Distro-Manager snippets](./README.
 * [dev-python](dev-python/)
   * python3
   * anaconda
-* [devops-aws](devops-aws/)
-  * aws cli v2
-  * quality of life bits
 * [devops](devops/)
   * terraform
   * kubectl
+* [devops-aws](devops-aws/)
+  * aws cli v2
+  * quality of life bits
 * [system](system/)
   * system essentials (htop, rsync)
   * smb client tools
