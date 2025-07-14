@@ -30,13 +30,13 @@ Tip: you can easily automate this using [WSL2-Distro-Manager snippets](./README.
 ## Build List
 * [biscuit](biscuit/)
   * system upgrade
-  * quality of life bits (includes change-hostname function)
+  * quality of life
   * x11 apps
 * [dev](dev/)
-  * essential dev tools
-  * quality of life bits (includes code home symlink)
-  * vscode editor support
-  * cursor editor support
+  * essentials
+  * quality of life
+  * vscode
+  * cursor
 * [dev-python](dev-python/)
   * python3
   * anaconda
@@ -45,13 +45,14 @@ Tip: you can easily automate this using [WSL2-Distro-Manager snippets](./README.
   * kubectl
 * [devops-aws](devops-aws/)
   * aws cli v2
-  * quality of life bits
+  * quality of life
 * [system](system/)
-  * system essentials (htop, rsync)
+  * essentials
   * smb client tools
   * nfs client tools
   * fstab mounting config
-  * systemd service management
+  * systemd
+  * wslu
 * [ai](ai/)
   * cuda 12.4
 * [ai-resources](ai-resources/)

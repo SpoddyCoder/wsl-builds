@@ -26,3 +26,8 @@ if [ ! -z $INSTALL_ESSENTIALS ]; then
     source ${SCRIPT_DIR}/install_essentials.sh
     recordComponentSuccess "essentials"
 fi
+
+if [ ! -z $INSTALL_WSLU ] && ! (wslusc --version) > /dev/null 2>&1; then
+    source ${SCRIPT_DIR}/install_wslu.sh
+    recordComponentSuccess "wslu"
+fi

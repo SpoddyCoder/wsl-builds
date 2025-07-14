@@ -25,6 +25,10 @@ Basic system utilities and services for system admin and network file sharing.
 * Includes systemd and systemd-sysv
 * Configures `/etc/wsl.conf` to enable systemd (requires instance restart)
 
+### `wslu`
+* Install WSL Utilities (wslu) for enhanced WSL integration
+* Includes tools like wslusc (shortcut creator), wslsys (system info), wslfetch (system display), wslvar (Windows environment variables), and wslview (file/URL opener)
+
 ## Build Arguments
 * No additional arguments for this build
 
