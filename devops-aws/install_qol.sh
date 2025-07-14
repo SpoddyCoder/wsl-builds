@@ -43,9 +43,6 @@ _aws_profile_complete() {
 complete -F _aws_profile_complete aws-profile
 EOF
 
-    # Source .bashrc to make the function immediately available
-    source ~/.bashrc
-    
     printInfo "aws-profile added to .bashrc"
     printInfo "    aws-profile <profile-name>    to switch AWS profiles"
     printInfo "    aws-profile' (no args)        to see current profile"

@@ -10,7 +10,6 @@ if ! grep -q "alias code='cursor'" ~/.bashrc; then
     echo "" >> ~/.bashrc
     echo "# Cursor alias" >> ~/.bashrc
     echo "alias code='cursor'" >> ~/.bashrc
-    source ~/.bashrc    # make the alias available immediately
 else
     printInfo "Cursor alias already exists in ~/.bashrc"
 fi

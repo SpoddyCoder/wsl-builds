@@ -22,7 +22,6 @@ if ! (cat ~/.bash_aliases | grep -q '# safety aliases') > /dev/null 2>&1; then
     echo "# safety aliases" >> ~/.bash_aliases
     echo "alias rm=\"rm -i\"" >> ~/.bash_aliases
     echo "alias cp=\"cp -i\"" >> ~/.bash_aliases
-    source ~/.bash_aliases    # make the aliases available immediately
 fi
 
 # Add change-hostname function to .bashrc if it doesn't exist
@@ -72,9 +71,6 @@ HOSTSEOF
     echo "This requires a restart for changes to take effect."
 }
 EOF
-    
-    # Source .bashrc to make the function immediately available
-    source ~/.bashrc
     
     printInfo "change-hostname added to .bashrc"
     printInfo "    change-hostname <new-hostname>    to change WSL hostname"
