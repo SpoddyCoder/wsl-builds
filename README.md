@@ -149,7 +149,7 @@ Useful GUI for managing instances: https://github.com/bostrot/wsl2-distro-manage
 * Copy + paste each snippet, updating names / paths to suit you. Save it with the specified name.
 
 #### `git-config`
-```bash
+```
 git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
 git config --global user.email "my@email.com"
 git config --global user.name "me"
@@ -157,7 +157,7 @@ git config --global pull.rebase false
 ```
 
 #### `wsl-builds`
-```bash
+```
 git clone https://github.com/SpoddyCoder/wsl-builds.git /home/me/wsl-builds
 echo 'CACHE_DIR=/mnt/c/WSL/cache' >> /home/me/wsl-builds/wsl-builds.conf
 echo 'WIN_HOME_SYMLINK=/home/me/c-home' >> /home/me/wsl-builds/wsl-builds.conf

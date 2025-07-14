@@ -19,6 +19,4 @@ cd "$pwd"
 
 printInfo "AWS CLI installed successfully..."
 aws --version
-printInfo "You should now set up your AWS credentials, eg:"
-printInfo "    aws configure"
-printInfo "    aws configure sso"
+printInfo "You should now set up your AWS config"
