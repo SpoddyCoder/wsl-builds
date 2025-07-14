@@ -18,6 +18,9 @@ Requests, advice and PR's are welcome.
 * Use the `getFile` helper function to get any installation files
     * This will cache the files and use `/tmp` working directory, so if a subsequent command errors they are cleanued up on restart.
     * Use the partner function `cleanupGetFiles()` to cleanup downloaded files (if desired) after running installers
+* Use the `recordComponentSuccess` helper function to record successful component installations
+    * This immediately records the component to `~/.wsl-build.info` and sets `BUILD_UPDATED=true`
+    * This ensures that successful components are recorded even if later components fail
 
 ## FAQ
 * Ubuntu only?

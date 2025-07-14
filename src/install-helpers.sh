@@ -2,6 +2,35 @@
 # helper functions for build installers
 
 # inline command
+# $1 - component name
+# Records successful component installation to ~/.wsl-build.info and sets BUILD_UPDATED=true
+# This ensures that even if later components fail, earlier successes are recorded
+recordComponentSuccess() {
+    local component="$1"
+    
+    # Validate required parameters
+    if [[ -z "$component" ]]; then
+        printError "recordComponentSuccess: Missing component name"
+        return 1
+    fi
+    
+    # Initialize build info file if it doesn't exist
+    if [ ! -f ${BUILD_INFO_FILE} ]; then
+        printInfo "Creating ${BUILD_INFO_FILE}"
+        base_os_id=$(awk -F= '$1=="ID" { print $2 ;}' /etc/os-release | tr -d '"')
+        base_os_version="$(awk -F= '$1=="VERSION" { print $2 ;}' /etc/os-release | tr -d '"')"
+        echo "${base_os_id} ${base_os_version}" >> ${BUILD_INFO_FILE}
+    fi
+    
+    # Record the successful component installation
+    echo "${BUILD_NAME} (${component})" >> ${BUILD_INFO_FILE}
+    printInfo "$(tail -1 ${BUILD_INFO_FILE}) installed!"
+    
+    # Set the BUILD_UPDATED flag
+    BUILD_UPDATED=true
+}
+
+# inline command
 # $1 - filename
 # $2 - url
 # $3 - download directory (optional, defaults to /tmp)

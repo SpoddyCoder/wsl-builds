@@ -126,18 +126,3 @@ if [ "$BUILD_UPDATED" == "false" ]; then
     exit 1
 
 fi
-
-# update build info
-if [ ! -f ${BUILD_INFO_FILE} ]; then
-    printInfo "Creating ${BUILD_INFO_FILE}"
-    base_os_id=$(awk -F= '$1=="ID" { print $2 ;}' /etc/os-release | tr -d '"')
-    base_os_version="$(awk -F= '$1=="VERSION" { print $2 ;}' /etc/os-release | tr -d '"')"
-    echo "${base_os_id} ${base_os_version}" >> ${BUILD_INFO_FILE}
-    cat ${BUILD_INFO_FILE}
-fi
-if [ "$components_passed" == "true" ]; then
-    echo "${BUILD_NAME} ($2)" >> ${BUILD_INFO_FILE}
-else
-    echo "${BUILD_NAME}" >> ${BUILD_INFO_FILE}
-fi
-printInfo "$(tail -1 ${BUILD_INFO_FILE}) installed!"
