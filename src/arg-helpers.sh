@@ -2,6 +2,13 @@
 # helper functions for arg / components checks
 
 # inline command
+# shows usage information
+showUsage() {
+    echo
+    echo "Usage: $0 <build-dir> <component>[,<component>...] [additionalargs]... [--force]"
+}
+
+# inline command
 # $1 - build name
 # shows available components for the build
 showAvailableComponents() {

@@ -12,8 +12,7 @@ BUILD_INFO_FILE=~/.wsl-build.info
 # initial build dir checks
 if [ "$#" == "0" ]; then
 
-    echo
-    echo "Usage: $0 <build-dir> [buildcomponents,...] [additionalargs]... [--force]"
+    showUsage
     showAvailableBuildDirs
     exit 1
 
@@ -31,8 +30,7 @@ source ${BUILD_DIR}/conf.sh
 
 # show available components if only build dir is provided
 if [ "$#" == "1" ]; then
-    echo
-    echo "Usage: $0 <build-dir> [buildcomponents,...] [additionalargs]... [--force]"
+    showUsage
     showAvailableComponents "$1"
     exit 1
 fi

@@ -28,10 +28,10 @@ Tip: you can easily automate this using [WSL2-Distro-Manager snippets](#wsl2-dis
 
 ## Building
 ```
-./build.sh <build-dir> [buildcomponents,...] [additionalargs]... [--force]
+./build.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
 ```
 * `build-dir` valid build directory, containing `conf.sh` & `install.sh`
-* `buildcomponents,...` comma seperated list of build components (packages to install etc.), varies per build.
+* `component[,<component>...]` comma separated list of build components (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
 * `--force` by default the build will not run if any of the requested build components have already been installed. Use this to force the build.
 * The bullder can be run as your current user, but some components will run commands that require escalated priveleges using `sudo`
