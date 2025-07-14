@@ -158,12 +158,12 @@ git config --global pull.rebase false
 
 #### `wsl-builds`
 ```bash
-git clone https://github.com/SpoddyCoder/wsl-builds.git ~/wsl-builds
-echo 'CACHE_DIR=/mnt/c/WSL/cache' >> ~/wsl-builds/wsl-builds.conf
-echo 'WIN_HOME_SYMLINK=/home/me/c-home' >> ~/wsl-builds/wsl-builds.conf
-echo 'WIN_HOME_TARGET=/mnt/c/Users/me' >> ~/wsl-builds/wsl-builds.conf
-echo 'CODE_HOME_SYMLINK=/home/me/e-apps' >> ~/wsl-builds/wsl-builds.conf
-echo 'CODE_HOME_TARGET=/mnt/e/Apps' >> ~/wsl-builds/wsl-builds.conf
+git clone https://github.com/SpoddyCoder/wsl-builds.git /home/me/wsl-builds
+echo 'CACHE_DIR=/mnt/c/WSL/cache' >> /home/me/wsl-builds/wsl-builds.conf
+echo 'WIN_HOME_SYMLINK=/home/me/c-home' >> /home/me/wsl-builds/wsl-builds.conf
+echo 'WIN_HOME_TARGET=/mnt/c/Users/me' >> /home/me/wsl-builds/wsl-builds.conf
+echo 'CODE_HOME_SYMLINK=/home/me/e-apps' >> /home/me/wsl-builds/wsl-builds.conf
+echo 'CODE_HOME_TARGET=/mnt/e/Apps' >> /home/me/wsl-builds/wsl-builds.conf
 ```
 
 ### Build Using WSL2 Distro Manager
