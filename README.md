@@ -8,58 +8,25 @@ This project contains clean, simple builds that use Windows host native implemen
 * Nvidia CUDA
 * GUI Apps
 
-The builder provides an easy way to stack components to create different WSL builds for different purposes.
+The builder provides a quick and easy way to stack components to create different WSL builds for different purposes.
 
 * Simple installations, often featuring quality of life configurations and helpers
-* Caching of large downloads on the Windows host - so you don't have to re-downlaod install packages for rebuilds.
-* Other build specific cache directories on the Windows host for convenience (eg: AI build .pkl cache)
+* Caching of large downloads on the Windows host - so you don't have to re-downlaod install packages for rebuilds
+* Other build specific cache directories on the Windows host for convenience (eg: AI .pkl cache)
+* Motivation for the project: WSL instances are disposable - streamlines a clean rebuild when things go wrong
 
 ## Install
 After provisioning a basic WSL instance, clone this project repo on it...
 ```
 git clone https://github.com/SpoddyCoder/wsl-builds.git
 ```
-* Create your config file from the template and update it with your own details / paths
+* Create your config file from the template and update it with your own details / paths...
 ```
 cd wsl-builds
 cp wsl-builds.conf.example wsl-builds.conf
 nano wsl-builds.conf
 ```
-Tip: you can easily automate this using [WSL2-Distro-Manager snippets](./README.md#wsl2-distro-manager)
-
-## Build List
-* [biscuit](biscuit/)
-  * system upgrade
-  * quality of life
-  * x11 apps
-* [dev](dev/)
-  * essentials
-  * quality of life
-  * vscode
-  * cursor
-* [dev-python](dev-python/)
-  * python3
-  * anaconda
-* [devops](devops/)
-  * terraform
-  * kubectl
-* [devops-aws](devops-aws/)
-  * aws cli v2
-  * quality of life
-* [system](system/)
-  * essentials
-  * smb client tools
-  * nfs client tools
-  * fstab mounting config
-  * systemd
-  * wslu
-* [ai](ai/)
-  * cuda 12.4
-* [ai-resources](ai-resources/)
-  * stylegan3
-  * lucid-sonic-dreams
-  * spleeter
-  * rudalle
+Tip: you can easily automate this using [WSL2-Distro-Manager snippets](#wsl2-distro-manager)
 
 ## Building
 ```
@@ -94,6 +61,42 @@ change-hostname python-ai
 ./build.sh ai-resources sg3,lsd
 change-hostname stylegan-ai-projects
 ```
+
+---
+
+## Build List
+* [biscuit](biscuit/)
+  * system upgrade
+  * quality of life
+  * x11 apps
+* [dev](dev/)
+  * essentials
+  * quality of life
+  * vscode
+  * cursor
+* [dev-python](dev-python/)
+  * python3
+  * anaconda
+* [devops](devops/)
+  * terraform
+  * kubectl
+* [devops-aws](devops-aws/)
+  * aws cli v2
+  * quality of life
+* [system](system/)
+  * essentials
+  * smb client tools
+  * nfs client tools
+  * fstab mounting config
+  * systemd
+  * wslu
+* [ai](ai/)
+  * cuda 12.4
+* [ai-resources](ai-resources/)
+  * stylegan3
+  * lucid-sonic-dreams
+  * spleeter
+  * rudalle
 
 ---
 
