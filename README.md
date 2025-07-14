@@ -13,7 +13,7 @@ The builder provides a quick and easy way to stack components to create differen
 * Simple installations, often featuring quality of life configurations and helpers
 * Caching of large downloads on the Windows host - so you don't have to re-downlaod install packages for rebuilds
 * Other build specific cache directories on the Windows host for convenience (eg: AI .pkl cache)
-* Motivation for the project: WSL instances are disposable - streamlines a clean rebuild when things go wrong
+* **Project motivation:** WSL instances are disposable - streamlines a clean rebuild when things go wrong
 
 ## Install
 After provisioning a basic WSL instance, clone this project repo on it...

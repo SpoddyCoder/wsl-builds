@@ -4,9 +4,9 @@ Requests, advice and PR's are welcome.
 ## Things To Note
 * Simple by design
 * This is not a package manager!
-* Ultimately, it is just a collection simple bash scripts to install / configure common components and useful helpers.
+* Ultimately, this is just a collection simple bash scripts to install / configure common components and useful helpers.
   * Saves looking up install instructions
-  * Automates the install procedure.
+  * Automates the install procedure
   * Acts as an NB for quality of life additions
 
 ## Contributing builds / components
@@ -14,8 +14,9 @@ Requests, advice and PR's are welcome.
   * This is by choice (simple by design)
   * But means you cannot cleanup / handle errors inside the install scripts
 * Use the `getFile` helper function to get any installation files
-  * This will cache the files and use `/tmp` working directory, so if a subsequent command errors they are cleanued up on restart.
-  * Use the partner function `cleanupGetFiles()` to cleanup downloaded files (if desired) after running installers
+  * This will cache the files
+  * Uses `/tmp` working directory, so if a subsequent command errors they are cleanued up on restart.
+  * You should use the partner function `cleanupGetFiles()` to cleanup downloaded files (if desired) after running installers
 * Use the `recordComponentSuccess` helper function to record successful component installations
   * This immediately records the component to `~/.wsl-build.info` and sets `BUILD_UPDATED=true`
   * This ensures that successful components are recorded even if later components fail
