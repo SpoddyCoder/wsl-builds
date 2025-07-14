@@ -27,7 +27,7 @@ Basic system utilities and services for system admin and network file sharing.
 
 ### `wslu`
 * Install WSL Utilities (wslu) for enhanced WSL integration
-* Includes tools like wslusc (shortcut creator), wslsys (system info), wslfetch (system display), wslvar (Windows environment variables), and wslview (file/URL opener)
+* https://wslu.wedotstud.io/wslu/
 
 ## Build Arguments
 * No additional arguments for this build
