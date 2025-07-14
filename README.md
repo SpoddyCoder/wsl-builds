@@ -1,7 +1,5 @@
 # WSL Builds
-Buttery biscuit base builds for WSL2... because native Linux development on Windows facilitates some very easy & comfortable workflows :) 
-
-This project contains clean, simple builds that use Windows host native implementations of core components for maximum performance & flexibility;
+This project contains clean, simple WSL2 builds that use Windows host native implementations of core components for maximum performance & flexibility;
 
 * VSCode, Cursor
 * Git
