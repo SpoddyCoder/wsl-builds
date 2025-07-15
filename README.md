@@ -43,12 +43,12 @@ Tip: you can easily automate this using [WSL2-Distro-Manager snippets](#wsl2-dis
 * Pick and choose - use multiple runs of the build tool to stack components / packages / features from different builds as you need.
 ```bash
 # gen dev env
-./build.sh biscuit update,qol
+./build.sh system update,qol
 ./build.sh dev essentials,qol,vscode,python3
 change-hostname my-dev-box
 
 # Python environment for AI coding
-./build.sh biscuit update,qol
+./build.sh system update,qol
 ./build.sh dev essentials,qol,cursor
 ./build dev-python conda
 ./build.sh ai cuda124
@@ -63,10 +63,6 @@ change-hostname stylegan-ai-projects
 ---
 
 ## Build List
-* [biscuit](biscuit/)
-  * system upgrade
-  * quality of life
-  * x11 apps
 * [dev](dev/)
   * essentials
   * quality of life
@@ -82,6 +78,9 @@ change-hostname stylegan-ai-projects
   * aws cli v2
   * quality of life
 * [system](system/)
+  * system upgrade
+  * quality of life
+  * x11 apps
   * essentials
   * smb client tools
   * nfs client tools
@@ -175,7 +174,7 @@ Using the snippets, this becomes so easy...
 * Run the `git-config` snippet
 * Run the `wsl-builds` snippet
 * Finally, open a terminal on the WSL instance and use the builder to cook your buttery biscuit base;
-* `./build.sh biscuit update,qol`
+* `./build.sh system update,qol`
 
 ### Snapshots
 Useful if you are expecting to need to restore to a build point frequently and don't want to go through installation steps every time...
@@ -200,12 +199,12 @@ The pain point here is needing to add config everytime you build a new instance.
 * Clone this repo on the instance and add config file (update names / paths to suit);
   * See the `wsl-builds` snippet in the WSL2 Distro Manager instructions
 * Add the buttery base;
-  * `./build.sh biscuit update,qol`
+  * `./build.sh system update,qol`
 
 ### Manual Snapshots
 * Shutdown the instance, export it to your build dir and kill it;
   * `wsl --shutdown`
-  * `wsl --export Ubuntu-22.04 E:\WSL\builds\biscuit`
+  * `wsl --export Ubuntu-22.04 E:\WSL\builds\system-base`
   * `wsl --unregister Ubuntu-22.04`
 * Your buttery biscuit base is ready to create new instances from :)
   * `wsl --import my-new-project E:\WSL\instances\my-new-project E:\WSL\builds\biscuit`

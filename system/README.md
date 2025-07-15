@@ -5,6 +5,25 @@ Basic system utilities and services for system admin and network file sharing.
 * `Ubuntu 22.04` or greater
 
 ## Build Components
+### `update`
+* Update apt & upgrade the system
+* Recommended first step
+
+### `qol`
+* Set default user, add symlinks if defined, add bash safety aliases
+* Adds `change-hostname` function to .bashrc for changing WSL hostname
+```bash
+change-hostname <new-hostname>
+```
+* Symlink definitions picked up from your `wsl-builds.conf`...
+```bash
+WIN_HOME_SYMLINK=/home/me/c-home    # Symlink placed in your home dir on the WSL instance
+WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on the WSL instance
+```
+
+### `x11`
+* Install the X11-Apps package for native Windows GUI support
+
 ### `essentials`
 * Install essential system utilities: htop, rsync
 

@@ -30,7 +30,7 @@ if ! grep -q "change-hostname()" ~/.bashrc; then
     
     cat >> ~/.bashrc << 'EOF'
 
-# Change WSL hostname - added by wsl-builds biscuit qol
+# Change WSL hostname - added by wsl-builds system qol
 change-hostname() {
     if [ -z "$1" ]; then
         echo "Usage: change-hostname <new-hostname>"

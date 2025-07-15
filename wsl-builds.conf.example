@@ -1,7 +1,7 @@
 # wsl-builds
 CACHE_DIR=/mnt/c/WSL/cache          # cache large downloads on Windows host
 
-# biscuit qol
+# system qol
 WIN_HOME_SYMLINK=/home/me/c-home    # Symlink placed in your home dir on the WSL instance
 WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on the WSL instance
 
