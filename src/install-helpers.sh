@@ -31,6 +31,54 @@ recordComponentSuccess() {
 }
 
 # inline command
+# $1 - component name
+# Returns 0 (true) if component is already installed, 1 (false) if not
+# Checks if component is recorded in ~/.wsl-build.info
+# Respects --force flag to override the check
+isComponentInstalled() {
+    local component="$1"
+    
+    # Validate required parameters
+    if [[ -z "$component" ]]; then
+        printError "isComponentInstalled: Missing component name"
+        return 1
+    fi
+    
+    # If --force flag is passed, always return false (not installed) to force reinstallation
+    if isBuildForced "$@"; then
+        return 1
+    fi
+    
+    # If build info file doesn't exist, component is not installed
+    if [ ! -f "${BUILD_INFO_FILE}" ]; then
+        return 1
+    fi
+    
+    # Check if component is recorded in build info file
+    # Look for pattern: "anything (component)" in the build info file
+    if grep -qs "([^)]*\b${component}\b[^)]*)" "${BUILD_INFO_FILE}"; then
+        return 0  # Component is installed
+    else
+        return 1  # Component is not installed
+    fi
+}
+
+# inline command
+# $1 - component name
+# Prints a standard warning message for components already listed in build.info
+warnComponentAlreadyInstalled() {
+    local component="$1"
+    
+    # Validate required parameters
+    if [[ -z "$component" ]]; then
+        printError "warnComponentAlreadyInstalled: Missing component name"
+        return 1
+    fi
+    
+    printWarning "${BUILD_NAME} ${component} is already listed in your ~/.wsl-build.info. Use --force to override"
+}
+
+# inline command
 # $1 - filename
 # $2 - url
 # $3 - download directory (optional, defaults to /tmp)
@@ -107,5 +155,41 @@ cleanupGetFiles() {
             fi
         done < "$cleanup_file"
         rm "$cleanup_file"
+    fi
+}
+
+# inline command
+# $1 - component name
+# $2... - arguments passed to build (to check for --force flag)
+# Checks if a component is already installed by looking in ~/.wsl-build.info
+# Returns 0 if component is already installed (and --force not used), 1 if should install
+# This provides consistent checking logic across all components
+isComponentInstalled() {
+    local component="$1"
+    shift  # Remove component name, leaving build arguments
+    
+    # Validate required parameters
+    if [[ -z "$component" ]]; then
+        printError "isComponentInstalled: Missing component name"
+        return 1  # Error case - should not install
+    fi
+    
+    # If --force flag is present, always install (return 1 = should install)
+    if (isBuildForced "$@"); then
+        return 1
+    fi
+    
+    # If build info file doesn't exist, component is not installed
+    if [ ! -f "${BUILD_INFO_FILE}" ]; then
+        return 1  # Should install
+    fi
+    
+    # Check if this hostname has this component installed
+    # Pattern matches: "hostname v*.*.* (component)"
+    local pattern="${HOSTNAME} v.* (${component})"
+    if grep -q "^${pattern}$" "${BUILD_INFO_FILE}"; then
+        return 0  # Already installed, don't install
+    else
+        return 1  # Not installed, should install
     fi
 }

@@ -17,6 +17,12 @@ Requests, advice and PR's are welcome.
   * This will cache the files
   * Uses `/tmp` working directory, so if a subsequent command errors they are cleanued up on restart.
   * You should use the partner function `cleanupGetFiles()` to cleanup downloaded files (if desired) after running installers
+* Use the `isComponentInstalled` helper function to check if components are already installed
+  * This checks `~/.wsl-build.info` for component records and respects the `--force` flag
+  * Returns 0 (true) if component is installed, 1 (false) if not installed or `--force` is used
+* Use the `warnComponentAlreadyInstalled` helper function for consistent warning messages
+  * This provides a standard warning format when components are already installed
+  * Automatically includes the component name and `--force` override instruction
 * Use the `recordComponentSuccess` helper function to record successful component installations
   * This immediately records the component to `~/.wsl-build.info` and sets `BUILD_UPDATED=true`
   * This ensures that successful components are recorded even if later components fail
