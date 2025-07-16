@@ -6,8 +6,8 @@ Essential DevOps tools for infrastructure management and container orchestration
 
 ## Build Components
 ### `terraform`
-* Install the latest stable version from HashiCorp's official repository
-* Includes required dependencies (curl, unzip, gnupg, software-properties-common)
+* Install deps & the latest stable version from HashiCorp's official repository
+* https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
 
 ### `kubectl`
 * Installs the latest stable version from the official Kubernetes repository
