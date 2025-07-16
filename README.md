@@ -64,36 +64,19 @@ change-hostname stylegan-ai-projects
 
 ## Build List
 * [dev](dev/)
-  * essentials
-  * quality of life
-  * vscode
-  * cursor
+  * essentials, quality of life, vscode, cursor
 * [dev-python](dev-python/)
-  * python3
-  * anaconda
+  * python3, anaconda
 * [devops](devops/)
-  * terraform
-  * kubectl
+  * terraform, kubectl
 * [devops-aws](devops-aws/)
-  * aws cli v2
-  * quality of life
+  * aws cli v2, quality of life
 * [system](system/)
-  * system upgrade
-  * quality of life
-  * x11 apps
-  * essentials
-  * smb client tools
-  * nfs client tools
-  * fstab mounting config
-  * systemd
-  * wslu
+  * system upgrade, quality of life, x11 apps, essentials, smb client tools, nfs client tools, fstab mounting config, systemd, wslu
 * [ai](ai/)
   * cuda 12.4
 * [ai-resources](ai-resources/)
-  * stylegan3
-  * lucid-sonic-dreams
-  * spleeter
-  * rudalle
+  * stylegan3, lucid-sonic-dreams, spleeter, rudalle
 
 ---
 
