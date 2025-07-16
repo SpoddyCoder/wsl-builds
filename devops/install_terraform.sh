@@ -21,5 +21,8 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashi
 printInfo "Installing Terraform..."
 sudo apt-get update && sudo apt-get install -y terraform
 
+printInfo "Installing Terraform autocomplete..."
+terraform -install-autocomplete
+
 printInfo "Terraform installed successfully..."
 terraform --version 
