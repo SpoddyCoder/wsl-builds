@@ -3,7 +3,7 @@ A good basic base for AI work using CUDA.
 
 ## Requires
 * `Ubuntu 22.04` or greater
-* `./build.sh system dev-python conda` recommended
+* `./build.sh dev-python conda` recommended
 
 ## Build Components
 ### `cuda124`
