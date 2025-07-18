@@ -17,3 +17,8 @@ Essential DevOps tools for infrastructure management and container orchestration
 ### `kubectl`
 * Installs the latest stable version from the official Kubernetes repository
 * Includes SHA256 verification for security
+
+### `k9s`
+* Installs the latest stable version of k9s, a terminal UI for Kubernetes clusters
+* Downloads and installs the official .deb package from the k9s GitHub releases
+* https://github.com/derailed/k9s

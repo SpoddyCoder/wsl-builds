@@ -27,4 +27,13 @@ if [ ! -z $INSTALL_KUBECTL ]; then
     else
         warnComponentAlreadyInstalled "kubectl"
     fi
-fi 
+fi
+
+if [ ! -z $INSTALL_K9S ]; then
+    if ! isComponentInstalled "k9s" "$@"; then
+        source ${SCRIPT_DIR}/install_k9s.sh
+        recordComponentSuccess "k9s"
+    else
+        warnComponentAlreadyInstalled "k9s"
+    fi
+fi

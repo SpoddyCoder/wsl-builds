@@ -1,4 +1,4 @@
 HOSTNAME="devops"
-BUILD_VER="1.0.2"
-VALID_INSTALL_COMPONENTS="terraform,packer,kubectl"
+BUILD_VER="1.0.3"
+VALID_INSTALL_COMPONENTS="terraform,packer,kubectl,k9s"
 NUM_ADDITIONAL_ARGS=0

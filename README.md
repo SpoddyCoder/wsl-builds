@@ -68,7 +68,7 @@ change-hostname stylegan-ai-projects
 * [dev-python](dev-python/)
   * python3, anaconda
 * [devops](devops/)
-  * terraform, packer, kubectl
+  * terraform, packer, kubectl, k9s
 * [devops-aws](devops-aws/)
   * aws cli v2, quality of life
 * [system](system/)
