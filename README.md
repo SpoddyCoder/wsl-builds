@@ -42,22 +42,22 @@ Tip: you can easily automate this using [WSL2-Distro-Manager snippets](#wsl2-dis
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
 * Pick and choose - use multiple runs of the build tool to stack components / packages / features from different builds as you need.
 ```bash
-# gen dev env
+# show all builds
+./build.sh
+# show components for a build
+./build.sh dev-js
+
+# build a gen dev env
 ./build.sh system update,qol
 ./build.sh dev essentials,qol,vscode,python3
 change-hostname my-dev-box
 
-# Python environment for AI coding
+# build a python environment for AI coding
 ./build.sh system update,qol
 ./build.sh dev essentials,qol,cursor
 ./build dev-python conda
 ./build.sh ai cuda124
 change-hostname python-ai
-
-# ai-resources requires ai (specified in its docs)
-./build.sh ai cuda124
-./build.sh ai-resources sg3,lsd
-change-hostname stylegan-ai-projects
 ```
 
 ---
@@ -72,7 +72,7 @@ change-hostname stylegan-ai-projects
 * [devops](devops/)
   * terraform, packer, kubectl, k9s
 * [devops-aws](devops-aws/)
-  * aws cli v2, quality of life
+  * aws cli, quality of life
 * [system](system/)
   * system upgrade, quality of life, x11 apps, essentials, smb client tools, nfs client tools, fstab mounting config, systemd, wslu
 * [ai](ai/)
