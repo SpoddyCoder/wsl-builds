@@ -65,6 +65,8 @@ change-hostname stylegan-ai-projects
 ## Build List
 * [dev](dev/)
   * essentials, quality of life, vscode, cursor
+* [dev-js](dev-js/)
+  * node + npm, quality of life, yarn, nvm, react, nextjs, angular, vue, express
 * [dev-python](dev-python/)
   * python3, anaconda
 * [devops](devops/)
