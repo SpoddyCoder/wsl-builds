@@ -44,12 +44,12 @@ if [ ! -z $INSTALL_NVM ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_QOL ]; then
-    if ! isComponentInstalled "qol" "$@"; then
-        source ${SCRIPT_DIR}/install_qol.sh
-        recordComponentSuccess "qol"
+if [ ! -z $INSTALL_ESSENTIALS ]; then
+    if ! isComponentInstalled "essentials" "$@"; then
+        source ${SCRIPT_DIR}/install_essentials.sh
+        recordComponentSuccess "essentials"
     else
-        warnComponentAlreadyInstalled "qol"
+        warnComponentAlreadyInstalled "essentials"
     fi
 fi
 

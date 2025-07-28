@@ -15,7 +15,7 @@ JavaScript development environments with modern tooling and frameworks.
 ### `nvm`
 * Installs Node Version Manager for managing multiple Node.js versions
 
-### `qol`
+### `essentials`
 * Installs TypeScript compiler globally
 * Installs ESLint for JavaScript/TypeScript linting
 * Installs Prettier code formatter
