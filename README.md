@@ -69,6 +69,8 @@ change-hostname python-ai
   * node + npm, essentials, yarn, nvm, react, nextjs, angular, vue, express
 * [dev-python](dev-python/)
   * python3, anaconda
+* [dev-ssg](dev-ssg/)
+  * hugo, jekyll
 * [devops](devops/)
   * terraform, packer, kubectl, k9s
 * [devops-aws](devops-aws/)
