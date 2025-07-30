@@ -12,6 +12,23 @@ default=$LOGNAME
 EOF
 fi
 
+printInfo "Configuring WSL memory reclaim..."
+# Configure WSL to use gradual memory reclaim
+if ! sudo cat /etc/wsl.conf | grep -q "autoMemoryReclaim=gradual" > /dev/null 2>&1; then
+    if ! sudo cat /etc/wsl.conf | grep -q "\[experimental\]" > /dev/null 2>&1; then
+        printInfo "Adding [experimental] section with autoMemoryReclaim=gradual to /etc/wsl.conf"
+        sudo tee -a /etc/wsl.conf > /dev/null <<EOF
+[experimental]
+autoMemoryReclaim=gradual
+EOF
+    else
+        printInfo "Adding autoMemoryReclaim=gradual to existing [experimental] section in /etc/wsl.conf"
+        sudo sed -i '/\[experimental\]/a autoMemoryReclaim=gradual' /etc/wsl.conf
+    fi
+else
+    printInfo "autoMemoryReclaim=gradual already configured in /etc/wsl.conf"
+fi
+
 if [ ! -L ${WIN_HOME_SYMLINK} ] && [ ! -z ${WIN_HOME_TARGET} ]; then
     printInfo "Creating win home symlink"
     ln -s ${WIN_HOME_TARGET} ${WIN_HOME_SYMLINK}
