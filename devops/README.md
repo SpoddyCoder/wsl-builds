@@ -22,3 +22,8 @@ Essential DevOps tools for infrastructure management and container orchestration
 * Installs the latest stable version of k9s, a terminal UI for Kubernetes clusters
 * Downloads and installs the official .deb package from the k9s GitHub releases
 * https://github.com/derailed/k9s
+
+### `docker-desktop`
+* No install on the WSL instance, just install on the Windows host for best perfomance
+* https://docs.docker.com/desktop/features/wsl/
+* Use `system -> qol` to enable `autoMemoryReclaim`
