@@ -71,6 +71,8 @@ change-hostname python-ai
   * python3, anaconda
 * [dev-ssg](dev-ssg/)
   * hugo, jekyll
+* [db](db/)
+  * mysql_client, mysql_server, postgres_client, postgres_server
 * [devops](devops/)
   * terraform, packer, kubectl, k9s
 * [devops-aws](devops-aws/)
