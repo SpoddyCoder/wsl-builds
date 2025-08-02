@@ -42,7 +42,8 @@ declareInstallComponents() {
     IFS=',' read -r -a selected_opts <<< "$1"
     for component in "${selected_opts[@]}"; do
         if (isValidComponent $component); then
-            declare -g "INSTALL_${component^^}=true"
+            component_var="${component//-/_}"
+            declare -g "INSTALL_${component_var^^}=true"
         else
             printError "Invalid build component(s)"
             showAvailableComponents "${HOSTNAME}"
