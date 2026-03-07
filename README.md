@@ -38,9 +38,6 @@ Tip: you can easily automate this using [WSL2-Distro-Manager snippets](#wsl2-dis
 * It is not designed to be used non-interactively - some installs may need user input / confirmation.
 
 ### Assembling and Stacking Builds
-* Build history is kept in `~/.wsl-build.info`
-* Each build is very simple, containing only a few related components intended to deliver a single purpose.
-* Pick and choose - use multiple runs of the build tool to stack components / packages / features from different builds as you need.
 ```bash
 # show all builds
 ./build.sh
@@ -59,30 +56,65 @@ change-hostname my-dev-box
 ./build.sh ai cuda124
 change-hostname python-ai
 ```
+* Each build is very simple, containing only a few related components intended to deliver a single purpose.
+* Pick and choose - use multiple runs of the build tool to stack components / packages / features from different builds as you need.
+* Build history is kept in `~/.wsl-build.info`
 
 ---
 
 ## Build List
 * [dev](dev/)
-  * essentials, quality of life, vscode, cursor
+  * essentials - curl, wget, git, vim, nano, jq, yq
+  * quality of life - code symlinks
+  * vscode
+  * cursor + tree, code alias
 * [dev-js](dev-js/)
-  * node + npm, essentials, yarn, nvm, react, nextjs, angular, vue, express
+  * essentials - TypeScript, ESLint, Prettier, PM2, nodemon, serve
+  * node + npm
+  * yarn
+  * nvm
+  * react + create-vite, react-dev-tools
+  * nextjs cli
+  * angular cli
+  * create-vue
+  * express generator
 * [dev-python](dev-python/)
-  * python3, anaconda
+  * python3
+  * anaconda
 * [dev-ssg](dev-ssg/)
-  * hugo, jekyll
+  * hugo - cli, dev server
+  * jekyll + bundler, ruby + deps
 * [db](db/)
-  * mysql_client, mysql_server, postgres_client, postgres_server
+  * mysql_client
+  * mysql_server
+  * postgres client
+  * postgres server
 * [devops](devops/)
-  * terraform, packer, kubectl, k9s
+  * docker-desktop
+  * terraform
+  * packer
+  * kubectl
+  * k9s
 * [devops-aws](devops-aws/)
-  * aws cli, quality of life
+  * aws cli + deps (curl, unzip)
+  * quality of life - aws-profile alias
 * [system](system/)
-  * system upgrade, quality of life, x11 apps, essentials, smb client tools, nfs client tools, fstab mounting config, systemd, wslu
+  * system upgrade - apt update + upgrade
+  * quality of life - safety aliases, change-hostname alias, set default user
+  * x11 - native windows GUI apps
+  * essentials - htop, rsync
+  * smb - smbclient, cifs-utils
+  * nfs - nfs-common
+  * fstab - required fstab mount config for WSL
+  * systemd - systemd, systemd-sysv, enable systemd for wsl
+  * wslu - wslview, wslsys
 * [ai](ai/)
-  * cuda 12.4
+  * cuda 12.4 for wsl
 * [ai-resources](ai-resources/)
-  * stylegan3, lucid-sonic-dreams, spleeter, rudalle
+  * sg3 - stylegan3, pkl cache, pytorch cache
+  * lsd - lucid-sonic-dreams
+  * spleeter
+  * rudalle
 
 ---
 
