@@ -1,0 +1,29 @@
+---
+description: Bash conventions for WSL build components
+globs: **/*.sh
+alwaysApply: false
+---
+
+# Bash Component Patterns
+
+- Keep scripts Bash-first and consistent with nearby files; avoid introducing heavier tooling for simple install steps.
+- Build directories use `conf.sh` for metadata: `HOSTNAME`, `BUILD_VER`, `VALID_INSTALL_COMPONENTS`, and `NUM_ADDITIONAL_ARGS`.
+- Add new components to `VALID_INSTALL_COMPONENTS` as comma-separated names.
+- Wire components in the build directory's `install.sh` using the existing pattern:
+
+```bash
+if [ ! -z $INSTALL_COMPONENT ]; then
+    if ! isComponentInstalled "component" "$@"; then
+        source ${SCRIPT_DIR}/install_component.sh
+        recordComponentSuccess "component"
+    else
+        warnComponentAlreadyInstalled "component"
+    fi
+fi
+```
+
+- Put component install logic in `install_<component>.sh`.
+- Use `printInfo`, `printWarning`, and `printError` for user output.
+- Use `getFile` for downloaded installers or binaries so files are cached via `CACHE_DIR`; call `cleanupGetFiles` after installers when cleanup is appropriate.
+- Only call `recordComponentSuccess` after the component install has completed successfully.
+- Assume `build.sh` exits on errors via `set -e`; do not add broad error swallowing.

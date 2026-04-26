@@ -1,0 +1,14 @@
+---
+description: Core project context for WSL Builds
+alwaysApply: true
+---
+
+# WSL Builds Project Context
+
+- This repository is a simple WSL2 build system made from Bash scripts.
+- It is not a package manager or a framework; keep changes small, explicit, and easy to inspect.
+- Builds are stacked by running `./build.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]`.
+- Each build directory contains a `conf.sh`, an `install.sh`, and optional `install_<component>.sh` files.
+- Components should install/configure one focused thing and fit the existing local patterns.
+- Prefer existing helpers in `src/` over adding new mechanisms.
+- Update `README.md` when adding or changing user-facing build components.
