@@ -46,3 +46,8 @@ if [ ! -z $INSTALL_DOCKER ]; then
         warnComponentAlreadyInstalled "docker"
     fi
 fi
+
+if [ ! -z $INSTALL_DOCKER_DESKTOP ]; then
+    source ${SCRIPT_DIR}/install_docker_desktop.sh
+    # nothing to install on the WSL instance, just install on the Windows host for best perfomance
+fi
