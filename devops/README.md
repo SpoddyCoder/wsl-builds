@@ -5,6 +5,11 @@ Essential DevOps tools for infrastructure management and container orchestration
 * `Ubuntu 22.04` or greater
 
 ## Build Components
+### `docker`
+* Installs Docker Engine, Buildx, and the Compose plugin from Docker's official repository
+* Adds the current user to the `docker` group; restart WSL before running Docker without `sudo`
+* https://docs.docker.com/engine/install/ubuntu/
+
 ### `terraform`
 * Install deps & the latest stable version from HashiCorp's official repository
 * https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli

@@ -37,3 +37,12 @@ if [ ! -z $INSTALL_K9S ]; then
         warnComponentAlreadyInstalled "k9s"
     fi
 fi
+
+if [ ! -z $INSTALL_DOCKER ]; then
+    if ! isComponentInstalled "docker" "$@"; then
+        source ${SCRIPT_DIR}/install_docker.sh
+        recordComponentSuccess "docker"
+    else
+        warnComponentAlreadyInstalled "docker"
+    fi
+fi

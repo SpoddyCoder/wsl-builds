@@ -90,6 +90,7 @@ change-hostname python-ai
   * postgres client
   * postgres server
 * [devops](devops/)
+  * docker
   * docker-desktop
   * terraform
   * packer
