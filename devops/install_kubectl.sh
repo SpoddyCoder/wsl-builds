@@ -17,6 +17,7 @@ getFile "kubectl" "${kubectl_url}" "/tmp" kubectl_binary
 getFile "kubectl.sha256" "${kubectl_sha256_url}" "/tmp" kubectl_checksum
 
 # Verify the download
+# shellcheck disable=SC2154 # kubectl_checksum and kubectl_binary are set by getFile via nameref
 echo "$(cat "$kubectl_checksum")  $(basename "$kubectl_binary")" | (cd "$(dirname "$kubectl_binary")" && sha256sum --check)
 
 # Install kubectl

@@ -2,8 +2,9 @@
 
 SCRIPT_DIR="devops"
 
-if [ ! -z $INSTALL_TERRAFORM ]; then
+if [ -n "$INSTALL_TERRAFORM" ]; then
     if ! isComponentInstalled "terraform" "$@"; then
+        # shellcheck source=devops/install_terraform.sh
         source ${SCRIPT_DIR}/install_terraform.sh
         recordComponentSuccess "terraform"
     else
@@ -11,8 +12,9 @@ if [ ! -z $INSTALL_TERRAFORM ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_PACKER ]; then
+if [ -n "$INSTALL_PACKER" ]; then
     if ! isComponentInstalled "packer" "$@"; then
+        # shellcheck source=devops/install_packer.sh
         source ${SCRIPT_DIR}/install_packer.sh
         recordComponentSuccess "packer"
     else
@@ -20,8 +22,9 @@ if [ ! -z $INSTALL_PACKER ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_KUBECTL ]; then
+if [ -n "$INSTALL_KUBECTL" ]; then
     if ! isComponentInstalled "kubectl" "$@"; then
+        # shellcheck source=devops/install_kubectl.sh
         source ${SCRIPT_DIR}/install_kubectl.sh
         recordComponentSuccess "kubectl"
     else
@@ -29,8 +32,9 @@ if [ ! -z $INSTALL_KUBECTL ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_K9S ]; then
+if [ -n "$INSTALL_K9S" ]; then
     if ! isComponentInstalled "k9s" "$@"; then
+        # shellcheck source=devops/install_k9s.sh
         source ${SCRIPT_DIR}/install_k9s.sh
         recordComponentSuccess "k9s"
     else
@@ -38,8 +42,9 @@ if [ ! -z $INSTALL_K9S ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_DOCKER ]; then
+if [ -n "$INSTALL_DOCKER" ]; then
     if ! isComponentInstalled "docker" "$@"; then
+        # shellcheck source=devops/install_docker.sh
         source ${SCRIPT_DIR}/install_docker.sh
         recordComponentSuccess "docker"
     else
@@ -47,7 +52,8 @@ if [ ! -z $INSTALL_DOCKER ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_DOCKER_DESKTOP ]; then
+if [ -n "$INSTALL_DOCKER_DESKTOP" ]; then
+    # shellcheck source=devops/install_docker_desktop.sh
     source ${SCRIPT_DIR}/install_docker_desktop.sh
     # nothing to install on the WSL instance, just install on the Windows host for best perfomance
 fi
