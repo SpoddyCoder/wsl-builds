@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 printInfo "Cloning spleeter repo"
-git clone https://github.com/deezer/spleeter.git ${PROJECT_DIR}/spleeter
+git clone https://github.com/deezer/spleeter.git "${PROJECT_DIR}/spleeter"
 
 printInfo "Creating an activating new spleeter conda environment"
-cd ${PROJECT_DIR}/spleeter
+cd "${PROJECT_DIR}/spleeter" || exit
 conda create --name spleeter python=3.9
+# shellcheck source=/dev/null # conda.sh is provided by Anaconda at runtime
 source ~/anaconda3/etc/profile.d/conda.sh
 conda activate spleeter
 printInfo "Installing poetry..."

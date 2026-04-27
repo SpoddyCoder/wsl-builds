@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 printInfo "Cloning re-dalle repo"
-git clone https://github.com/ai-forever/ru-dalle.git ${PROJECT_DIR}/ru-dalle
+git clone https://github.com/ai-forever/ru-dalle.git "${PROJECT_DIR}/ru-dalle"
 
 printInfo "Creating an activating new ru-dalle conda environment"
-cd ${PROJECT_DIR}/ru-dalle
+cd "${PROJECT_DIR}/ru-dalle" || exit
 conda create --name ru-dalle python=3.9
+# shellcheck source=/dev/null # conda.sh is provided by Anaconda at runtime
 source ~/anaconda3/etc/profile.d/conda.sh
 conda activate ru-dalle
 
