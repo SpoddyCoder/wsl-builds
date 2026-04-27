@@ -10,9 +10,13 @@ sudo apt install -y ruby-full build-essential zlib1g-dev
 # Set up gem installation directory for user (avoid root gems)
 printInfo "Configuring gem installation directory"
 if ! grep -q "GEM_HOME.*gems" ~/.bashrc; then
-    echo '# Install Ruby Gems to ~/gems' >> ~/.bashrc
-    echo 'export GEM_HOME="$HOME/gems"' >> ~/.bashrc
-    echo 'export PATH="$HOME/gems/bin:$PATH"' >> ~/.bashrc
+    {
+        echo '# Install Ruby Gems to ~/gems'
+        # shellcheck disable=SC2016 # literal export line; $HOME expands when ~/.bashrc is sourced
+        echo 'export GEM_HOME="$HOME/gems"'
+        # shellcheck disable=SC2016 # literal export line; $HOME and $PATH expand when ~/.bashrc is sourced
+        echo 'export PATH="$HOME/gems/bin:$PATH"'
+    } >> ~/.bashrc
 fi
 
 # Apply environment variables for current session
