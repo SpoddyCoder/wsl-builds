@@ -22,9 +22,9 @@ Use this skill when adding or changing a build component in this repository.
 Use the existing pattern in the target build's `install.sh`:
 
 ```bash
-if [ ! -z $INSTALL_COMPONENT ]; then
+if [ -n "$INSTALL_COMPONENT" ]; then
     if ! isComponentInstalled "component" "$@"; then
-        source ${SCRIPT_DIR}/install_component.sh
+        source "${SCRIPT_DIR}/install_component.sh"
         recordComponentSuccess "component"
     else
         warnComponentAlreadyInstalled "component"

@@ -12,9 +12,9 @@ alwaysApply: false
 - Wire components in the build directory's `install.sh` using the existing pattern:
 
 ```bash
-if [ ! -z $INSTALL_COMPONENT ]; then
+if [ -n "$INSTALL_COMPONENT" ]; then
     if ! isComponentInstalled "component" "$@"; then
-        source ${SCRIPT_DIR}/install_component.sh
+        source "${SCRIPT_DIR}/install_component.sh"
         recordComponentSuccess "component"
     else
         warnComponentAlreadyInstalled "component"
