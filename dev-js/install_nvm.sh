@@ -12,6 +12,7 @@ getFile "nvm_install.sh" "https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/i
 
 # Run the installation script
 printInfo "Running NVM installation script"
+# shellcheck disable=SC2154 # nvm_script is set by getFile via nameref
 bash "$nvm_script"
 
 cleanupGetFiles
@@ -19,6 +20,7 @@ cleanupGetFiles
 # Activate NVM in current session
 printInfo "Activating NVM for current session"
 export NVM_DIR="$HOME/.nvm"
+# shellcheck source=/dev/null # nvm.sh is provided by NVM at runtime
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 printInfo "NVM version: $(nvm --version)"
