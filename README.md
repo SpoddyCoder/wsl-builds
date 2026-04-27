@@ -118,6 +118,8 @@ change-hostname python-ai
   * lsd - lucid-sonic-dreams
   * spleeter
   * rudalle
+* [dev-bash](dev-bash/)
+  * shellcheck
 
 ---
 
