@@ -15,10 +15,10 @@ if ! command -v shellcheck >/dev/null 2>&1; then
 fi
 
 if [ "$#" -gt 0 ]; then
-    shellcheck --shell=bash "$@"
+    shellcheck --shell=bash -- "$@"
 else
     # shellcheck disable=SC2046
-    shellcheck --shell=bash \
+    shellcheck --shell=bash -- \
         build.sh \
         src/*.sh \
         */install*.sh \
