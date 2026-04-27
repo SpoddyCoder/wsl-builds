@@ -4,7 +4,7 @@ printInfo "Installing QoL bits"
 
 # wsl --import's start as root: https://github.com/microsoft/WSL/issues/4276
 # ensure our user started by default
-if ! cat /etc/wsl.conf | grep -q "\[user\]"; then
+if ! grep -q "\[user\]" /etc/wsl.conf; then
     printInfo "Setting WSL default username: $LOGNAME"
     sudo tee -a /etc/wsl.conf > /dev/null <<EOF
 [user]
@@ -29,16 +29,18 @@ else
     printInfo "autoMemoryReclaim=gradual already configured in /etc/wsl.conf"
 fi
 
-if [ ! -L ${WIN_HOME_SYMLINK} ] && [ ! -z ${WIN_HOME_TARGET} ]; then
+if [ ! -L "${WIN_HOME_SYMLINK}" ] && [ -n "${WIN_HOME_TARGET}" ]; then
     printInfo "Creating win home symlink"
-    ln -s ${WIN_HOME_TARGET} ${WIN_HOME_SYMLINK}
+    ln -s "${WIN_HOME_TARGET}" "${WIN_HOME_SYMLINK}"
 fi
 
-if ! (cat ~/.bash_aliases | grep -q '# safety aliases') > /dev/null 2>&1; then
+if ! grep -q '# safety aliases' ~/.bash_aliases 2>/dev/null; then
     printInfo "Adding bash safety aliases"
-    echo "# safety aliases" >> ~/.bash_aliases
-    echo "alias rm=\"rm -i\"" >> ~/.bash_aliases
-    echo "alias cp=\"cp -i\"" >> ~/.bash_aliases
+    {
+        echo "# safety aliases"
+        echo "alias rm=\"rm -i\""
+        echo "alias cp=\"cp -i\""
+    } >> ~/.bash_aliases
 fi
 
 # Add change-hostname function to .bashrc if it doesn't exist
