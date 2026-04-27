@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 printInfo "Cloning nerdy rodent's lucid-sonic-dreams repo"
-git clone https://github.com/nerdyrodent/lucid-sonic-dreams.git ${PROJECT_DIR}/lucid-sonic-dreams
+git clone https://github.com/nerdyrodent/lucid-sonic-dreams.git "${PROJECT_DIR}/lucid-sonic-dreams"
 
 printInfo "Creating an activating new lucid-sonic-dreams conda environment"
-cd ${PROJECT_DIR}/lucid-sonic-dreams
+cd "${PROJECT_DIR}/lucid-sonic-dreams" || exit
 conda create --name lucid-sonic-dreams python=3.9
+# shellcheck source=/dev/null # conda.sh is provided by Anaconda at runtime
 source ~/anaconda3/etc/profile.d/conda.sh
 conda activate lucid-sonic-dreams
 printInfo "Installing packages..."
