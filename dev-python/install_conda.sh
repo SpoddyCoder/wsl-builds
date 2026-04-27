@@ -5,6 +5,7 @@ conda_filename="Anaconda3-2024.02-1-Linux-x86_64.sh"
 conda_url="https://repo.anaconda.com/archive/${conda_filename}"
 # install Anaconda: https://www.anaconda.com/download#downloads
 getFile ${conda_filename} ${conda_url} "/tmp" conda_installer
+# shellcheck disable=SC2154 # conda_installer is set by getFile via nameref
 bash "$conda_installer"
 cleanupGetFiles
 
