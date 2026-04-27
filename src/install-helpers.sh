@@ -15,52 +15,20 @@ recordComponentSuccess() {
     fi
     
     # Initialize build info file if it doesn't exist
-    if [ ! -f ${BUILD_INFO_FILE} ]; then
+    if [ ! -f "${BUILD_INFO_FILE}" ]; then
         printInfo "Creating ${BUILD_INFO_FILE}"
         base_os_id=$(awk -F= '$1=="ID" { print $2 ;}' /etc/os-release | tr -d '"')
         base_os_version="$(awk -F= '$1=="VERSION" { print $2 ;}' /etc/os-release | tr -d '"')"
-        echo "${base_os_id} ${base_os_version}" >> ${BUILD_INFO_FILE}
+        echo "${base_os_id} ${base_os_version}" >> "${BUILD_INFO_FILE}"
     fi
     
     # Record the successful component installation
-    echo "${BUILD_NAME} (${component})" >> ${BUILD_INFO_FILE}
-    printInfo "$(tail -1 ${BUILD_INFO_FILE}) installed!"
+    echo "${BUILD_NAME} (${component})" >> "${BUILD_INFO_FILE}"
+    printInfo "$(tail -1 "${BUILD_INFO_FILE}") installed!"
     
-    # Set the BUILD_UPDATED flag
+    # Set the BUILD_UPDATED flag (consumed by build.sh after sourcing this file)
+    # shellcheck disable=SC2034
     BUILD_UPDATED=true
-}
-
-# inline command
-# $1 - component name
-# Returns 0 (true) if component is already installed, 1 (false) if not
-# Checks if component is recorded in ~/.wsl-build.info
-# Respects --force flag to override the check
-isComponentInstalled() {
-    local component="$1"
-    
-    # Validate required parameters
-    if [[ -z "$component" ]]; then
-        printError "isComponentInstalled: Missing component name"
-        return 1
-    fi
-    
-    # If --force flag is passed, always return false (not installed) to force reinstallation
-    if isBuildForced "$@"; then
-        return 1
-    fi
-    
-    # If build info file doesn't exist, component is not installed
-    if [ ! -f "${BUILD_INFO_FILE}" ]; then
-        return 1
-    fi
-    
-    # Check if component is recorded in build info file
-    # Look for pattern: "anything (component)" in the build info file
-    if grep -qs "([^)]*\b${component}\b[^)]*)" "${BUILD_INFO_FILE}"; then
-        return 0  # Component is installed
-    else
-        return 1  # Component is not installed
-    fi
 }
 
 # inline command
@@ -136,7 +104,8 @@ getFile() {
     # Always track files for potential cleanup
     echo "$target_file" >> "/tmp/.getfile_cleanup_$$"
     
-    # Set the result variable to the file path
+    # Set the result variable to the file path (nameref writes back to caller)
+    # shellcheck disable=SC2034
     result_ref="$target_file"
     
     return 0
