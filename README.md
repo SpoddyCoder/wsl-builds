@@ -1,4 +1,6 @@
 # WSL Builds
+[![Lint](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/lint.yml/badge.svg)](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/lint.yml)
+
 This project contains clean, simple WSL2 builds that use Windows host native implementations of core components for maximum performance & flexibility;
 
 * VSCode, Cursor
