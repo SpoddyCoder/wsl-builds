@@ -10,12 +10,13 @@ getFile "awscli-exe-linux-x86_64.zip" "https://awscli.amazonaws.com/awscli-exe-l
 
 # Save current directory before changing to /tmp
 pwd=$(pwd)
-cd /tmp
+cd /tmp || exit
+# shellcheck disable=SC2154 # awscli_zip is set by getFile via nameref
 unzip "$awscli_zip"
 sudo ./aws/install
 rm -rf aws/
 cleanupGetFiles
-cd "$pwd"
+cd "$pwd" || exit
 
 printInfo "AWS CLI installed successfully..."
 aws --version
