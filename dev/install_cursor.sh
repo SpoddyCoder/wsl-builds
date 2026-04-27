@@ -7,9 +7,11 @@ sudo apt install -y \
 
 if ! grep -q "alias code='cursor'" ~/.bashrc; then
     printInfo "Adding cursor alias to ~/.bashrc"
-    echo "" >> ~/.bashrc
-    echo "# Cursor alias" >> ~/.bashrc
-    echo "alias code='cursor'" >> ~/.bashrc
+    {
+        echo ""
+        echo "# Cursor alias"
+        echo "alias code='cursor'"
+    } >> ~/.bashrc
 else
     printInfo "Cursor alias already exists in ~/.bashrc"
 fi
