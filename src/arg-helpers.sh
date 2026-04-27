@@ -41,7 +41,7 @@ showAvailableBuildDirs() {
 declareInstallComponents() {
     IFS=',' read -r -a selected_opts <<< "$1"
     for component in "${selected_opts[@]}"; do
-        if (isValidComponent $component); then
+        if (isValidComponent "$component"); then
             component_var="${component//-/_}"
             declare -g "INSTALL_${component_var^^}=true"
         else
@@ -58,7 +58,7 @@ declareInstallComponents() {
 containsValidComponent() {
     IFS=',' read -r -a selected_opts <<< "$1"
     for component in "${selected_opts[@]}"; do
-        if (isValidComponent $component); then
+        if (isValidComponent "$component"); then
             exit 0
         fi
     done
