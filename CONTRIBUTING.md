@@ -9,6 +9,13 @@ Requests, advice and PR's are welcome.
   * Automates the install procedure
   * Acts as an NB for quality of life additions
 
+## Linting
+* Bash scripts are linted with [ShellCheck](https://www.shellcheck.net/) on every push and PR.
+* Run the same checks locally before pushing:
+  * `./src/lint.sh` — lint the whole repo
+  * `./src/lint.sh path/to/script.sh` — lint specific files
+* Install ShellCheck on Ubuntu/WSL with `sudo apt-get install -y shellcheck`.
+
 ## Contributing builds / components
 * The `build.sh` tool will exit on any error
   * This is by choice (simple by design)
