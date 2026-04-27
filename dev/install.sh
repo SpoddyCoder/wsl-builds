@@ -2,8 +2,9 @@
 
 SCRIPT_DIR="dev"
 
-if [ ! -z $INSTALL_ESSENTIALS ]; then
+if [ -n "$INSTALL_ESSENTIALS" ]; then
     if ! isComponentInstalled "essentials" "$@"; then
+        # shellcheck source=dev/install_essentials.sh
         source ${SCRIPT_DIR}/install_essentials.sh
         recordComponentSuccess "essentials"
     else
@@ -11,8 +12,9 @@ if [ ! -z $INSTALL_ESSENTIALS ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_QOL ]; then
+if [ -n "$INSTALL_QOL" ]; then
     if ! isComponentInstalled "qol" "$@"; then
+        # shellcheck source=dev/install_qol.sh
         source ${SCRIPT_DIR}/install_qol.sh
         recordComponentSuccess "qol"
     else
@@ -20,8 +22,9 @@ if [ ! -z $INSTALL_QOL ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_VSCODE ]; then
+if [ -n "$INSTALL_VSCODE" ]; then
     if ! isComponentInstalled "vscode" "$@"; then
+        # shellcheck source=dev/install_vscode.sh
         source ${SCRIPT_DIR}/install_vscode.sh
         recordComponentSuccess "vscode"
     else
@@ -29,8 +32,9 @@ if [ ! -z $INSTALL_VSCODE ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_CURSOR ]; then
+if [ -n "$INSTALL_CURSOR" ]; then
     if ! isComponentInstalled "cursor" "$@"; then
+        # shellcheck source=dev/install_cursor.sh
         source ${SCRIPT_DIR}/install_cursor.sh
         recordComponentSuccess "cursor"
     else
