@@ -7,6 +7,7 @@ printInfo "Adding NodeSource repository for Node.js LTS"
 getFile "nodesource_setup.sh" "https://deb.nodesource.com/setup_lts.x" "" nodesource_script
 
 # Run the setup script to add the repository
+# shellcheck disable=SC2154 # nodesource_script is set by getFile via nameref
 sudo bash "$nodesource_script"
 
 # Update package cache and install Node.js

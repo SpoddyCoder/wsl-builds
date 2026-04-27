@@ -2,8 +2,9 @@
 
 SCRIPT_DIR="dev-js"
 
-if [ ! -z $INSTALL_NODE ]; then
+if [ -n "$INSTALL_NODE" ]; then
     if ! isComponentInstalled "node" "$@"; then
+        # shellcheck source=dev-js/install_node.sh
         source ${SCRIPT_DIR}/install_node.sh
         recordComponentSuccess "node"
     else
@@ -11,7 +12,7 @@ if [ ! -z $INSTALL_NODE ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_NPM ]; then
+if [ -n "$INSTALL_NPM" ]; then
     if ! isComponentInstalled "npm" "$@"; then
         # NPM is included with Node.js, so just verify it's available
         if command -v npm >/dev/null 2>&1; then
@@ -26,8 +27,9 @@ if [ ! -z $INSTALL_NPM ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_YARN ]; then
+if [ -n "$INSTALL_YARN" ]; then
     if ! isComponentInstalled "yarn" "$@"; then
+        # shellcheck source=dev-js/install_yarn.sh
         source ${SCRIPT_DIR}/install_yarn.sh
         recordComponentSuccess "yarn"
     else
@@ -35,8 +37,9 @@ if [ ! -z $INSTALL_YARN ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_NVM ]; then
+if [ -n "$INSTALL_NVM" ]; then
     if ! isComponentInstalled "nvm" "$@"; then
+        # shellcheck source=dev-js/install_nvm.sh
         source ${SCRIPT_DIR}/install_nvm.sh
         recordComponentSuccess "nvm"
     else
@@ -44,8 +47,9 @@ if [ ! -z $INSTALL_NVM ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_ESSENTIALS ]; then
+if [ -n "$INSTALL_ESSENTIALS" ]; then
     if ! isComponentInstalled "essentials" "$@"; then
+        # shellcheck source=dev-js/install_essentials.sh
         source ${SCRIPT_DIR}/install_essentials.sh
         recordComponentSuccess "essentials"
     else
@@ -53,8 +57,9 @@ if [ ! -z $INSTALL_ESSENTIALS ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_REACT ]; then
+if [ -n "$INSTALL_REACT" ]; then
     if ! isComponentInstalled "react" "$@"; then
+        # shellcheck source=dev-js/install_react.sh
         source ${SCRIPT_DIR}/install_react.sh
         recordComponentSuccess "react"
     else
@@ -62,8 +67,9 @@ if [ ! -z $INSTALL_REACT ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_NEXTJS ]; then
+if [ -n "$INSTALL_NEXTJS" ]; then
     if ! isComponentInstalled "nextjs" "$@"; then
+        # shellcheck source=dev-js/install_nextjs.sh
         source ${SCRIPT_DIR}/install_nextjs.sh
         recordComponentSuccess "nextjs"
     else
@@ -71,8 +77,9 @@ if [ ! -z $INSTALL_NEXTJS ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_VUE ]; then
+if [ -n "$INSTALL_VUE" ]; then
     if ! isComponentInstalled "vue" "$@"; then
+        # shellcheck source=dev-js/install_vue.sh
         source ${SCRIPT_DIR}/install_vue.sh
         recordComponentSuccess "vue"
     else
@@ -80,8 +87,9 @@ if [ ! -z $INSTALL_VUE ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_ANGULAR ]; then
+if [ -n "$INSTALL_ANGULAR" ]; then
     if ! isComponentInstalled "angular" "$@"; then
+        # shellcheck source=dev-js/install_angular.sh
         source ${SCRIPT_DIR}/install_angular.sh
         recordComponentSuccess "angular"
     else
@@ -89,8 +97,9 @@ if [ ! -z $INSTALL_ANGULAR ]; then
     fi
 fi
 
-if [ ! -z $INSTALL_EXPRESS ]; then
+if [ -n "$INSTALL_EXPRESS" ]; then
     if ! isComponentInstalled "express" "$@"; then
+        # shellcheck source=dev-js/install_express.sh
         source ${SCRIPT_DIR}/install_express.sh
         recordComponentSuccess "express"
     else
