@@ -11,7 +11,7 @@ Use this skill to review an existing component and report whether it should be u
 
 1. Identify the target build directory and component. Build directories contain `conf.sh` and `install.sh`; components usually live in `install_<component>.sh`.
 2. Read the target build's `conf.sh`, `install.sh`, `install_<component>.sh`, and nearby README entries.
-3. Confirm the component is declared in `VALID_INSTALL_COMPONENTS` and dispatched from `install.sh` using the local pattern.
+3. Confirm the component token appears in `registerBuildMetadata`'s CSV in `conf.sh` and that **`runInstallComponents`** (`install.sh` → `src/install-dispatch.sh`) loads the matching **`install_<underscore_name>.sh`**.
 4. Inspect current official install instructions for the component. Prefer vendor documentation over blogs, package mirrors, or stale examples.
 5. Run a security check anchored to today's date (use the date provided in the system context; confirm with `date -u +%F` if unsure). Focus on advisories from roughly the last 12 months that affect the version range the script installs:
    - vendor advisory or security page for the component (e.g. `docs.docker.com/engine/security`, `nodejs.org/en/blog/vulnerability`)
@@ -29,7 +29,7 @@ Use this skill to review an existing component and report whether it should be u
    - use `getFile` for downloaded installers or binaries when caching is useful
    - call `cleanupGetFiles` after installer downloads when appropriate
    - rely on `build.sh` error handling instead of broad error swallowing
-   - leave `recordComponentSuccess` in the dispatcher, not in `install_<component>.sh`
+   - **`recordComponentSuccess`** stays in **`runInstallComponents`**, not in `install_<component>.sh`
 
 ## Security Check Execution
 

@@ -11,8 +11,8 @@ Use this skill to scaffold a brand-new build directory with no components yet. C
 
 1. Confirm the new build directory name. Use lowercase with hyphens, matching the convention of existing dirs (`dev`, `dev-js`, `devops-aws`, `ai-resources`).
 2. Verify the directory does not already exist at the repo root.
-3. Create `<build-dir>/conf.sh` with the metadata block below.
-4. Create `<build-dir>/install.sh` with just the header and `SCRIPT_DIR` line; no dispatcher blocks yet.
+3. Create `<build-dir>/conf.sh` with the metadata call below (`registerBuildMetadata`).
+4. Create `<build-dir>/install.sh` using the dispatch wrapper template below (**`runInstallComponents`** — no custom `SCRIPT_DIR` line).
 5. Create `<build-dir>/README.md` with the skeleton headings below.
 6. Append a bare entry `* [<build-dir>](<build-dir>/)` to the end of the "Build List" section in the top-level `README.md`.
 7. Run `bash -n` on the new `conf.sh` and `install.sh`.
@@ -21,18 +21,18 @@ Use this skill to scaffold a brand-new build directory with no components yet. C
 ## conf.sh template
 
 ```bash
-HOSTNAME="<build-dir>"
-BUILD_VER="1.0.0"
-VALID_INSTALL_COMPONENTS=""
-NUM_ADDITIONAL_ARGS=0
+registerBuildMetadata "<build-dir>" "1.0.0" "" 0
 ```
+
+(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./build.sh`, which loads `src/build-metadata.sh` first.)
 
 ## install.sh template
 
 ```bash
 #!/usr/bin/env bash
-
-SCRIPT_DIR="<build-dir>"
+# shellcheck source=src/install-dispatch.sh
+source "${TOOL_DIR}/src/install-dispatch.sh"
+runInstallComponents "$@"
 ```
 
 ## README.md template
@@ -51,8 +51,8 @@ SCRIPT_DIR="<build-dir>"
 
 - The new dir is intentionally non-buildable until a component is added: `./build.sh <build-dir>` will print an empty component list and exit 1. This is expected.
 - `src/arg-helpers.sh::showAvailableBuildDirs` auto-discovers any dir containing `conf.sh`, so the new dir appears in `./build.sh` listings without further wiring.
-- Defaults (`HOSTNAME`, `BUILD_VER`, `NUM_ADDITIONAL_ARGS`) are set silently. The user can edit `conf.sh` afterwards if they need different values.
-- `conf.sh` and `install.sh` are sourced (not executed); no shebang on `conf.sh` and no chmod needed.
+- Defaults (version `"1.0.0"` and zero additional args) are set in **`registerBuildMetadata`**. Edit the second or fourth argument afterward if needed; add components via the CSV third argument once `add-wsl-build-component` is used.
+- `conf.sh` and `install.sh` are sourced (not executed); `install.sh` has a shebang for consistency and local `shellcheck`; `conf.sh` does not require a shebang.
 
 ## Verification
 

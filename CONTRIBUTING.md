@@ -17,6 +17,17 @@ Requests, advice and PR's are welcome.
 * Install ShellCheck `./build.sh dev-bash shellcheck`.
 
 ## Contributing builds / components
+
+### Metadata and dispatch (`conf.sh`, `install.sh`)
+
+Each build directory has a **`conf.sh`** that calls **`registerBuildMetadata`** (defined in [`src/build-metadata.sh`](src/build-metadata.sh)). Pass the short build name (`HOSTNAME`), version string, comma-separated **`VALID_INSTALL_COMPONENTS`**, and **`NUM_ADDITIONAL_ARGS`**. For **`ai-resources`** only, pass a fifth argument for **`PROJECT_DIR`** (`"${HOME}/ai-resources"`), consumed by sibling `install_<component>.sh` scripts.
+
+Each **`install.sh`** is a thin wrapper: it sources **`src/install-dispatch.sh`** and runs **`runInstallComponents "$@"`**. Adding a component means extending the CSV in **`registerBuildMetadata`'s third argument** and adding **`install_<name>.sh`**, using underscores for hyphenated component tokens (example: **`mysql-client`** maps to **`install_mysql_client.sh`**). The dispatcher calls **`recordComponentSuccess`** using the canonical component token (including hyphens) so `~/.wsl-build.info` lines stay stable.
+
+Do not duplicate per-component `if`/`source` blocks in `install.sh`; that logic lives in **`runInstallComponents`**.
+
+### Components
+
 * The `build.sh` tool will exit on any error
   * This is by choice (simple by design)
   * But means you cannot cleanup / handle errors inside the install scripts

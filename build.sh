@@ -11,6 +11,8 @@ source "${TOOL_DIR}"/src/print.sh
 source "${TOOL_DIR}"/src/arg-helpers.sh
 # shellcheck source=src/install-helpers.sh
 source "${TOOL_DIR}"/src/install-helpers.sh
+# shellcheck source=src/build-metadata.sh
+source "${TOOL_DIR}"/src/build-metadata.sh
 # shellcheck disable=SC2034 # consumed by src/install-helpers.sh after sourcing
 BUILD_INFO_FILE=~/.wsl-build.info
 
@@ -41,9 +43,7 @@ if [ "$#" == "1" ]; then
     exit 1
 fi
 
-# shellcheck disable=SC2034 # consumed by src/install-helpers.sh after sourcing
-# shellcheck disable=SC2153 # BUILD_VER is set by ${BUILD_DIR}/conf.sh after sourcing
-BUILD_NAME="${HOSTNAME} v${BUILD_VER}"
+# BUILD_NAME is set by registerBuildMetadata in ${BUILD_DIR}/conf.sh
 
 # build arg checks
 min_num_args=$((NUM_ADDITIONAL_ARGS + 1))  # we require min 1 arg in any scenario

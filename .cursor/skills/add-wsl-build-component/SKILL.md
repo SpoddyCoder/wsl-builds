@@ -11,28 +11,24 @@ Use this skill when adding or changing a build component in this repository.
 
 1. Identify the target build directory. Valid build directories are directories containing both `conf.sh` and `install.sh`, such as `dev`, `dev-js`, `system`, or `devops`.
 2. Read the target build's `conf.sh`, `install.sh`, and nearby `install_<component>.sh` files before editing.
-3. Add the component name to `VALID_INSTALL_COMPONENTS` in `conf.sh`.
-4. Add a matching dispatcher block to `install.sh`.
-5. Put install logic in `install_<component>.sh`.
+3. Add the component token to **the third argument (CSV)** of **`registerBuildMetadata`** in **`conf.sh`**.
+4. Add **`install_<name>.sh`**, mapping hyphens to underscores in the basename (examples: **`docker-desktop`** → `install_docker_desktop.sh`; **`postgres-server`** → `install_postgres_server.sh`).
+5. Leave **`install.sh`** as the thin dispatch wrapper (**`runInstallComponents`**) unless you intentionally need build-specific behavior beyond the usual flow.
 6. Update `README.md` if the component should appear in the build list.
 7. Run Bash syntax checks for touched shell files.
 
-## Dispatcher Pattern
+## Dispatcher
 
-Use the existing pattern in the target build's `install.sh`:
+Build directory **`install.sh`** files should remain:
 
 ```bash
-if [ -n "$INSTALL_COMPONENT" ]; then
-    if ! isComponentInstalled "component" "$@"; then
-        source "${SCRIPT_DIR}/install_component.sh"
-        recordComponentSuccess "component"
-    else
-        warnComponentAlreadyInstalled "component"
-    fi
-fi
+#!/usr/bin/env bash
+# shellcheck source=src/install-dispatch.sh
+source "${TOOL_DIR}/src/install-dispatch.sh"
+runInstallComponents "$@"
 ```
 
-For component names with hyphens, remember that `declareInstallComponents` converts hyphens to underscores for the `INSTALL_...` variable.
+`declareInstallComponents` (from `src/arg-helpers.sh`) maps component tokens like **`postgres-client`** to **`INSTALL_POSTGRES_CLIENT`**. Filename mapping for `source` targets is the underscore form (**`install_postgres_client.sh`**).
 
 ## Install Script Guidelines
 
