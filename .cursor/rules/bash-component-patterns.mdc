@@ -10,9 +10,9 @@ alwaysApply: false
 - Define **repository functions in camelCase** (e.g. `registerBuildMetadata`, `showUsage`, `getFile`) to match helpers in [`src/`](/src/).
 - **`conf.sh`** calls **`registerBuildMetadata`** (`src/build-metadata.sh`): `HOSTNAME`, `BUILD_VER`, CSV of valid components, `NUM_ADDITIONAL_ARGS`; for **`ai-resources`** only, pass **`"${HOME}/ai-resources"`** as an optional fifth arg for **`PROJECT_DIR`**.
 - Add new components to the third argument CSV. Use names that round-trip to **`install_<underscore_name>.sh`** (hyphens in the CSV become underscores in filenames: `mysql-client` → `install_mysql_client.sh`).
-- **`install.sh`** is only: `source "${TOOL_DIR}/src/install-dispatch.sh"` plus **`runInstallComponents "$@"`**. Per-component branching lives in **`runInstallComponents`** (`src/install-dispatch.sh`); keep `install.sh` free of duplicated `if` blocks.
+- **`install.sh`** is only **`source "${TOOL_DIR}/src/install-dispatch.sh"`**. The dispatch loop runs **at top level** inside **`src/install-dispatch.sh`** (no wrapper function) so **`build.sh`** remains the supported entrypoint and `$@` propagates when `install.sh` is sourced. Keep `install.sh` free of duplicated `if` blocks.
 - Put component logic in **`install_<component>.sh`** (underscore filename as above).
 - Use `printInfo`, `printWarning`, and `printError` for user output.
 - Use `getFile` for downloaded installers or binaries so files are cached via `CACHE_DIR`; call `cleanupGetFiles` after installers when cleanup is appropriate.
-- The dispatcher calls `recordComponentSuccess` after sourcing each `install_<component>.sh`; do not call it inside the component script.
+- **`src/install-dispatch.sh`** calls `recordComponentSuccess` after sourcing each `install_<component>.sh`; do not call it inside the component script.
 - Assume `build.sh` exits on errors via `set -e`; do not add broad error swallowing.

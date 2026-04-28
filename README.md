@@ -32,7 +32,7 @@ Tip: you can easily automate this using [WSL2-Distro-Manager snippets](#wsl2-dis
 ```
 ./build.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
 ```
-* `build-dir` valid build directory, containing `conf.sh` & `install.sh` (`conf.sh` calls `registerBuildMetadata` in [`src/build-metadata.sh`](src/build-metadata.sh); `install.sh` sources [`src/install-dispatch.sh`](src/install-dispatch.sh) and runs `runInstallComponents`)
+* `build-dir` valid build directory, containing `conf.sh` & `install.sh` (`conf.sh` calls `registerBuildMetadata` in [`src/build-metadata.sh`](src/build-metadata.sh); `install.sh` only sources [`src/install-dispatch.sh`](src/install-dispatch.sh), which runs the component loop at top level — use `./build.sh`; do not rely on executing `install.sh` directly)
 * `component[,<component>...]` comma separated list of build components (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
 * `--force` by default components that are already installed will be skipped with warning messages. Use this flag to force reinstallation of already-installed components.

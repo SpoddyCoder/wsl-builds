@@ -12,7 +12,7 @@ Use this skill to scaffold a brand-new build directory with no components yet. C
 1. Confirm the new build directory name. Use lowercase with hyphens, matching the convention of existing dirs (`dev`, `dev-js`, `devops-aws`, `ai-resources`).
 2. Verify the directory does not already exist at the repo root.
 3. Create `<build-dir>/conf.sh` with the metadata call below (`registerBuildMetadata`).
-4. Create `<build-dir>/install.sh` using the dispatch wrapper template below (**`runInstallComponents`** — no custom `SCRIPT_DIR` line).
+4. Create `<build-dir>/install.sh` using only the **`source`** line below (no wrapper function call — dispatch runs inside `src/install-dispatch.sh`).
 5. Create `<build-dir>/README.md` with the skeleton headings below.
 6. Append a bare entry `* [<build-dir>](<build-dir>/)` to the end of the "Build List" section in the top-level `README.md`.
 7. Run `bash -n` on the new `conf.sh` and `install.sh`.
@@ -32,8 +32,9 @@ registerBuildMetadata "<build-dir>" "1.0.0" "" 0
 #!/usr/bin/env bash
 # shellcheck source=src/install-dispatch.sh
 source "${TOOL_DIR}/src/install-dispatch.sh"
-runInstallComponents "$@"
 ```
+
+(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./build.sh`; `install-dispatch.sh` runs at top level when sourced. Use **`./build.sh`**, not executing `install.sh` directly.)
 
 ## README.md template
 

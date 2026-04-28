@@ -13,11 +13,11 @@ Use this skill when adding or changing a build component in this repository.
 2. Read the target build's `conf.sh`, `install.sh`, and nearby `install_<component>.sh` files before editing.
 3. Add the component token to **the third argument (CSV)** of **`registerBuildMetadata`** in **`conf.sh`**.
 4. Add **`install_<name>.sh`**, mapping hyphens to underscores in the basename (examples: **`docker-desktop`** → `install_docker_desktop.sh`; **`postgres-server`** → `install_postgres_server.sh`).
-5. Leave **`install.sh`** as the thin dispatch wrapper (**`runInstallComponents`**) unless you intentionally need build-specific behavior beyond the usual flow.
+5. Leave **`install.sh`** as the thin **`source install-dispatch.sh`** stub unless you need build-specific behavior beyond **`src/install-dispatch.sh`**.
 6. Update `README.md` if the component should appear in the build list.
 7. Run Bash syntax checks for touched shell files.
 
-## Dispatcher
+## Dispatcher (`install.sh`)
 
 Build directory **`install.sh`** files should remain:
 
@@ -25,8 +25,9 @@ Build directory **`install.sh`** files should remain:
 #!/usr/bin/env bash
 # shellcheck source=src/install-dispatch.sh
 source "${TOOL_DIR}/src/install-dispatch.sh"
-runInstallComponents "$@"
 ```
+
+Component iteration and **`recordComponentSuccess`** live in **`src/install-dispatch.sh`** (top level when sourced from **`build.sh`**).
 
 `declareInstallComponents` (from `src/arg-helpers.sh`) maps component tokens like **`postgres-client`** to **`INSTALL_POSTGRES_CLIENT`**. Filename mapping for `source` targets is the underscore form (**`install_postgres_client.sh`**).
 

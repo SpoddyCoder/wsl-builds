@@ -22,9 +22,9 @@ Requests, advice and PR's are welcome.
 
 Each build directory has a **`conf.sh`** that calls **`registerBuildMetadata`** (defined in [`src/build-metadata.sh`](src/build-metadata.sh)). Pass the short build name (`HOSTNAME`), version string, comma-separated **`VALID_INSTALL_COMPONENTS`**, and **`NUM_ADDITIONAL_ARGS`**. For **`ai-resources`** only, pass a fifth argument for **`PROJECT_DIR`** (`"${HOME}/ai-resources"`), consumed by sibling `install_<component>.sh` scripts.
 
-Each **`install.sh`** is a thin wrapper: it sources **`src/install-dispatch.sh`** and runs **`runInstallComponents "$@"`**. Adding a component means extending the CSV in **`registerBuildMetadata`'s third argument** and adding **`install_<name>.sh`**, using underscores for hyphenated component tokens (example: **`mysql-client`** maps to **`install_mysql_client.sh`**). The dispatcher calls **`recordComponentSuccess`** using the canonical component token (including hyphens) so `~/.wsl-build.info` lines stay stable.
+Each **`install.sh`** is a thin wrapper: it sources **`src/install-dispatch.sh`**, where the loop runs **at top level** when sourced from **`build.sh`** (positional args propagate; do not execute `install.sh` as a standalone script). Adding a component means extending the CSV in **`registerBuildMetadata`'s third argument** and adding **`install_<name>.sh`**, using underscores for hyphenated component tokens (example: **`mysql-client`** maps to **`install_mysql_client.sh`**). **`install-dispatch.sh`** calls **`recordComponentSuccess`** using the canonical component token (including hyphens) so `~/.wsl-build.info` lines stay stable.
 
-Do not duplicate per-component `if`/`source` blocks in `install.sh`; that logic lives in **`runInstallComponents`**.
+Do not duplicate per-component `if`/`source` blocks in **`install.sh`**; that logic lives in **`src/install-dispatch.sh`**.
 
 ### Components
 
