@@ -156,12 +156,15 @@ change-hostname python-ai
 * https://learn.microsoft.com/en-us/windows/wsl/wsl-config
 * Careful with CLRF line endings when editing this file
 * Do it on a WSL instance, eg: `nano /mnt/c/Users/me/.wslconfig`
-* For ai work in particular you may find it useful to increase default memory & swap space, eg...
+* For ai work in particular you may find it useful to increase default memory, swap space and enable gradual memory reclaim, eg...
 
 ```
 [wsl2]
 memory=24GB
 swap=8GB
+
+[experimental]
+autoMemoryReclaim=gradual
 ```
 
 ---

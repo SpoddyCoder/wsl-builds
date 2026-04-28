@@ -21,7 +21,6 @@ change-hostname <new-hostname>
 WIN_HOME_SYMLINK=/home/me/c-home    # Symlink placed in your home dir on the WSL instance
 WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on the WSL instance
 ```
-* Enable `autoMemoryReclaim` in `/etc/wsl.conf`
 
 ### `x11`
 * Install the X11-Apps package for native Windows GUI support
