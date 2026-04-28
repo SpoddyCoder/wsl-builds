@@ -3,7 +3,8 @@ set -e
 
 # source user config + helpers
 TOOL_DIR=$(dirname "$0")
-# shellcheck source=/dev/null # wsl-builds.conf is outside the lint glob (*.sh only)
+# shellcheck source=wsl-builds.conf.example
+# ShellCheck only: follow the committed example (same variables as runtime). Runtime sources gitignored wsl-builds.conf.
 source "${TOOL_DIR}"/wsl-builds.conf
 # shellcheck source=src/print.sh
 source "${TOOL_DIR}"/src/print.sh

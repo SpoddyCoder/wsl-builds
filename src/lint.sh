@@ -24,6 +24,9 @@ fi
 if [ "$#" -gt 0 ]; then
     shellcheck --shell=bash --external-sources --source-path=SCRIPTDIR -- "$@"
 else
+    # wsl-builds.conf.example is omitted from this list: the file is only a template (assignments).
+    # build.sh still points ShellCheck at that example path (see # shellcheck source= in build.sh);
+    # The real config file wsl-builds.conf is gitignored and not used during lint.
     # shellcheck disable=SC2046
     shellcheck --shell=bash --external-sources --source-path=SCRIPTDIR -- \
         build.sh \
