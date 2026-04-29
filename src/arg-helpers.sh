@@ -46,7 +46,7 @@ declareInstallComponents() {
             declare -g "INSTALL_${component_var^^}=true"
         else
             printError "Invalid build component(s)"
-            showAvailableComponents "${HOSTNAME}"
+            showAvailableComponents "${BUILD_DIR_NAME}"
             exit 1
         fi
     done

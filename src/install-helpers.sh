@@ -155,7 +155,7 @@ isComponentInstalled() {
     
     # Check if this hostname has this component installed
     # Pattern matches: "hostname v*.*.* (component)"
-    local pattern="${HOSTNAME} v.* (${component})"
+    local pattern="${BUILD_DIR_NAME} v.* (${component})"
     if grep -q "^${pattern}$" "${BUILD_INFO_FILE}"; then
         return 0  # Already installed, don't install
     else

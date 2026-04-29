@@ -82,7 +82,7 @@ fi
 if [ "$components_passed" == "true" ]; then
     declareInstallComponents "$2"
 fi
-printInfo "Building $HOSTNAME v${BUILD_VER}"
+printInfo "Building $BUILD_DIR_NAME v${BUILD_VER}"
 BUILD_UPDATED=false
 # shellcheck source=/dev/null # build-dir install.sh chosen at runtime via $1
 source "${BUILD_DIR}"/install.sh

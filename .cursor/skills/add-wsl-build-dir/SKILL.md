@@ -24,7 +24,7 @@ Use this skill to scaffold a brand-new build directory with no components yet. C
 registerBuildMetadata "<build-dir>" "1.0.0" "" 0
 ```
 
-(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./build.sh`, which loads `src/build-metadata.sh` first.)
+(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./build.sh`, which loads `src/build-metadata.sh` first. The first argument is stored as **`BUILD_DIR_NAME`** and should match the build directory basename — e.g. `registerBuildMetadata "dev-rust" ...` for a `dev-rust/` dir.)
 
 ## install.sh template
 
