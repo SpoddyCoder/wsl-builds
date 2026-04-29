@@ -6,20 +6,20 @@
 # Inherited when sourced: `VALID_INSTALL_COMPONENTS`, `BUILD_DIR`, `INSTALL_*`, and `$@`
 # from `build.sh` (positional args propagate through the source chain).
 
-IFS=',' read -r -a _ric_components <<< "$VALID_INSTALL_COMPONENTS"
-for _ric_comp in "${_ric_components[@]}"; do
-    _ric_underscore="${_ric_comp//-/_}"
-    _ric_var_name="INSTALL_${_ric_underscore^^}"
-    if [[ -z "${!_ric_var_name:-}" ]]; then
+IFS=',' read -r -a dispatch_install_component_names <<< "$VALID_INSTALL_COMPONENTS"
+for dispatch_install_component_name in "${dispatch_install_component_names[@]}"; do
+    dispatch_install_component_slug="${dispatch_install_component_name//-/_}"
+    dispatch_install_toggle_var_name="INSTALL_${dispatch_install_component_slug^^}"
+    if [[ -z "${!dispatch_install_toggle_var_name:-}" ]]; then
         continue
     fi
-    if ! isComponentInstalled "${_ric_comp}" "$@"; then
-        _ric_installer="${BUILD_DIR}/install_${_ric_underscore}.sh"
+    if ! isComponentInstalled "${dispatch_install_component_name}" "$@"; then
+        dispatch_install_component_script_path="${BUILD_DIR}/install_${dispatch_install_component_slug}.sh"
         # shellcheck source=/dev/null # install_<component>.sh resolved from $VALID_INSTALL_COMPONENTS
-        source "${_ric_installer}"
-        recordComponentSuccess "${_ric_comp}"
+        source "${dispatch_install_component_script_path}"
+        recordComponentSuccess "${dispatch_install_component_name}"
     else
-        warnComponentAlreadyInstalled "${_ric_comp}"
+        warnComponentAlreadyInstalled "${dispatch_install_component_name}"
     fi
 done
-unset -v _ric_comp _ric_underscore _ric_var_name _ric_installer _ric_components 2>/dev/null || true
+unset -v dispatch_install_component_name dispatch_install_component_slug dispatch_install_toggle_var_name dispatch_install_component_script_path dispatch_install_component_names 2>/dev/null || true
