@@ -120,6 +120,7 @@ change-hostname python-ai
   * rudalle
 * [dev-bash](dev-bash/)
   * shellcheck
+  * bats
 
 ---
 
