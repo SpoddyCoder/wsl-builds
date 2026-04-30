@@ -5,7 +5,7 @@ alwaysApply: true
 
 # WSL Builds Project Context
 
-- This repository is a simple WSL2 build system made from Bash scripts.
+- This repository is a simple WSL2 build system made from Bash scripts. Bash **function** names use **camelCase** (no `snake_case`).
 - It is not a package manager or a framework; keep changes small, explicit, and easy to inspect.
 - Builds are stacked by running `./build.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]`.
 - Each build directory contains a `conf.sh` (calls `registerBuildMetadata` in `src/build-metadata.sh`), an `install.sh` (sources `src/install-dispatch.sh` only), and optional `install_<component>.sh` files. Shared dispatch logic runs at top level in `install-dispatch.sh` when `build.sh` sources `install.sh`.
