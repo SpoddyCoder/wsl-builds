@@ -28,7 +28,7 @@ Requests, advice and PR's are welcome.
 **[`bats-core`](https://github.com/bats-core/bats-core)** regressions exercise [`build.sh`](build.sh) against the noop **`test-fixture`** build; the harness and image live under [`test/docker/`](test/docker/). The image **copies the repo at build time** (no bind mount).
 
 * **Do not** run [`test/docker/run-bats.sh`](test/docker/run-bats.sh) on the host — it overwrites repo-root **`wsl-builds.conf`**.
-* **Docker test files:** [`test/docker/Dockerfile`](test/docker/Dockerfile), [`test/docker/Dockerfile.dockerignore`](test/docker/Dockerfile.dockerignore), [`test/docker/run-bats.sh`](test/docker/run-bats.sh), [`test/docker/build-test-fixture-harness.bats`](test/docker/build-test-fixture-harness.bats), [`test/docker/wsl-builds.conf.container`](test/docker/wsl-builds.conf.container).
+* **Docker test files:** [`test/docker/Dockerfile`](test/docker/Dockerfile), [`test/docker/Dockerfile.dockerignore`](test/docker/Dockerfile.dockerignore), [`test/docker/run-bats.sh`](test/docker/run-bats.sh), [`test/docker/build-test-fixture-harness.bats`](test/docker/build-test-fixture-harness.bats), [`test/docker/wsl-builds.conf`](test/docker/wsl-builds.conf).
 
 
 ## Contributing builds / components

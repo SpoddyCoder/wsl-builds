@@ -9,7 +9,7 @@ setup() {
 	_BATS_FAKE_HOME="$(mktemp -d)"
 	export HOME="$_BATS_FAKE_HOME"
 	cd "$TEST_ROOT" || return 1
-	/bin/cp -f "${TEST_DIR}/wsl-builds.conf.container" "${TEST_ROOT}/wsl-builds.conf"
+	/bin/cp -f "${TEST_DIR}/wsl-builds.conf" "${TEST_ROOT}/wsl-builds.conf"
 }
 
 teardown() {
