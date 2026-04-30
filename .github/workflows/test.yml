@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build test image
-        run: docker build -f test/Dockerfile -t wsl-builds-test .
+        run: docker build -f test/docker/Dockerfile -t wsl-builds-test .
 
-      - name: Run all bats suites in container
+      - name: Run Bats tests in container
         run: docker run --rm wsl-builds-test

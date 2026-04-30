@@ -68,7 +68,7 @@ Keep responses small: filter with `jq` rather than dumping raw payloads, and sto
 These rules constrain how the security check is executed. They are not optional.
 
 - **One source per command.** Run each advisory fetch as its own shell invocation. Do not chain advisory queries with `&&`, `;`, or pipelines that mix sources. After each command, evaluate the output before deciding whether to query the next source.
-- **Pinned source order with early exit.** Query in this order and stop as soon as severity can be assigned:
+- **Pinned source order.** Query in this order and stop as soon as severity can be assigned:
   1. CISA KEV — small and definitive; any hit is automatically High.
   2. Vendor advisory page — usually states "fixed in version X" clearly.
   3. OSV.dev — one `package` plus `ecosystem` per call.
@@ -121,4 +121,4 @@ Use `Up to date` when the script remains functional, supported, and convention-c
 
 ## Verification Guidance
 
-When the user asks to implement recommended updates, use the `add-wsl-build-component` skill. After edits, run `bash -n` on touched build files/helpers. For regressions touching shared **`src/`** (including **`src/install-dispatch.sh`**), harness tests under **`test/container-isolated/`**, run **`./test/run-tests.sh`** (see **Testing** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) and [`test/Dockerfile`](../../../test/Dockerfile)).
+When the user asks to implement recommended updates, use the `add-wsl-build-component` skill. After edits, run `bash -n` on touched build files/helpers. For regressions touching shared **`src/`** (including **`src/install-dispatch.sh`**) or **`test/docker/`**, run **`./test/run-tests.sh`** (see **Testing** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) and [`test/docker/Dockerfile`](../../../test/docker/Dockerfile)).

@@ -1,5 +1,5 @@
-# Test image: copies repo into the image and installs bats-core for test/container-isolated suites.
-# Build from repo root: docker build -f test/Dockerfile -t wsl-builds-test .
+# Test image: Ubuntu + bats-core; Bats sources live in this directory.
+# Build from repo root: docker build -f test/docker/Dockerfile -t wsl-builds-test .
 # Ignore rules: Dockerfile.dockerignore (BuildKit pairs with -f path).
 FROM ubuntu:24.04
 
@@ -11,4 +11,4 @@ RUN apt-get update \
 WORKDIR /repo
 COPY . /repo
 
-CMD ["bash", "./test/container-isolated/run-bats-in-container.sh"]
+CMD ["bash", "./test/docker/run-bats.sh"]

@@ -1,9 +1,0 @@
-# Container-only harness: copied to repo-root wsl-builds.conf by run-bats-in-container.sh / Bats setup.
-# build.sh sources only "${TOOL_DIR}/wsl-builds.conf". Paths suit ephemeral Linux (/tmp …).
-CACHE_DIR=/tmp/wsl-builds/container-cache
-
-WIN_HOME_SYMLINK=/tmp/win-home-sl
-WIN_HOME_TARGET=/tmp/win-home-target
-
-CODE_HOME_SYMLINK=/tmp/code-home-sl
-CODE_HOME_TARGET=/tmp/code-home-target

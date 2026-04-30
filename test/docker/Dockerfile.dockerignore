@@ -1,0 +1,6 @@
+# Build context is repo root (docker build -f test/docker/Dockerfile .). Paired with test/docker/Dockerfile (BuildKit).
+.git
+.github
+wsl-builds.conf
+.bats_home_*
+.cursor

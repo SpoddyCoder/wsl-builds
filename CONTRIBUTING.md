@@ -19,13 +19,13 @@ Requests, advice and PR's are welcome.
 ## Testing
 
 * **Lint only (ShellCheck + `bash -n`):** [`./test/lint.sh`](test/lint.sh)
-* **`bats` / [`build.sh`](build.sh) regressions:** all suites live under [`test/container-isolated/`](test/container-isolated/) and run inside **Docker** ([`test/Dockerfile`](test/Dockerfile) + [`test/Dockerfile.dockerignore`](test/Dockerfile.dockerignore); noop **`test-fixture`** harness + CLI early-exit cases). Context is repo root (`docker build -f test/Dockerfile .`); ignore rules follow BuildKit's Dockerfile-paired naming. The image **copies the repo at build time** (no bind mount); [`test/run-tests.sh`](test/run-tests.sh) runs lint, rebuilds that image for your current tree, then runs suites (same **`wsl-builds.conf`** setup as CI via [`test/container-isolated/run-bats-in-container.sh`](test/container-isolated/run-bats-in-container.sh) and [`wsl-builds.conf.container`](test/container-isolated/wsl-builds.conf.container)):
+* **`bats` / [`build.sh`](build.sh) regressions:** live under [`test/docker/`](test/docker/) (image + Bats against the noop **`test-fixture`** build). Build context is repo root (`docker build -f test/docker/Dockerfile .`); the image **copies the repo at build time** (no bind mount). [`test/run-tests.sh`](test/run-tests.sh) runs lint, rebuilds the image, and runs the container (same as CI).
 
 ```bash
 ./test/run-tests.sh
 ```
 
-More: [`test/README.md`](test/README.md), [`test/container-isolated/README.md`](test/container-isolated/README.md). CI: [lint](.github/workflows/lint.yml) + [.github/workflows/test.yml](.github/workflows/test.yml).
+More: [`test/README.md`](test/README.md). CI: [lint](.github/workflows/lint.yml) + [.github/workflows/test.yml](.github/workflows/test.yml).
 
 
 ## Contributing builds / components

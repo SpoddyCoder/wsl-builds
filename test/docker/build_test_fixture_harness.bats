@@ -1,17 +1,15 @@
 #!/usr/bin/env bats
 # shellcheck shell=bats
 
-# Docker-only build.sh regressions:
-# - CLI paths that exit before install.sh is sourced (keep aligned with allowed-build-invocations.sh).
-# - Noop test-fixture full dispatch harness.
+# Docker-only ./build.sh regressions (noop test-fixture harness).
 
 setup() {
 	TEST_ROOT="$(cd "$(dirname "${BATS_TEST_FILENAME}")/../.." && pwd)"
-	CONTAINER_ISOLATED="$(cd "$(dirname "${BATS_TEST_FILENAME}")" && pwd)"
+	TEST_DIR="$(cd "$(dirname "${BATS_TEST_FILENAME}")" && pwd)"
 	_BATS_FAKE_HOME="$(mktemp -d)"
 	export HOME="$_BATS_FAKE_HOME"
 	cd "$TEST_ROOT" || return 1
-	/bin/cp -f "${CONTAINER_ISOLATED}/wsl-builds.conf.container" "${TEST_ROOT}/wsl-builds.conf"
+	/bin/cp -f "${TEST_DIR}/wsl-builds.conf.container" "${TEST_ROOT}/wsl-builds.conf"
 }
 
 teardown() {
