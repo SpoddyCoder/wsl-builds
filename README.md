@@ -12,7 +12,7 @@ This project contains clean, simple WSL2 builds that use Windows host native imp
 The builder provides a quick and easy way to stack components to create different WSL builds for different purposes.
 
 * Simple installations, often featuring quality of life configurations and helpers
-* Caching of large downloads on the Windows host - so you don't have to re-downlaod install packages for rebuilds
+* Caching of large downloads on the Windows host - so you don't have to re-download install packages for rebuilds
 * Other build specific cache directories on the Windows host for convenience (eg: AI .pkl cache)
 * **Project motivation:** WSL instances are disposable - streamlines a clean rebuild when things go wrong
 
@@ -33,11 +33,11 @@ Tip: you can easily automate this using [WSL2-Distro-Manager snippets](#wsl2-dis
 ```
 ./build.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
 ```
-* `build-dir` valid build directory, containing `conf.sh` & `install.sh` (`conf.sh` calls `registerBuildMetadata` in [`src/build-metadata.sh`](src/build-metadata.sh); `install.sh` only sources [`src/install-dispatch.sh`](src/install-dispatch.sh), which runs the component loop at top level — use `./build.sh`; do not rely on executing `install.sh` directly)
+* `build-dir` — a valid build directory under the repo root (see [Build List](#build-list) below).
 * `component[,<component>...]` comma separated list of build components (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
 * `--force` by default components that are already installed will be skipped with warning messages. Use this flag to force reinstallation of already-installed components.
-* The builder can be run as your current user, but some components will run commands that require escalated priveleges using `sudo`
+* The builder can be run as your current user, but some components will run commands that require escalated privileges using `sudo`
 * It is not designed to be used non-interactively - some installs may need user input / confirmation.
 
 ### Assembling and Stacking Builds
@@ -55,7 +55,7 @@ change-hostname my-dev-box
 # build a python environment for AI coding
 ./build.sh system update,qol
 ./build.sh dev essentials,qol,cursor
-./build dev-python conda
+./build.sh dev-python conda
 ./build.sh ai cuda124
 change-hostname python-ai
 ```
@@ -135,10 +135,10 @@ change-hostname python-ai
 * To use the credentials from your Windows host on the WSL instance, see below.
 
 ### Cursor Integration
-* Luanch cursor on Windows machine 
-* Press CTRL + SHIFT + P to bring up the command pallete
+* Launch Cursor on Windows machine 
+* Press CTRL + SHIFT + P to bring up the command palette
 * Search for and run: `Shell Command: Install 'cursor' command`
-* You can now type `cursor` on the WSL instance to launch the current directory in a cursor editor, running in Windows, with a remote connection to WSL intance - sweet.
+* You can now type `cursor` on the WSL instance to launch the current directory in a Cursor editor, running in Windows, with a remote connection to your WSL instance — sweet.
 
 ### VSCode Integration
 * Install VSCode on the windows machine, select Additional Tasks, be sure to check the "Add to PATH" option.
@@ -156,7 +156,7 @@ change-hostname python-ai
 ### Resource Allocation
 * Default memory is 50% of windows memory.
 * https://learn.microsoft.com/en-us/windows/wsl/wsl-config
-* Careful with CLRF line endings when editing this file
+* Careful with CRLF line endings when editing this file
 * Do it on a WSL instance, eg: `nano /mnt/c/Users/me/.wslconfig`
 * For ai work in particular you may find it useful to increase default memory, swap space and enable gradual memory reclaim, eg...
 

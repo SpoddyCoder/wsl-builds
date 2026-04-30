@@ -2,14 +2,14 @@
 Install AI Projects & Tools. Creates an `~/ai-resources` directory containing project repos / files etc.
 
 ## Requires
-* `./build dev-python conda`
-* `./build ai cuda124`
+* `./build.sh dev-python conda`
+* `./build.sh ai cuda124`
 
 ## Build Components
 ### `sg3`
 * Clone stylegan3 & stylegan3-fun and initialise the `stylegan3` conda environment 
 * Setup pkl & pytorch cache on host (see below)
-  * This can save time re-donwloading pkls you may use between builds
+  * This can save time re-downloading pkls you may use between builds
 * You can optionally add these to your `wsl-builds.conf` and they will be used during installations...
 ```
 STYLEGAN3_PKL_CACHE=/mnt/c/cached-pkls/stylegan3            # cache pkls on Windows host
@@ -55,3 +55,4 @@ python gen_video.py --output ../ai-music-viz/expt-renders/lerp.mp4 --trunc=1 --s
 
 ## Build Arguments
 * No additional arguments for this build
+build
