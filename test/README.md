@@ -7,6 +7,6 @@ Host-side:
 
 Docker test image and Bats harness (do **not** run [`docker/run-bats.sh`](docker/run-bats.sh) on the host; it overwrites repo-root `wsl-builds.conf`):
 
-- [`docker/`](docker/) — [`Dockerfile`](docker/Dockerfile), [`Dockerfile.dockerignore`](docker/Dockerfile.dockerignore), [`run-bats.sh`](docker/run-bats.sh), [`*.bats`](docker/build_test_fixture_harness.bats), [`wsl-builds.conf.container`](docker/wsl-builds.conf.container).
+- [`docker/`](docker/) — [`Dockerfile`](docker/Dockerfile), [`Dockerfile.dockerignore`](docker/Dockerfile.dockerignore), [`run-bats.sh`](docker/run-bats.sh), [`*.bats`](docker/build-test-fixture-harness.bats), [`wsl-builds.conf.container`](docker/wsl-builds.conf.container).
 
 Use **`./test/run-tests.sh`** from the repo root instead of running Bats manually.
