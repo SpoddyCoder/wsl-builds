@@ -19,7 +19,7 @@ Requests, advice and PR's are welcome.
 ## Testing
 
 * **Lint (ShellCheck + `bash -n`):** `./src/lint.sh`
-* **`bats` / [`build.sh`](build.sh) regressions:** all suites live under [`test/container-isolated/`](test/container-isolated/) and run inside **Docker** (same [`Dockerfile`](Dockerfile) / command as [.github/workflows/test.yml](.github/workflows/test.yml); includes noop **`test-fixture`** harness + CLI early-exit cases). Prefer the entry script so **`wsl-builds.conf`** matches [`wsl-builds.conf.container.example`](wsl-builds.conf.container.example):
+* **`bats` / [`build.sh`](build.sh) regressions:** all suites live under [`test/container-isolated/`](test/container-isolated/) and run inside **Docker** (same [`Dockerfile`](Dockerfile) / command as [.github/workflows/test.yml](.github/workflows/test.yml); includes noop **`test-fixture`** harness + CLI early-exit cases). Prefer the entry script so **`wsl-builds.conf`** matches [`test/container-isolated/wsl-builds.conf.container`](test/container-isolated/wsl-builds.conf.container):
 
 ```bash
 docker build -t wsl-builds-test .
@@ -28,7 +28,7 @@ docker run --rm -v "$(pwd):/repo" -w /repo \
   bash ./test/container-isolated/run-bats-in-container.sh
 ```
 
-Details: [`docs/testing-requirements.md`](docs/testing-requirements.md). CI: [`.github/workflows/test.yml`](.github/workflows/test.yml).
+More: [`test/container-isolated/README.md`](test/container-isolated/README.md). CI: [`.github/workflows/test.yml`](.github/workflows/test.yml).
 
 ## Contributing builds / components
 

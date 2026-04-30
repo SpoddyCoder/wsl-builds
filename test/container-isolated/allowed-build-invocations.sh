@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Allowed early-exit-only ./build.sh argv patterns — keep synchronized with the early-exit @tests in
 # test/container-isolated/build_test_fixture_harness.bats.
-# Each case must exit before "${BUILD_DIR}/install.sh" is sourced (see ../../docs/testing-requirements.md).
+# Each case must exit before "${BUILD_DIR}/install.sh" is sourced (see ../../CONTRIBUTING.md Testing and this README).
 #
 # Implemented cases:
 #   ./build.sh

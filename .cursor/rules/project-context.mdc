@@ -13,4 +13,4 @@ alwaysApply: true
 - Prefer existing helpers in `src/` over adding new mechanisms.
 - Update `README.md` when adding or changing user-facing build components.
 - Before non-trivial answers or edits, skim `README.md` and `CONTRIBUTING.md` at the repo root, plus the relevant `<build-dir>/README.md` if a specific build is involved.
-- **[`bats-core`](https://github.com/bats-core/bats-core)** tests under **`test/container-isolated/`** run **only inside Docker** via [`run-bats-in-container.sh`](../../test/container-isolated/run-bats-in-container.sh) (same as CI). Before changing `build.sh`, `src/install-dispatch.sh`, helpers, or those tests, skim [`docs/testing-requirements.md`](../../docs/testing-requirements.md).
+- **[`bats-core`](https://github.com/bats-core/bats-core)** tests under **`test/container-isolated/`** run **only inside Docker** via [`run-bats-in-container.sh`](../../test/container-isolated/run-bats-in-container.sh) (same as CI). Before changing `build.sh`, `src/install-dispatch.sh`, helpers, or those tests, skim **Testing** in [`CONTRIBUTING.md`](../../CONTRIBUTING.md) and [`test/container-isolated/README.md`](../../test/container-isolated/README.md).

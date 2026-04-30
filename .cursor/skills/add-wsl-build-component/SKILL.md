@@ -9,7 +9,7 @@ Use this skill when adding or changing a build component in this repository.
 
 ## Workflow
 
-1. Identify the target build directory. Valid build directories are directories containing both `conf.sh` and `install.sh`, such as `dev`, `dev-js`, `system`, or `devops`. The **`test-fixture`** directory is [**testing-only**](../../../docs/testing-requirements.md) (noop harness for CI/agents)—do **not** use it like a production stack unless explicitly asked.
+1. Identify the target build directory. Valid build directories are directories containing both `conf.sh` and `install.sh`, such as `dev`, `dev-js`, `system`, or `devops`. The **`test-fixture`** directory is **testing-only** ([`test-fixture/README.md`](../../../test-fixture/README.md); noop harness for CI/agents)—do **not** use it like a production stack unless explicitly asked.
 2. Read the target build's `conf.sh`, `install.sh`, and nearby `install_<component>.sh` files before editing.
 3. Add the component token to **the third argument (CSV)** of **`registerBuildMetadata`** in **`conf.sh`**.
 4. Add **`install_<name>.sh`**, mapping hyphens to underscores in the basename (examples: **`docker-desktop`** → `install_docker_desktop.sh`; **`postgres-server`** → `install_postgres_server.sh`).
@@ -44,7 +44,7 @@ Component iteration and **`recordComponentSuccess`** live in **`src/install-disp
 
 ## Verification
 
-Repo-wide **`./src/lint.sh`** (ShellCheck + `bash -n`; ShellCheck **`--shell=bats`** on **`test/container-isolated/*.bats`**). After substantive harness or dispatch edits (skip for trivial one-off component scripts), run [**`bats-core`**](../../../docs/testing-requirements.md) in Docker: [`Dockerfile`](../../../Dockerfile) + **`bash ./test/container-isolated/run-bats-in-container.sh`** (same as CI).
+Repo-wide **`./src/lint.sh`** (ShellCheck + `bash -n`; ShellCheck **`--shell=bats`** on **`test/container-isolated/*.bats`**). After substantive harness or dispatch edits (skip for trivial one-off component scripts), run [**`bats-core`**](https://github.com/bats-core/bats-core) in Docker per **Testing** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md): [`Dockerfile`](../../../Dockerfile) + **`bash ./test/container-isolated/run-bats-in-container.sh`** (same as CI).
 
 After editing, run targeted syntax checks:
 

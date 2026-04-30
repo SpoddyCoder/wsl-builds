@@ -54,7 +54,7 @@ source "${TOOL_DIR}/src/install-dispatch.sh"
 - `src/arg-helpers.sh::showAvailableBuildDirs` auto-discovers any dir containing `conf.sh`, so the new dir appears in `./build.sh` listings without further wiring.
 - Defaults (version `"1.0.0"` and zero additional args) are set in **`registerBuildMetadata`**. Edit the second or fourth argument afterward if needed; add components via the CSV third argument once `add-wsl-build-component` is used.
 - `conf.sh` and `install.sh` are sourced (not executed); `install.sh` has a shebang for consistency and local `shellcheck`; `conf.sh` does not require a shebang.
-- If the user asks for something that sounds like **`test-fixture`** (noop components, harness-only CI), read **[`docs/testing-requirements.md`](../../../docs/testing-requirements.md)** first. **`test-fixture`** is **not** a README “Build List” stack unless the maintainer explicitly asks to list it—it exists for automated/container-isolated **bats**.
+- If the user asks for something that sounds like **`test-fixture`** (noop components, harness-only CI), read [`test-fixture/README.md`](../../../test-fixture/README.md) and **[`test/container-isolated/README.md`](../../../test/container-isolated/README.md)** first. **`test-fixture`** is **not** a README “Build List” stack unless the maintainer explicitly asks to list it—it exists for automated/container-isolated **bats**.
 
 ## Verification
 

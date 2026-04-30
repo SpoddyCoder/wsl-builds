@@ -1,4 +1,4 @@
-# Test image only: installs bats-core for docs/testing-requirements.md container-isolated suites.
+# Test image only: installs bats-core for test/container-isolated suites.
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
