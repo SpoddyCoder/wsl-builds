@@ -121,4 +121,4 @@ Use `Up to date` when the script remains functional, supported, and convention-c
 
 ## Verification Guidance
 
-When the user asks to implement recommended updates, use the `add-wsl-build-component` skill. After edits, run `bash -n` on touched build files/helpers. For regressions touching shared **`src/`** (including **`src/install-dispatch.sh`**), harness tests under **`test/container-isolated/`**, run **`./src/lint.sh`**, then **`bash ./test/container-isolated/run-bats-in-container.sh`** inside Docker (see **Testing** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) and [`Dockerfile`](../../../Dockerfile)).
+When the user asks to implement recommended updates, use the `add-wsl-build-component` skill. After edits, run `bash -n` on touched build files/helpers. For regressions touching shared **`src/`** (including **`src/install-dispatch.sh`**), harness tests under **`test/container-isolated/`**, run **`./test/run-tests.sh`** (see **Testing** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) and [`Dockerfile`](../../../Dockerfile)).

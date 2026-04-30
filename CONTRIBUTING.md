@@ -12,23 +12,21 @@ Requests, advice and PR's are welcome.
 ## Linting
 * Bash scripts are linted with [ShellCheck](https://www.shellcheck.net/) on every push and PR.
 * Run the same checks locally before pushing:
-  * `./src/lint.sh` — lint the whole repo
-  * `./src/lint.sh path/to/script.sh` — lint specific files
+  * `./test/lint.sh` — lint the whole repo
+  * `./test/lint.sh path/to/script.sh` — lint specific files
 * Install ShellCheck `./build.sh dev-bash shellcheck`.
 
 ## Testing
 
-* **Lint (ShellCheck + `bash -n`):** `./src/lint.sh`
-* **`bats` / [`build.sh`](build.sh) regressions:** all suites live under [`test/container-isolated/`](test/container-isolated/) and run inside **Docker** (same [`Dockerfile`](Dockerfile) / command as [.github/workflows/test.yml](.github/workflows/test.yml); includes noop **`test-fixture`** harness + CLI early-exit cases). Prefer the entry script so **`wsl-builds.conf`** matches [`test/container-isolated/wsl-builds.conf.container`](test/container-isolated/wsl-builds.conf.container):
+* **Lint only (ShellCheck + `bash -n`):** [`./test/lint.sh`](test/lint.sh)
+* **`bats` / [`build.sh`](build.sh) regressions:** all suites live under [`test/container-isolated/`](test/container-isolated/) and run inside **Docker** ([`Dockerfile`](Dockerfile); includes noop **`test-fixture`** harness + CLI early-exit cases). The image **copies the repo at build time** (no bind mount); [`test/run-tests.sh`](test/run-tests.sh) runs lint, rebuilds that image for your current tree, then runs suites (same **`wsl-builds.conf`** setup as CI via [`test/container-isolated/run-bats-in-container.sh`](test/container-isolated/run-bats-in-container.sh) and [`wsl-builds.conf.container`](test/container-isolated/wsl-builds.conf.container)):
 
 ```bash
-docker build -t wsl-builds-test .
-docker run --rm -v "$(pwd):/repo" -w /repo \
-  wsl-builds-test \
-  bash ./test/container-isolated/run-bats-in-container.sh
+./test/run-tests.sh
 ```
 
-More: [`test/container-isolated/README.md`](test/container-isolated/README.md). CI: [`.github/workflows/test.yml`](.github/workflows/test.yml).
+More: [`test/README.md`](test/README.md), [`test/container-isolated/README.md`](test/container-isolated/README.md). CI: [lint](.github/workflows/lint.yml) + [.github/workflows/test.yml](.github/workflows/test.yml).
+
 
 ## Contributing builds / components
 

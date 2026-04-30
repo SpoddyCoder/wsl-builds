@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Copies container-side config then runs every *.bats file in this directory (early-exit CLI + harness).
+# Copies harness wsl-builds.conf into the image's /repo, then runs every *.bats file here (CLI early-exit + test-fixture harness).
+# Intended as the Docker image CMD (repo is copied at image build time; no bind mount).
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"

@@ -1,0 +1,6 @@
+# Build context for wsl-builds-test (see Dockerfile). Keeps user/local cruft out of the image.
+.git
+.github
+wsl-builds.conf
+.bats_home_*
+.cursor

@@ -8,10 +8,14 @@
 setup() {
 	TEST_ROOT="$(cd "$(dirname "${BATS_TEST_FILENAME}")/../.." && pwd)"
 	CONTAINER_ISOLATED="$(cd "$(dirname "${BATS_TEST_FILENAME}")" && pwd)"
-	export HOME="${TEST_ROOT}/.bats_home_${RANDOM}_${RANDOM}"
-	mkdir -p "$HOME"
+	_BATS_FAKE_HOME="$(mktemp -d)"
+	export HOME="$_BATS_FAKE_HOME"
 	cd "$TEST_ROOT" || return 1
 	/bin/cp -f "${CONTAINER_ISOLATED}/wsl-builds.conf.container" "${TEST_ROOT}/wsl-builds.conf"
+}
+
+teardown() {
+	rm -rf "${_BATS_FAKE_HOME:-}"
 }
 
 @test 'build.sh with no arguments exits nonzero and prints usage' {

@@ -44,7 +44,7 @@ Component iteration and **`recordComponentSuccess`** live in **`src/install-disp
 
 ## Verification
 
-Repo-wide **`./src/lint.sh`** (ShellCheck + `bash -n`; ShellCheck **`--shell=bats`** on **`test/container-isolated/*.bats`**). After substantive harness or dispatch edits (skip for trivial one-off component scripts), run [**`bats-core`**](https://github.com/bats-core/bats-core) in Docker per **Testing** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md): [`Dockerfile`](../../../Dockerfile) + **`bash ./test/container-isolated/run-bats-in-container.sh`** (same as CI).
+Repo-wide **`./test/lint.sh`** (ShellCheck + `bash -n`; ShellCheck **`--shell=bats`** on **`test/container-isolated/*.bats`**). After substantive harness or dispatch edits (skip for trivial one-off component scripts), run **`./test/run-tests.sh`** from the repo root (lint + Docker **`bats-core`**), per **Testing** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md).
 
 After editing, run targeted syntax checks:
 

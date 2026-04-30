@@ -1,16 +1,13 @@
 # Bats regressions (`bats-core`)
 
-[**`bats`**](https://github.com/bats-core/bats-core) suites for **`./build.sh`** live here and run **only inside Docker** (fast; keeps the same blast-radius story as installs). Maintainer notes: **Testing** in [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
+[**`bats`**](https://github.com/bats-core/bats-core) suites for **`./build.sh`** live here and run **only inside Docker** (image embeds the repo at **`docker build`** time; no host bind mount). Maintainer notes: **Testing** in [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
 
 [**`build_test_fixture_harness.bats`**](build_test_fixture_harness.bats) covers **CLI paths that exit before `install.sh`** (allowlisted in **`allowed-build-invocations.sh`**) and the noop **`test-fixture`** dispatch harness (**`--force`**, comma lists, invalid component).
 
-**Recommended / CI-parity:**
+**Recommended (lint + bats in Docker):** from repo root:
 
 ```bash
-docker build -t wsl-builds-test .
-docker run --rm -v "$(pwd):/repo" -w /repo \
-  wsl-builds-test \
-  bash ./test/container-isolated/run-bats-in-container.sh
+./test/run-tests.sh
 ```
 
-Do **not** run bare `bats test/container-isolated/` on your host unless you replicate the helper’s **`wsl-builds.conf`** setup from [`wsl-builds.conf.container`](wsl-builds.conf.container)—use the Docker command instead.
+Do **not** run bare `bats test/container-isolated/` on your host unless you replicate the helper’s **`wsl-builds.conf`** setup from [`wsl-builds.conf.container`](wsl-builds.conf.container)—run **`./test/run-tests.sh`** from the repo root instead.

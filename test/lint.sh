@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Run ShellCheck across the repo's Bash scripts and bats tests; optional bash -n sweep.
 # Usage:
-#   ./src/lint.sh                # lint the standard glob
-#   ./src/lint.sh path/to/file.sh [more.sh ...]   # lint specific files
+#   ./test/lint.sh                # lint the standard glob
+#   ./test/lint.sh path/to/file.sh [more.sh ...]   # lint specific files
 #
 # Flags passed to shellcheck:
 #   --external-sources   follow `source` to files outside the input set, so
@@ -29,6 +29,8 @@ else
     # The real config file wsl-builds.conf is gitignored and not used during lint.
     shellcheck --shell=bash --external-sources --source-path=SCRIPTDIR -- \
         build.sh \
+        test/run-tests.sh \
+        test/lint.sh \
         src/*.sh \
         */install*.sh \
         */conf.sh
@@ -42,7 +44,7 @@ else
     fi
 
     # Syntax-only sanity check on Bash-shaped scripts (.bats use bats syntax and are omitted here).
-    for _lint_bash_file in "${REPO_ROOT}/build.sh" "${REPO_ROOT}"/src/*.sh "${REPO_ROOT}"/*/install*.sh "${REPO_ROOT}"/*/conf.sh; do
+    for _lint_bash_file in "${REPO_ROOT}/build.sh" "${REPO_ROOT}/test/run-tests.sh" "${REPO_ROOT}/test/lint.sh" "${REPO_ROOT}"/src/*.sh "${REPO_ROOT}"/*/install*.sh "${REPO_ROOT}"/*/conf.sh; do
         [[ -f "${_lint_bash_file:-}" ]] || continue
         bash -n -- "${_lint_bash_file}" || exit "${?}"
     done

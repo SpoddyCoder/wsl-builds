@@ -1,6 +1,3 @@
 # WSL Builds
 # user defined config
 wsl-builds.conf
-
-# bats container-isolated ephemeral HOME dirs (tests may create these under repo tmp)
-.bats_home_*
