@@ -30,7 +30,7 @@ printStepBanner 'Step 1 / 3 — Lint (ShellCheck)'
 printStepSummaryOk 'Lint finished with no reported issues.'
 
 printStepBanner 'Step 2 / 3 — Docker image build (tag: wsl-builds-test)'
-docker build -t wsl-builds-test .
+docker build -f test/Dockerfile -t wsl-builds-test .
 printStepSummaryOk 'Docker image built successfully.'
 
 printStepBanner 'Step 3 / 3 — Container-isolated tests (docker run)'

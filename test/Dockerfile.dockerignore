@@ -1,0 +1,6 @@
+# Build context stays repo root (docker build -f test/Dockerfile .). Paired ignore for test/Dockerfile (BuildKit).
+.git
+.github
+wsl-builds.conf
+.bats_home_*
+.cursor
