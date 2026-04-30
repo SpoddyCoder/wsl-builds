@@ -16,3 +16,4 @@ alwaysApply: false
 - Use `getFile` for downloaded installers or binaries so files are cached via `CACHE_DIR`; call `cleanupGetFiles` after installers when cleanup is appropriate.
 - **`src/install-dispatch.sh`** calls `recordComponentSuccess` after sourcing each `install_<component>.sh`; do not call it inside the component script.
 - Assume `build.sh` exits on errors via `set -e`; do not add broad error swallowing.
+- The **`test-fixture/`** directory is **testing-only**: noop `install_<component>.sh` scripts and no production installs. See [`docs/testing-requirements.md`](../../docs/testing-requirements.md).

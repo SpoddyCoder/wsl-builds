@@ -16,6 +16,20 @@ Requests, advice and PR's are welcome.
   * `./src/lint.sh path/to/script.sh` — lint specific files
 * Install ShellCheck `./build.sh dev-bash shellcheck`.
 
+## Testing
+
+* **Lint (ShellCheck + `bash -n`):** `./src/lint.sh`
+* **`bats` / [`build.sh`](build.sh) regressions:** all suites live under [`test/container-isolated/`](test/container-isolated/) and run inside **Docker** (same [`Dockerfile`](Dockerfile) / command as [.github/workflows/test.yml](.github/workflows/test.yml); includes noop **`test-fixture`** harness + CLI early-exit cases). Prefer the entry script so **`wsl-builds.conf`** matches [`wsl-builds.conf.container.example`](wsl-builds.conf.container.example):
+
+```bash
+docker build -t wsl-builds-test .
+docker run --rm -v "$(pwd):/repo" -w /repo \
+  wsl-builds-test \
+  bash ./test/container-isolated/run-bats-in-container.sh
+```
+
+Details: [`docs/testing-requirements.md`](docs/testing-requirements.md). CI: [`.github/workflows/test.yml`](.github/workflows/test.yml).
+
 ## Contributing builds / components
 
 ### Metadata and dispatch (`conf.sh`, `install.sh`)

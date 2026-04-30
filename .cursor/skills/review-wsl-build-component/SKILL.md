@@ -9,7 +9,7 @@ Use this skill to review an existing component and report whether it should be u
 
 ## Workflow
 
-1. Identify the target build directory and component. Build directories contain `conf.sh` and `install.sh`; components usually live in `install_<component>.sh`.
+1. Identify the target build directory and component. Build directories contain `conf.sh` and `install.sh`; components usually live in `install_<component>.sh`. If the scope is **`test-fixture`** (noop [**harness**](../../../docs/testing-requirements.md) only), treat as convention review only unless real install logic appeared—otherwise skip vendor/CVE deep-dives except as requested.
 2. Read the target build's `conf.sh`, `install.sh`, `install_<component>.sh`, and nearby README entries.
 3. Confirm the component token appears in `registerBuildMetadata`'s CSV in `conf.sh` and that **`src/install-dispatch.sh`** loads **`install_<underscore_name>.sh`** for that token (when `build.sh` sources `install.sh`).
 4. Inspect current official install instructions for the component. Prefer vendor documentation over blogs, package mirrors, or stale examples.
@@ -121,4 +121,4 @@ Use `Up to date` when the script remains functional, supported, and convention-c
 
 ## Verification Guidance
 
-When the user asks to implement recommended updates, use the `add-wsl-build-component` skill. After editing shell files, run targeted syntax checks with `bash -n` for the touched build files and any relevant helpers.
+When the user asks to implement recommended updates, use the `add-wsl-build-component` skill. After edits, run `bash -n` on touched build files/helpers. For regressions touching shared **`src/`** (including **`src/install-dispatch.sh`**), harness tests under **`test/container-isolated/`**, run **`./src/lint.sh`**, then **`bash ./test/container-isolated/run-bats-in-container.sh`** inside Docker (see **[`docs/testing-requirements.md`](../../../docs/testing-requirements.md)** and **[`Dockerfile`](../../../Dockerfile)**).

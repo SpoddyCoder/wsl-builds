@@ -1,0 +1,8 @@
+# Paths valid inside ephemeral Linux containers (/tmp …). Copy to wsl-builds.conf for Docker-isolated bats.
+CACHE_DIR=/tmp/wsl-builds/container-cache
+
+WIN_HOME_SYMLINK=/tmp/win-home-sl
+WIN_HOME_TARGET=/tmp/win-home-target
+
+CODE_HOME_SYMLINK=/tmp/code-home-sl
+CODE_HOME_TARGET=/tmp/code-home-target

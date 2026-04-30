@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run ShellCheck across the repo's Bash scripts.
+# Run ShellCheck across the repo's Bash scripts and bats tests; optional bash -n sweep.
 # Usage:
 #   ./src/lint.sh                # lint the standard glob
 #   ./src/lint.sh path/to/file.sh [more.sh ...]   # lint specific files
@@ -32,4 +32,20 @@ else
         src/*.sh \
         */install*.sh \
         */conf.sh
+
+    shopt -s nullglob
+    bats_files=(
+        "${REPO_ROOT}/test/container-isolated"/*.bats
+    )
+    if [ "${#bats_files[@]}" -gt 0 ]; then
+        shellcheck --shell=bats -- "${bats_files[@]}"
+    fi
+
+    # Syntax-only sanity check on Bash-shaped scripts (.bats use bats syntax and are omitted here).
+    for _lint_bash_file in "${REPO_ROOT}/build.sh" "${REPO_ROOT}"/src/*.sh "${REPO_ROOT}"/*/install*.sh "${REPO_ROOT}"/*/conf.sh; do
+        [[ -f "${_lint_bash_file:-}" ]] || continue
+        bash -n -- "${_lint_bash_file}" || exit "${?}"
+    done
+    unset -v _lint_bash_file
+    shopt -u nullglob
 fi
