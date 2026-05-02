@@ -60,7 +60,7 @@ change-hostname python-ai
 
 | Build | Packages | Tools & extras |
 | ----- | -------- | -------------- |
-| [ai](ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2 (WSL network repo + `cuda-keyring`) | |
+| [ai](ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2 (WSL network repo + `cuda-keyring`)<br>**ollama**: [Ollama](https://ollama.com) via official `install.sh`; optional **`OLLAMA_MODELS`** in `wsl-builds.conf` | |
 | [ai-resources](ai-resources/) | | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** |
 | [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
 | [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |

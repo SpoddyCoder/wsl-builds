@@ -66,6 +66,7 @@ printInfo "Example installed"
   * This will cache the files
   * Uses `/tmp` working directory, so if a subsequent command errors they are cleanued up on restart.
   * You should use the partner function `cleanupGetFiles()` to cleanup downloaded files (if desired) after running installers
+* For **large or durable caches** (model weights, toolchain caches, etc.), optional variables in repo-root **`wsl-builds.conf`** (sourced before installs) can point at a host path; add commented examples to **`wsl-builds.conf.example`** and gate in the install script with **`[ -n "${VAR:-}" ]`**. See **`ai-resources/install_sg3.sh`** and **`ai/install_ollama.sh`**. Details: **`.cursor/rules/bash-component-patterns.mdc`**.
 * Use the `isComponentInstalled` helper function to check if components are already installed
   * This checks `~/.wsl-build.info` for component records and respects the `--force` flag
   * Returns 0 (true) if component is installed, 1 (false) if not installed or `--force` is used

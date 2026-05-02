@@ -18,5 +18,10 @@ A good basic base for AI work using CUDA.
 * https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local
 * Useful: https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
 
+### `ollama`
+* Install [Ollama](https://ollama.com) using the official Linux installer (`https://ollama.com/install.sh`), which downloads the matching binary for WSL2 and wires `ollama` into your PATH.
+* Optional: set **`OLLAMA_MODELS`** in `wsl-builds.conf` to store pulled models outside the default `~/.ollama`. When set, the install creates that directory, sets ownership for the `ollama` service user when it exists, wires **`EnvironmentFile`** into **`ollama.service`** when that unit is present, and adds **`/etc/profile.d/wsl-builds-ollama-models.sh`** so login shells see the same value.
+* https://ollama.com/download/linux
+
 ## Build Arguments
 * No additional arguments for this build

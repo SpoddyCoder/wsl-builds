@@ -15,7 +15,8 @@ Use this skill when adding or changing a build component in this repository.
 4. Add **`install_<name>.sh`**, mapping hyphens to underscores in the basename (examples: **`docker-desktop`** → `install_docker_desktop.sh`; **`postgres-server`** → `install_postgres_server.sh`).
 5. Leave **`install.sh`** as the thin **`source install-dispatch.sh`** stub unless you need build-specific behavior beyond **`src/install-dispatch.sh`**.
 6. Update the repo root `README.md` **Build List** if the component should appear there—add or edit table rows only. Keep that file strictly **end-user** focused (install, `./build.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc`.
-7. Run Bash syntax checks for touched shell files.
+7. **Optional `wsl-builds.conf` keys** (large downloads / durable caches the user may want on a host path): add **commented examples** to **`wsl-builds.conf.example`** and document usage in the build’s **`README.md`**. See **`.cursor/rules/bash-component-patterns.mdc`**.
+8. Run Bash syntax checks for touched shell files.
 
 ## Dispatcher (`install.sh`)
 
