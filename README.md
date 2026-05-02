@@ -60,7 +60,7 @@ change-hostname python-ai
 
 | Build | Packages | Tools & extras |
 | ----- | -------- | -------------- |
-| [ai](ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2 (WSL network repo + `cuda-keyring`)<br>**ollama**: [Ollama](https://ollama.com) via official `install.sh`; optional **`OLLAMA_MODELS`** in `wsl-builds.conf` | |
+| [ai](ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2 (WSL network repo + `cuda-keyring`)<br>**cuda-wsl-lib-symlinks**: fix `libcuda.so` / `libcuda.so.1` layout under `/usr/lib/wsl/lib` when WSL warns they are not symlinks<br>**ollama**: [Ollama](https://ollama.com) via official `install.sh`; optional **`OLLAMA_MODELS`** in `wsl-builds.conf` | |
 | [ai-resources](ai-resources/) | | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** |
 | [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
 | [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
@@ -96,17 +96,7 @@ change-hostname python-ai
 
 ### CUDA Integration
 * Install an NVIDIA **Windows** driver with WSL CUDA support, then use the [CUDA on WSL User Guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) inside the distro (toolkit only; do not install Linux GPU drivers in WSL).
-* Optional: some setups warn that **`libcuda.so.1` is not a symbolic link** (see [WSL#5663](https://github.com/microsoft/WSL/issues/5663#issuecomment-1068499676)). Fix from **inside WSL** instead of editing `C:\Windows\System32\lxss\lib`:
-
-```bash
-cd /usr/lib/wsl/lib
-sudo rm -f libcuda.so libcuda.so.1
-sudo ln -s libcuda.so.1.1 libcuda.so.1
-sudo ln -s libcuda.so.1 libcuda.so
-sudo ldconfig
-```
-
-If the versioned file is not `libcuda.so.1.1`, use `ls libcuda.so*` in that directory and point the first `ln -s` at the real `libcuda.so.1.*` file present.
+* If you see **`libcuda.so.1` is not a symbolic link**, run the [ai](ai/) **`cuda-wsl-lib-symlinks`** component (see [ai/README.md](ai/README.md)).
 
 ### Resource Allocation
 * Default memory is 50% of the Windows host memory: https://learn.microsoft.com/en-us/windows/wsl/wsl-config

@@ -18,6 +18,10 @@ A good basic base for AI work using CUDA.
 * https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local
 * Useful: https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
 
+### `cuda-wsl-lib-symlinks`
+* Optional WSL workaround when tools warn that **`libcuda.so.1` is not a symbolic link** (see [WSL#5663](https://github.com/microsoft/WSL/issues/5663#issuecomment-1068499676)). Adjusts **`libcuda.so`** and **`libcuda.so.1`** under **`/usr/lib/wsl/lib`** to point at the real versioned **`libcuda.so.1.*`** file there, then runs **`ldconfig`** — from **inside the distro**, not by editing `C:\Windows\System32\lxss\lib`.
+* **Skips safely** if `/usr/lib/wsl/lib` is missing (non-WSL / no GPU path) or no versioned `libcuda.so.1.*` file is found. If several `libcuda.so.1.*` files exist, the script uses the first regular (non-symlink) match; inspect with `ls libcuda.so*` in that directory if you need a different one.
+
 ### `ollama`
 * Install [Ollama](https://ollama.com) using the official Linux installer (`https://ollama.com/install.sh`), which downloads the matching binary for WSL2 and wires `ollama` into your PATH.
 * Optional: set **`OLLAMA_MODELS`** in `wsl-builds.conf` to store pulled models outside the default `~/.ollama`. When set, the install creates that directory, sets ownership for the `ollama` service user when it exists, wires **`EnvironmentFile`** into **`ollama.service`** when that unit is present, and adds **`/etc/profile.d/wsl-builds-ollama-models.sh`** so login shells see the same value.
