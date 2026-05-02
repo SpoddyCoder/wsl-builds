@@ -3,7 +3,7 @@ Install AI Projects & Tools. Creates an `~/ai-resources` directory containing pr
 
 ## Requires
 * `./build.sh dev-python conda`
-* `./build.sh ai cuda124`
+* `./build.sh ai cuda132` (or `cuda124` if you need CUDA 12.4)
 
 ## Build Components
 ### `sg3`

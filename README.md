@@ -49,7 +49,7 @@ change-hostname my-dev-box
 ./build.sh system update,qol
 ./build.sh dev essentials,qol,cursor
 ./build.sh dev-python conda
-./build.sh ai cuda124
+./build.sh ai cuda132
 change-hostname python-ai
 ```
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
@@ -60,7 +60,7 @@ change-hostname python-ai
 
 | Build | Packages | Tools & extras |
 | ----- | -------- | -------------- |
-| [ai](ai/) | **cuda124**: CUDA 12.4 | |
+| [ai](ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2 (WSL network repo + `cuda-keyring`) | |
 | [ai-resources](ai-resources/) | | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** |
 | [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
 | [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
@@ -95,10 +95,18 @@ change-hostname python-ai
   * https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack
 
 ### CUDA Integration
-* Apply a fix to Windows for Nvidia CUDA issues
-  * [https://github.com/microsoft/WSL/issues/5663](https://github.com/microsoft/WSL/issues/5663#issuecomment-1068499676)
-* Run a command line shell as Administrator, type `cmd` to get a non-powershell command line
-* `cd C:\Windows\System32\lxss\lib && del libcuda.so && del libcuda.so.1 && mklink libcuda.so libcuda.so.1.1 && mklink libcuda.so.1 libcuda.so.1.1`
+* Install an NVIDIA **Windows** driver with WSL CUDA support, then use the [CUDA on WSL User Guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) inside the distro (toolkit only; do not install Linux GPU drivers in WSL).
+* Optional: some setups warn that **`libcuda.so.1` is not a symbolic link** (see [WSL#5663](https://github.com/microsoft/WSL/issues/5663#issuecomment-1068499676)). Fix from **inside WSL** instead of editing `C:\Windows\System32\lxss\lib`:
+
+```bash
+cd /usr/lib/wsl/lib
+sudo rm -f libcuda.so libcuda.so.1
+sudo ln -s libcuda.so.1.1 libcuda.so.1
+sudo ln -s libcuda.so.1 libcuda.so
+sudo ldconfig
+```
+
+If the versioned file is not `libcuda.so.1.1`, use `ls libcuda.so*` in that directory and point the first `ln -s` at the real `libcuda.so.1.*` file present.
 
 ### Resource Allocation
 * Default memory is 50% of the Windows host memory: https://learn.microsoft.com/en-us/windows/wsl/wsl-config
