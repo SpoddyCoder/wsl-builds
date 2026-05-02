@@ -66,62 +66,20 @@ change-hostname python-ai
 ---
 
 ## Build List
-* [dev](dev/)
-  * essentials - curl, wget, git, vim, nano, jq, yq
-  * quality of life - code symlinks
-  * vscode
-  * cursor + tree, code alias
-* [dev-js](dev-js/)
-  * essentials - TypeScript, ESLint, Prettier, PM2, nodemon, serve
-  * node + npm
-  * yarn
-  * nvm
-  * react + create-vite, react-dev-tools
-  * nextjs cli
-  * angular cli
-  * create-vue
-  * express generator
-* [dev-python](dev-python/)
-  * python3
-  * anaconda
-* [dev-ssg](dev-ssg/)
-  * hugo - cli, dev server
-  * jekyll + bundler, ruby + deps
-* [db](db/)
-  * mysql_client
-  * mysql_server
-  * postgres client
-  * postgres server
-* [devops](devops/)
-  * docker
-  * docker-desktop
-  * terraform
-  * packer
-  * kubectl
-  * k9s
-* [devops-aws](devops-aws/)
-  * aws cli + deps (curl, unzip)
-  * quality of life - aws-profile alias
-* [system](system/)
-  * system upgrade - apt update + upgrade
-  * quality of life - safety aliases, change-hostname alias, set default user
-  * x11 - native windows GUI apps
-  * essentials - htop, rsync
-  * smb - smbclient, cifs-utils
-  * nfs - nfs-common
-  * fstab - required fstab mount config for WSL
-  * systemd - systemd, systemd-sysv, enable systemd for wsl
-  * wslu - wslview, wslsys
-* [ai](ai/)
-  * cuda 12.4 for wsl
-* [ai-resources](ai-resources/)
-  * sg3 - stylegan3, pkl cache, pytorch cache
-  * lsd - lucid-sonic-dreams
-  * spleeter
-  * rudalle
-* [dev-bash](dev-bash/)
-  * shellcheck
-  * bats
+
+| Build | Packages | Tools & extras |
+| ----- | -------- | -------------- |
+| [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
+| [dev-js](dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn** | **essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express** |
+| [dev-python](dev-python/) | **python3**<br>**conda**: Anaconda | — |
+| [dev-ssg](dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | — |
+| [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | — |
+| [devops](devops/) | **docker**<br>**docker-desktop** | **terraform**<br>**packer**<br>**kubectl**<br>**k9s** |
+| [devops-aws](devops-aws/) | **awscli** | **qol**: `aws-profile` alias |
+| [system](system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync | **qol**: safety aliases, change-hostname, default user<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**fstab**: WSL mount config<br>**systemd**<br>**wslu**: wslview, wslsys |
+| [ai](ai/) | **cuda124**: CUDA 12.4 | — |
+| [ai-resources](ai-resources/) | — | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** |
+| [dev-bash](dev-bash/) | **shellcheck**<br>**bats** | — |
 
 ---
 

@@ -14,7 +14,7 @@ Use this skill to scaffold a brand-new build directory with no components yet. C
 3. Create `<build-dir>/conf.sh` with the metadata call below (`registerBuildMetadata`).
 4. Create `<build-dir>/install.sh` using only the **`source`** line below (no wrapper function call — dispatch runs inside `src/install-dispatch.sh`).
 5. Create `<build-dir>/README.md` with the skeleton headings below.
-6. Append a bare entry `* [<build-dir>](<build-dir>/)` to the end of the "Build List" section in the top-level `README.md`.
+6. Append a bare entry `* [<build-dir>](<build-dir>/)` to the end of the "Build List" section in the top-level `README.md`. Do not add captions or legends about how the list/table is structured; see `.cursor/rules/readme-user-facing.mdc`.
 7. Run `bash -n` on the new `conf.sh` and `install.sh`.
 8. Tell the user the dir is now framework-only and point them at `add-wsl-build-component` to add the first component.
 
