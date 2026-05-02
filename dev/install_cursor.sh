@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 
-printInfo "Installing cursor development basics..."
+printInfo "Installing Cursor"
+sudo apt update
 sudo apt install -y \
     tree 
 
@@ -16,7 +17,7 @@ else
     printInfo "Cursor alias already exists in ~/.bashrc"
 fi
 
-printInfo "Launching cursor, this should automatically install the extensions..."
+printInfo "Launching Cursor (first run may install extensions)"
 cursor .
 
-printInfo "Cursor installation complete" 
+printInfo "Cursor installed"

@@ -12,7 +12,14 @@ alwaysApply: false
 - Add new components to the third argument CSV. Use names that round-trip to **`install_<underscore_name>.sh`** (hyphens in the CSV become underscores in filenames: `mysql-client` → `install_mysql_client.sh`).
 - **`install.sh`** is only **`source "${TOOL_DIR}/src/install-dispatch.sh"`**. The dispatch loop runs **at top level** inside **`src/install-dispatch.sh`** (no wrapper function) so **`build.sh`** remains the supported entrypoint and `$@` propagates when `install.sh` is sourced. Keep `install.sh` free of duplicated `if` blocks.
 - Put component logic in **`install_<component>.sh`** (underscore filename as above).
-- Use `printInfo`, `printWarning`, and `printError` for user output.
+- **apt (Ubuntu):** run `sudo apt update` before repo-backed `sudo apt install`; always pass `-y`; use `apt` not `apt-get`. Skip `apt update` for local `.deb` / `dpkg -i` only. Snippet: `printInfo "Installing X"` → `sudo apt update` → `sudo apt install -y …` → optional version line → `printInfo "X installed"`.
+- **Component messaging** — user-visible status should be consistent and easy to scan:
+  - **Open** with one line: `printInfo "Installing <Name>"` (human-readable product name; use the same noun in the closing line).
+  - **In progress:** step `printInfo` lines have no ellipsis (`…` / `...`).
+  - **Close** with one final line: `printInfo "<Name> installed"` — past tense, no "successfully", no ellipsis, no trailing period. Must be the **last** user-facing status (after any verification).
+  - **Channels:** use `printInfo`, `printWarning`, and `printError` for step/status output. Use `echo` only for data written into files or heredocs, not for install progress.
+  - **Optional:** if a natural version command exists, prefer `printInfo "<Name> version: $(cmd …)"` (or the first line of output) instead of raw `--version` stdout as the script’s last impression. No `2>/dev/null || echo …` fallbacks.
+  - **Golden example:** [`dev-js/install_node.sh`](../../dev-js/install_node.sh).
 - Use `getFile` for downloaded installers or binaries so files are cached via `CACHE_DIR`; call `cleanupGetFiles` after installers when cleanup is appropriate.
 - **`src/install-dispatch.sh`** calls `recordComponentSuccess` after sourcing each `install_<component>.sh`; do not call it inside the component script.
 - Assume `build.sh` exits on errors via `set -e`; do not add broad error swallowing.

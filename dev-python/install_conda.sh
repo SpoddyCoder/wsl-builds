@@ -12,7 +12,7 @@ cleanupGetFiles
 printInfo "Disabling auto_activate_base"
 echo "auto_activate_base: false" > ~/.condarc
 
-# this is a nice idea! But the Windows host having case insenstive filesystem while the Linux OS has case-senstive proves to be a big problem :(
+printInfo "Anaconda installed"
 # https://github.com/conda/conda/issues/6514
 # https://github.com/conda/conda/issues/10333
 # possible future workaround is to create a case sensitive filesystem on the host - lot of faff tho

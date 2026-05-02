@@ -25,6 +25,9 @@ Use this skill to review an existing component and report whether it should be u
    - WSL-specific requirements or warnings
    - deprecated commands such as `apt-key`
 7. Check repository conventions:
+   - **Component messaging:** first user status line is `printInfo "Installing …"`; the **last** user-facing status is `printInfo "<Name> installed"` (same noun, past tense, no "successfully", ellipsis, or trailing period)
+   - avoid `echo` for step/status lines (reserve `echo` for heredocs or file content)
+   - optional version lines should go through `printInfo` (e.g. `printInfo "<Name> version: …"`), not raw `--version` as the script’s final output
    - use `printInfo`, `printWarning`, and `printError` for output
    - use `getFile` for downloaded installers or binaries when caching is useful
    - call `cleanupGetFiles` after installer downloads when appropriate

@@ -6,4 +6,5 @@ printInfo "Installing Express.js development tools"
 printInfo "Installing express-generator globally for Express project creation"
 sudo npm install -g express-generator@latest
 
-printInfo "Express.js development tools installed successfully" 
+printInfo "express version: $(express --version)"
+printInfo "Express.js development tools installed"

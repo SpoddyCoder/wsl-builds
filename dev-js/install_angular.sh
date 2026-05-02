@@ -6,4 +6,5 @@ printInfo "Installing Angular development tools"
 printInfo "Installing Angular CLI globally for Angular project creation"
 sudo npm install -g @angular/cli@latest
 
-printInfo "Angular development tools installed successfully" 
+printInfo "Angular CLI: $(which ng)"
+printInfo "Angular development tools installed"

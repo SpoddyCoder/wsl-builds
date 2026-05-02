@@ -37,6 +37,28 @@ When you change user-visible builds or components, update the **Build List** in 
 
 ### Components
 
+#### apt conventions
+
+When a component uses Ubuntu `apt` (not local `.deb` installs that never hit the index):
+
+* Run **`sudo apt update`** before any **`sudo apt install`** that pulls from a repository. Skip `apt update` for local `.deb` / `dpkg -i` flows where the index is not queried.
+* Pass **`-y`** on every **`sudo apt install`**.
+* Prefer **`apt`**, not **`apt-get`** (match the majority style in the repo).
+* **Golden snippet** for an apt-only component:
+
+```bash
+#!/usr/bin/env bash
+
+printInfo "Installing Example"
+sudo apt update
+sudo apt install -y example-package
+
+printInfo "Example version: $(example --version | head -n1)"
+printInfo "Example installed"
+```
+
+#### Other conventions
+
 * The `build.sh` tool will exit on any error
   * This is by choice (simple by design)
   * But means you cannot cleanup / handle errors inside the install scripts
@@ -53,6 +75,18 @@ When you change user-visible builds or components, update the **Build List** in 
 * Use the `recordComponentSuccess` helper function to record successful component installations
   * This immediately records the component to `~/.wsl-build.info` and sets `BUILD_UPDATED=true`
   * This ensures that successful components are recorded even if later components fail
+
+#### Component messaging
+
+Each `install_<component>.sh` should follow one small pattern so output stays consistent:
+
+* **Open** with one line: `printInfo "Installing <Name>"` (human-readable name; reuse that noun when you close).
+* **In progress:** use `printInfo` for step lines without ellipsis (`…` / `...`)—same tone as the closing line.
+* **Close** with one final line: `printInfo "<Name> installed"` — past tense, no “successfully”, no ellipsis, no trailing period. This must be the **last** user-facing line (after any version check).
+* Use `printInfo`, `printWarning`, and `printError` for install progress. Use `echo` only for data you are writing into a file or heredoc, not for step status.
+* **Optional:** when a version command exists, prefer `printInfo "<Name> version: $(…)"` (or the first line of output) instead of ending on raw `--version` stdout. No fallbacks like `2>/dev/null || echo …`; `set -e` in `build.sh` is the error contract (`cd … || exit` is the only routine guard).
+
+See [`dev-js/install_node.sh`](dev-js/install_node.sh) for a full example (including `getFile` / `cleanupGetFiles`).
 
 ## FAQ
 * Ubuntu only?

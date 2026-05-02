@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing QoL bits..."
+printInfo "Installing QoL npm globals"
 
 # Install all development tools globally using npm
 printInfo "Installing development tools globally via npm"
@@ -14,4 +14,4 @@ printInfo "PM2 version: $(pm2 --version)"
 printInfo "Nodemon version: $(nodemon --version)"
 printInfo "Serve version: $(serve --version)"
 
-printInfo "QoL development tools package installed successfully"
+printInfo "QoL npm globals installed"

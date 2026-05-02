@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+printInfo "Installing lucid-sonic-dreams"
+
 printInfo "Cloning nerdy rodent's lucid-sonic-dreams repo"
 git clone https://github.com/nerdyrodent/lucid-sonic-dreams.git "${PROJECT_DIR}/lucid-sonic-dreams"
 
@@ -9,7 +11,7 @@ conda create --name lucid-sonic-dreams python=3.9
 # shellcheck source=/dev/null # conda.sh is provided by Anaconda at runtime
 source ~/anaconda3/etc/profile.d/conda.sh
 conda activate lucid-sonic-dreams
-printInfo "Installing packages..."
+printInfo "Installing packages"
 # NB: upgraded to cuda 12
 conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 # fix to versions as lsd is no longer maintained
@@ -19,7 +21,9 @@ pip install .    # make the lucidsonicdreams package available in this conda env
 printInfo "Installing ubuntu ffmpeg with h264 codec"    # TODO: should be able to install this via conda
 conda remove --force ffmpeg
 sudo apt update
-sudo apt install libx264-dev ffmpeg
+sudo apt install -y libx264-dev ffmpeg
 
 printInfo "Note: to use the lucid-sonic-dreams project:"
 printInfo "    conda activate lucid-sonic-dreams"
+
+printInfo "lucid-sonic-dreams installed"

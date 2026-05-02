@@ -3,4 +3,5 @@
 printInfo "Installing bats (bats-core)"
 sudo apt update && sudo apt install -y bats
 
-printInfo "bats installation complete"
+printInfo "bats version: $(bats --version)"
+printInfo "bats (bats-core) installed"

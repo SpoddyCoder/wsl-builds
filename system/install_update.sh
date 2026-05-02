@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Updating system"
+printInfo "Installing System updates"
 sudo apt update
 sudo apt full-upgrade
-printInfo "System update complete" 
+printInfo "System updates installed"

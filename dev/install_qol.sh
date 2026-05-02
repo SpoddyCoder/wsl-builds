@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing dev QoL bits"
+printInfo "Installing Dev QoL bits"
 
 # Create code home symlink if configured
 if [ ! -L "${CODE_HOME_SYMLINK}" ] && [ -n "${CODE_HOME_TARGET}" ]; then
@@ -14,4 +14,4 @@ else
     fi
 fi
 
-printInfo "dev QoL installation complete" 
+printInfo "Dev QoL bits installed"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing Node.js LTS with npm via NodeSource repository"
+printInfo "Installing Node.js"
 
 # Download and run the NodeSource setup script for LTS version
 printInfo "Adding NodeSource repository for Node.js LTS"
@@ -20,4 +20,4 @@ cleanupGetFiles
 printInfo "Node.js version: $(node -v)"
 printInfo "npm version: $(npm -v)"
 
-printInfo "Node.js installed successfully"
+printInfo "Node.js installed"

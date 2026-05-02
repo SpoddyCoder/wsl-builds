@@ -2,10 +2,11 @@
 
 printInfo "Installing PostgreSQL server"
 
+sudo apt update
 sudo apt install -y postgresql postgresql-contrib
 
-# Verify installation
-printInfo "PostgreSQL server installed successfully"
 printInfo "psql version: $(psql --version)"
-printInfo "Clusters:"
+printInfo "PostgreSQL clusters:"
 pg_lsclusters
+
+printInfo "PostgreSQL server installed"

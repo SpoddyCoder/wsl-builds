@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing Hugo static site generator"
+printInfo "Installing Hugo"
 
 # Install Hugo extended edition via apt package manager
 printInfo "Installing Hugo extended edition from Ubuntu repository"
@@ -10,4 +10,4 @@ sudo apt install -y hugo
 # Verify installation
 printInfo "Hugo version: $(hugo version)"
 
-printInfo "Hugo installed successfully" 
+printInfo "Hugo installed"

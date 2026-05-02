@@ -12,15 +12,17 @@ cuda_wsl_url="https://developer.download.nvidia.com/compute/cuda/12.4.0/local_in
 wget ${cuda_wsl_pkg_repo_url}   # small, no need to cache
 sudo mv ${cuda_wsl_pkg_repo_filename} /etc/apt/preferences.d/cuda-repository-pin-600
 # - install the pkg
-sudo apt-key del ${cuda_gpg_key_remove}
+sudo apt-key del ${cuda_gpg_key_remove} || true
 getFile ${cuda_wsl_filename} ${cuda_wsl_url} "/tmp" cuda_installer
 # shellcheck disable=SC2154 # cuda_installer is set by getFile via nameref
 sudo dpkg -i "$cuda_installer"
 sudo cp /var/cuda-repo-wsl-ubuntu-${cuda_version}-local/cuda-*-keyring.gpg /usr/share/keyrings/
 # - install the cuda toolkit
-sudo apt-get update
-sudo apt-get -y install cuda-toolkit-${cuda_version}
+sudo apt update
+sudo apt install -y cuda-toolkit-${cuda_version}
 cleanupGetFiles
+
+printInfo "CUDA WSL 12.4 installed"
 
 # TODO: not required at this stage, but may be useful in the future
 # Add the cuda install to the PATH inside .profile so nvcc works

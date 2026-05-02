@@ -33,14 +33,37 @@ Component iteration and **`recordComponentSuccess`** live in **`src/install-disp
 
 ## Install Script Guidelines
 
+Full conventions: [`.cursor/rules/bash-component-patterns.mdc`](../../rules/bash-component-patterns.mdc) and **Component messaging** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md).
+
 - Keep each component focused on one install/configuration task.
-- Use `printInfo`, `printWarning`, and `printError` for output.
+- **Open** with one line: `printInfo "Installing <Name>"` (human-readable product name; use the same noun at the end).
+- **Close** with one final line: `printInfo "<Name> installed"` — past tense, no "successfully", no ellipsis, no trailing period. Must be the **last** user-facing status (after any verification).
+- **Channels:** use `printInfo`, `printWarning`, and `printError` for step/status output. Use `echo` only for data written into files or heredocs, not for install progress.
+- **Optional:** if a natural version command exists, prefer `printInfo "<Name> version: $(cmd …)"` (or the first line of output) instead of raw `--version` stdout as the script’s last impression.
 - Use `getFile` for downloads so files are cached through `CACHE_DIR`.
 - Call `cleanupGetFiles` after using downloaded installers when cleanup is appropriate.
 - Prefer existing helper functions in `src/` over new helpers.
 - Do not call `recordComponentSuccess` inside `install_<component>.sh`; the dispatcher records success after the script completes.
 - Avoid broad error handling that hides failures; `build.sh` runs with `set -e`.
 - Preserve the repository's simple Bash style unless the user asks for a larger refactor.
+
+**Golden example:** [`dev-js/install_node.sh`](../../../dev-js/install_node.sh).
+
+### Minimal `install_<component>.sh` template
+
+Replace `<Name>` and the body; add mid-step `printInfo` as needed. Pair `getFile` with `cleanupGetFiles` when you download.
+
+```bash
+#!/usr/bin/env bash
+
+printInfo "Installing <Name>"
+
+# ...
+
+# printInfo "<Name> version: $(some-tool --version 2>&1 | head -n1)"
+
+printInfo "<Name> installed"
+```
 
 ## Verification
 

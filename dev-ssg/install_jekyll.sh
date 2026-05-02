@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing Jekyll static site generator"
+printInfo "Installing Jekyll"
 
 # Install Ruby and development dependencies
 printInfo "Installing Ruby and build dependencies"
@@ -31,5 +31,6 @@ gem install jekyll bundler
 printInfo "Jekyll version: $(jekyll --version)"
 printInfo "Bundler version: $(bundler --version)"
 
-printInfo "Jekyll installed successfully"
-printInfo "Note: You may need to restart your shell or run 'source ~/.bashrc' to use Jekyll commands" 
+printInfo "Note: You may need to restart your shell or run 'source ~/.bashrc' to use Jekyll commands"
+
+printInfo "Jekyll installed"

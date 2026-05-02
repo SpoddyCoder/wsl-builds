@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 printInfo "Installing Python3 development basics"
+sudo apt update
 sudo apt install -y python3-pip
 
 # TODO make this an additional arg
@@ -17,4 +18,6 @@ sudo apt install -y python3-pip
 #     flake8 \
 #     mypy
 
-printInfo "Python3 development basics installation complete" 
+printInfo "Python3 version: $(python3 --version)"
+printInfo "pip3 version: $(pip3 --version)"
+printInfo "Python3 development basics installed"

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-printInfo "Installing NVM (Node Version Manager) latest version"
+printInfo "Installing NVM"
 
 # NVM needs libatomic1
-printInfo "Installing dependcy: libatomic1"
-sudo apt-get install libatomic1
+printInfo "Installing dependency: libatomic1"
+sudo apt update
+sudo apt install -y libatomic1
 
 # Download the NVM installation script from the official GitHub repository
 printInfo "Downloading NVM installation script from GitHub"
@@ -25,4 +26,4 @@ export NVM_DIR="$HOME/.nvm"
 
 printInfo "NVM version: $(nvm --version)"
 
-printInfo "NVM installed successfully" 
+printInfo "NVM installed"

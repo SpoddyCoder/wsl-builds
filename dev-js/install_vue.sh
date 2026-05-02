@@ -6,4 +6,5 @@ printInfo "Installing Vue.js development tools"
 printInfo "Installing create-vue globally for Vue project creation"
 sudo npm install -g create-vue@latest
 
-printInfo "Vue.js development tools installed successfully" 
+printInfo "create-vue version: $(create-vue --version)"
+printInfo "Vue.js development tools installed"

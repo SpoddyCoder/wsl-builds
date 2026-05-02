@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-printInfo "Installing dev essentials"
+printInfo "Installing Dev essentials"
+sudo apt update
 sudo apt install -y \
     curl \
     wget \
@@ -10,4 +11,4 @@ sudo apt install -y \
     jq \
     yq
 
-printInfo "Essential dev packages installation complete" 
+printInfo "Dev essentials installed"

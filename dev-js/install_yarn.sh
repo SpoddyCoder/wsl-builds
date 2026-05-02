@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing Yarn package manager via Corepack"
+printInfo "Installing Yarn"
 
 # Enable Corepack (comes with Node.js but is disabled by default)
 printInfo "Enabling Corepack"
@@ -12,4 +12,4 @@ corepack prepare yarn@stable --activate
 
 printInfo "Yarn version: $(yarn --version)"
 
-printInfo "Yarn installed successfully" 
+printInfo "Yarn installed"

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+printInfo "Installing StyleGAN3"
+
 printInfo "Cloning stylegan3 and stylegan3-fun repos"
 mkdir -p "${PROJECT_DIR}"
 git clone https://github.com/NVlabs/stylegan3.git "${PROJECT_DIR}/stylegan3"
@@ -8,7 +10,7 @@ git clone https://github.com/PDillis/stylegan3-fun.git "${PROJECT_DIR}/stylegan3
 cp "${PROJECT_DIR}/stylegan3-fun/environment.yml" "${PROJECT_DIR}/stylegan3/environment.yml"
 
 # install & activate the environment using the file in the stylegan3 repo
-printInfo "Creating stylegan3 environment..."
+printInfo "Creating stylegan3 environment"
 cd "${PROJECT_DIR}/stylegan3/" || exit
 conda env create -f environment.yml
 # shellcheck source=/dev/null # conda.sh is provided by Anaconda at runtime
@@ -25,3 +27,5 @@ fi
 
 printInfo "Note: both stylegan3 & stylegan3-fun repos use the same conda environment:"
 printInfo "    conda activate stylegan3"
+
+printInfo "StyleGAN3 installed"

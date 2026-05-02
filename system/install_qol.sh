@@ -81,4 +81,4 @@ else
     printInfo "change-hostname function already exists in .bashrc"
 fi
 
-printInfo "QoL bits installation complete" 
+printInfo "QoL bits installed"

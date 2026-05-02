@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing quality of life bits..."
+printInfo "Installing AWS QoL bits"
 
 # Add aws-profile function to .bashrc if it doesn't exist
 if ! grep -q "aws-profile()" ~/.bashrc; then
@@ -49,4 +49,6 @@ EOF
     printInfo "Tab completion will work for AWS profile names"
 else
     printInfo "aws-profile function already exists in .bashrc"
-fi 
+fi
+
+printInfo "AWS QoL bits installed"

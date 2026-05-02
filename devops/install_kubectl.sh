@@ -2,13 +2,14 @@
 
 printInfo "Installing kubectl"
 
-printInfo "Installing dependencies..."
-sudo apt-get install -y curl
+printInfo "Installing dependencies"
+sudo apt update
+sudo apt install -y curl
 
 # Get the latest stable version
 KUBECTL_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
 
-printInfo "Installing kubectl version ${KUBECTL_VERSION}..."
+printInfo "Installing kubectl version ${KUBECTL_VERSION}"
 kubectl_url="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
 kubectl_sha256_url="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256"
 
@@ -26,5 +27,6 @@ sudo install -o root -g root -m 0755 "$kubectl_binary" /usr/local/bin/kubectl
 # Cleanup
 cleanupGetFiles
 
-printInfo "kubectl installed successfully..."
-kubectl version --client 
+printInfo "kubectl client version: $(kubectl version --client 2>/dev/null | head -n1)"
+
+printInfo "kubectl installed"

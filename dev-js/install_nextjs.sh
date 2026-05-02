@@ -9,4 +9,4 @@ sudo npm install -g create-next-app
 # Verify installation
 printInfo "create-next-app version: $(create-next-app --version)"
 
-printInfo "Next.js development tools installed successfully"
+printInfo "Next.js development tools installed"
