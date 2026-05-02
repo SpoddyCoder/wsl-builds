@@ -18,17 +18,7 @@ Requests, advice and PR's are welcome.
 
 ## Testing
 
-* **Lint only (ShellCheck + `bash -n`):** [`./test/lint.sh`](test/lint.sh) — same checks as [.github/workflows/lint.yml](.github/workflows/lint.yml); see **Linting** above.
-* **Lint + Docker + Bats:** [`./test/run-tests.sh`](test/run-tests.sh) runs lint, then `docker build -f test/docker/Dockerfile` from the repo root, then `docker run` the image (lint + image build + Bats in one command). Use it from the **repo root** instead of running Bats on the host by hand. CI covers the same areas via [.github/workflows/lint.yml](.github/workflows/lint.yml) and [.github/workflows/test.yml](.github/workflows/test.yml).
-
-```bash
-./test/run-tests.sh
-```
-
-**[`bats-core`](https://github.com/bats-core/bats-core)** regressions exercise [`build.sh`](build.sh) against the noop **`test-fixture`** build; the harness and image live under [`test/docker/`](test/docker/). The image **copies the repo at build time** (no bind mount).
-
-* **Do not** run [`test/docker/run-bats.sh`](test/docker/run-bats.sh) on the host — it overwrites repo-root **`wsl-builds.conf`**.
-* **Docker test files:** [`test/docker/Dockerfile`](test/docker/Dockerfile), [`test/docker/Dockerfile.dockerignore`](test/docker/Dockerfile.dockerignore), [`test/docker/run-bats.sh`](test/docker/run-bats.sh), [`test/docker/build-test-fixture-harness.bats`](test/docker/build-test-fixture-harness.bats), [`test/docker/wsl-builds.conf`](test/docker/wsl-builds.conf).
+See **[`test/README.md`](test/README.md)** for lint vs Docker/Bats, CI pointers, harness layout, and a catalog of each Bats case.
 
 
 ## Contributing builds / components

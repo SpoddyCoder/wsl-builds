@@ -8,8 +8,9 @@ alwaysApply: true
 ## Documentation audiences
 
 - **`README.md` (repo root):** End users—what the project is, how to install/configure, how to run `./build.sh`, high-level build/component lists. Not maintainer walkthroughs, script wiring, or instructions aimed only at agents. Skip table “legends” or other meta lines about formatting (those belong in **CONTRIBUTING.md** or `.cursor/rules/`).
-- **`CONTRIBUTING.md`:** Contributors—lint/test workflow, how to add builds/components, metadata/dispatch (`conf.sh`, `install.sh`, `src/install-dispatch.sh`). Canonical prose for that lives in **Contributing builds / components**.
-- **`.cursor/rules/`:** Operational context for the assistant—invariants (e.g. supported entrypoint is `build.sh`; `install.sh` is not meant to be executed standalone), bash conventions, where tests live. Keep rules short; point to `CONTRIBUTING.md` for full explanations.
+- **`CONTRIBUTING.md`:** Contributors—ShellCheck/`bash -n` lint workflow (**Linting**), how to add builds/components, metadata/dispatch (`conf.sh`, `install.sh`, `src/install-dispatch.sh`). Canonical prose for that lives in **Contributing builds / components**.
+- **`test/README.md`:** Running `./test/run-tests.sh`, Docker/Bats harness, catalog of each regression test.
+- **`.cursor/rules/`:** Operational context for the assistant—invariants (e.g. supported entrypoint is `build.sh`; `install.sh` is not meant to be executed standalone), bash conventions, where tests live. Keep rules short; point to **`CONTRIBUTING.md`** for contributor prose and **`test/README.md`** for the testing harness.
 
 ## Project behaviour
 
@@ -22,5 +23,5 @@ alwaysApply: true
 - Update **`README.md`** when adding or changing **user-visible** build behaviour (new components users select, args they pass, or build directory purpose). Do **not** put implementation or agent-only notes in the root README—use **`CONTRIBUTING.md`** or rely on Cursor rules.
 - After changes that materially affect **contributor workflow**, **test/lint mechanics**, **scaffolding/component patterns**, or **invariants agents rely on**, check whether **`CONTRIBUTING.md`**, **`.cursor/rules/`**, and **`.cursor/skills/`** still match reality; refresh **only where** text would mislead—skip this for trivial typo-only edits or narrowly local fixes that do not change behaviour or conventions.
 - Before non-trivial answers or edits, skim `README.md` and `CONTRIBUTING.md` at the repo root, plus the relevant `<build-dir>/README.md` if a specific build is involved.
-- **[`bats-core`](https://github.com/bats-core/bats-core)** tests in **`test/docker/*.bats`** run **only inside Docker**: the test image **copies the repo at build time** (no host bind mount); use **`test/run-tests.sh`** locally (lint + image build + run). Before changing `build.sh`, `src/install-dispatch.sh`, helpers, or Bats tests, skim **Testing** in `CONTRIBUTING.md`.
+- **[`bats-core`](https://github.com/bats-core/bats-core)** tests in **`test/docker/*.bats`** run **only inside Docker**: the test image **copies the repo at build time** (no host bind mount); use **`test/run-tests.sh`** locally (lint + image build + run). Before changing `build.sh`, `src/install-dispatch.sh`, helpers, or Bats tests, skim **`test/README.md`**.
 - **User config vs harness:** Repo-root **`/wsl-builds.conf`** is gitignored and listed in **`test/docker/Dockerfile.dockerignore`** with a **root-anchored** pattern (`/wsl-builds.conf`). An unanchored `wsl-builds.conf` ignores/excludes **`test/docker/wsl-builds.conf`** as well—breaking clones and Docker `COPY`. If you touch those ignore files or rename harness config, verify the harness stays tracked and present in the image.

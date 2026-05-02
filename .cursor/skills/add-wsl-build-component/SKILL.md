@@ -44,7 +44,7 @@ Component iteration and **`recordComponentSuccess`** live in **`src/install-disp
 
 ## Verification
 
-Repo-wide **`./test/lint.sh`** (ShellCheck + `bash -n`; ShellCheck **`--shell=bats`** on **`test/docker/*.bats`**). After substantive edits to **`src/install-dispatch.sh`**, shared helpers, or **`test/docker/`** (skip for trivial one-off component scripts), run **`./test/run-tests.sh`** from the repo root (lint + Docker Bats), per **Testing** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md).
+Repo-wide **`./test/lint.sh`** (ShellCheck + `bash -n`; ShellCheck **`--shell=bats`** on **`test/docker/*.bats`**). After substantive edits to **`src/install-dispatch.sh`**, shared helpers, or **`test/docker/`** (skip for trivial one-off component scripts), run **`./test/run-tests.sh`** from the repo root (lint + Docker Bats), per [`test/README.md`](../../../test/README.md).
 
 After editing, run targeted syntax checks:
 
