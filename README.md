@@ -7,7 +7,7 @@ This project contains clean, simple WSL2 builds that use Windows host native imp
 * Simple installations, often featuring quality of life configurations and helpers
 * Caching of large downloads on the Windows host, so you don't have to re-download install packages for rebuilds
 * Other build specific cache directories on the Windows host for convenience (eg: AI .pkl cache)
-* **Project motivation:** WSL instances are disposable - streamlines a clean rebuild when things go wrong
+* **Project motivation:** WSL instances are disposable - streamlines a clean rebuild whenever its needed
 
 ## Install
 After provisioning a basic WSL instance, clone the project repo on it...
