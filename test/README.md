@@ -1,20 +1,21 @@
 # Testing
 
-Automated checks cover ShellCheck/`bash -n` and Docker-based Bats regressions against [`build.sh`](../build.sh) and the shared install path ([`src/install-dispatch.sh`](../src/install-dispatch.sh)).
+Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolated Docker container for safety.
 
 ## How to run
 
-* **Lint only (ShellCheck + `bash -n`):** [`./lint.sh`](lint.sh) — same checks as [.github/workflows/lint.yml](../.github/workflows/lint.yml). Contributor setup for ShellCheck lives under **Linting** in [`CONTRIBUTING.md`](../CONTRIBUTING.md).
-* **Lint + Docker + Bats:** [`./run-tests.sh`](run-tests.sh) from the **repo root** runs lint, builds the image from [`docker/Dockerfile`](docker/Dockerfile), then runs the container (one command). CI also runs these via [.github/workflows/lint.yml](../.github/workflows/lint.yml) and [.github/workflows/test.yml](../.github/workflows/test.yml).
+* [`./lint.sh`](lint.sh) - **Lint only** - ShellCheck + `bash -n`
+* [`./run-tests.sh`](run-tests.sh) - **Lint + Bats** - builds the image from [`docker/Dockerfile`](docker/Dockerfile), then runs the Bats tests in the container.
+* CI also runs these via [.github/workflows/lint.yml](../.github/workflows/lint.yml) and [.github/workflows/test.yml](../.github/workflows/test.yml).
 
 ```bash
 ./test/run-tests.sh
 ```
 
-[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) drive the noop [`test-fixture`](../test-fixture/) build. The image **copies the repo at build time** (no host bind mount).
+[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) drive the [`test-fixture`](../test-fixture/) build. The image **copies the repo at build time** (no host bind mount) so the tests run in an isolated environment.
 
 * **Do not** run [`docker/run-bats.sh`](docker/run-bats.sh) on the host — it overwrites repo-root **`wsl-builds.conf`**.
-* **Docker harness files:** [`docker/Dockerfile`](docker/Dockerfile), [`docker/Dockerfile.dockerignore`](docker/Dockerfile.dockerignore), [`docker/run-bats.sh`](docker/run-bats.sh), [`docker/build-test-fixture-harness.bats`](docker/build-test-fixture-harness.bats), [`docker/wsl-builds.conf`](docker/wsl-builds.conf).
+* **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.
 
 Before changing `build.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, or Bats tests, skim this doc and run **`./test/run-tests.sh`** when behaviour may regress.
 
