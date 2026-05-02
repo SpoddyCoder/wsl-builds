@@ -1,6 +1,7 @@
 # Build context is repo root (docker build -f test/docker/Dockerfile .). Paired with test/docker/Dockerfile (BuildKit).
 .git
 .github
-wsl-builds.conf
+# Root only — test/docker/wsl-builds.conf must ship in COPY . /repo
+/wsl-builds.conf
 .bats_home_*
 .cursor
