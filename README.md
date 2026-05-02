@@ -63,25 +63,21 @@ change-hostname python-ai
 * Pick and choose - use multiple runs of the build tool to stack components / packages / features from different builds as you need.
 * Build history is kept in `~/.wsl-build.info`
 
----
-
 ## Build List
 
 | Build | Packages | Tools & extras |
 | ----- | -------- | -------------- |
+| [ai](ai/) | **cuda124**: CUDA 12.4 | |
+| [ai-resources](ai-resources/) | | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** |
+| [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
 | [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
+| [dev-bash](dev-bash/) | **shellcheck**<br>**bats** | |
 | [dev-js](dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn** | **essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express** |
-| [dev-python](dev-python/) | **python3**<br>**conda**: Anaconda | — |
-| [dev-ssg](dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | — |
-| [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | — |
+| [dev-python](dev-python/) | **python3**<br>**conda**: Anaconda | |
+| [dev-ssg](dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
 | [devops](devops/) | **docker**<br>**docker-desktop** | **terraform**<br>**packer**<br>**kubectl**<br>**k9s** |
 | [devops-aws](devops-aws/) | **awscli** | **qol**: `aws-profile` alias |
 | [system](system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync | **qol**: safety aliases, change-hostname, default user<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**fstab**: WSL mount config<br>**systemd**<br>**wslu**: wslview, wslsys |
-| [ai](ai/) | **cuda124**: CUDA 12.4 | — |
-| [ai-resources](ai-resources/) | — | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** |
-| [dev-bash](dev-bash/) | **shellcheck**<br>**bats** | — |
-
----
 
 ## Enabling + Configuring WSL2 on the Windows Host
 * Open PowerShell as an Administrator
