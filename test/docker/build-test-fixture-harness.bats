@@ -188,3 +188,37 @@ teardown() {
 	[[ "${output:?}" =~ Downloading\ and\ caching ]]
 	grep -Fxq 'test-fixture v1.0.0 (getfile-harness)' "${HOME}/.wsl-build.info"
 }
+
+@test 'file-edit-harness updates shell rc and /etc/wsl.conf' {
+	_BATS_WSL_CONF_BAK="${BATS_TEST_TMPDIR}/wsl.conf.prior"
+	_BATS_WSL_CONF_EXISTS_prior=0
+	if [[ -f /etc/wsl.conf ]]; then
+		_BATS_WSL_CONF_EXISTS_prior=1
+		cp -- /etc/wsl.conf "${_BATS_WSL_CONF_BAK}"
+	fi
+	_batsRestoreWslConf() {
+		if [[ "${_BATS_WSL_CONF_EXISTS_prior}" -eq 1 ]]; then
+			cp -- "${_BATS_WSL_CONF_BAK}" /etc/wsl.conf
+		else
+			rm -f /etc/wsl.conf
+		fi
+	}
+	trap '_batsRestoreWslConf' EXIT
+
+	cat >/etc/wsl.conf <<'EOF'
+[network]
+# harness dummy seed
+EOF
+
+	run ./build.sh test-fixture file-edit-harness
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" =~ Building\ test-fixture\ v1\.0\.0 ]]
+	[[ "${output:?}" =~ installed! ]]
+	grep -qF '[wsl-builds-test]' /etc/wsl.conf
+	grep -qF 'fixture = true' /etc/wsl.conf
+	grep -qF '# harness dummy seed' /etc/wsl.conf
+	grep -qF '# >>> wsl-builds:test-fixture-file-harness >>>' "${HOME}/.bashrc"
+	grep -qF 'export WSL_BUILDS_TEST_FIXTURE_HARNESS=1' "${HOME}/.bashrc"
+	grep -qF '# <<< wsl-builds:test-fixture-file-harness <<<' "${HOME}/.bashrc"
+	grep -Fxq 'test-fixture v1.0.0 (file-edit-harness)' "${HOME}/.wsl-build.info"
+}

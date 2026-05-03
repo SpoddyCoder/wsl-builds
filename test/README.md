@@ -48,10 +48,11 @@ Each row is one `@test`. The **`#`** column matches Bats TAP numbering (`ok N �
 | 21 | `WSL_BUILDS_CONF set to readable file is sourced and path is printed` | `WSL_BUILDS_CONF` points at a copy of the harness file → build succeeds; output names that path. |
 | 22 | `WSL_BUILDS_CONF set but not readable exits nonzero` | Missing path → nonzero exit; output reports unreadable `WSL_BUILDS_CONF`. |
 | 23 | `getfile-harness exercises getFile cache hit download cleanupGetFiles and records success` | Runs harness component → success; stdout shows cache-hit and download paths (`wget` via short-lived localhost HTTP server); `~/.wsl-build.info` records `getfile-harness`. |
+| 24 | `file-edit-harness updates shell rc and /etc/wsl.conf` | Seeds dummy `/etc/wsl.conf`, runs harness component, asserts `ensureShellRcRegion` block in `~/.bashrc` and `ensureWslConfIniLine` under `[wsl-builds-test]`; restores `/etc/wsl.conf` after. |
 
 ## Wizard catalog (`docker/wsl-builds-conf-wizard.bats`)
 
-Wizard tests snapshot repo-root **`wsl-builds.conf`** each test and restore it in `teardown` so the build-fixture harness file stays valid for other suites in the same `bats` run. Each row is one `@test`. TAP numbers are **24–41** when [`run-bats.sh`](docker/run-bats.sh) runs files in lexical order (`build-test-fixture-harness.bats` first).
+Wizard tests snapshot repo-root **`wsl-builds.conf`** each test and restore it in `teardown` so the build-fixture harness file stays valid for other suites in the same `bats` run. Each row is one `@test`. TAP numbers are **25–43** when [`run-bats.sh`](docker/run-bats.sh) runs files in lexical order (`build-test-fixture-harness.bats` first).
 
 | # | Test | What it checks |
 | -: | ---- | -------------- |
