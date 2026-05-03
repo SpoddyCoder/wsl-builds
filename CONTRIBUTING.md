@@ -35,6 +35,20 @@ Do not duplicate per-component `if`/`source` blocks in **`install.sh`**; that lo
 
 When you change user-visible builds or components, update the **Build List** in the repo root `README.md`. That file is for **people using the project** (install, `./build.sh`, the list itself). Do not add meta lines that explain how the document or table is formatted or maintained—forbidden examples include “one row per build” or “bold means …”. Editorial conventions belong in **`.cursor/rules/readme-user-facing.mdc`** and contributor context here, not in the user-facing README.
 
+#### Build List columns: Packages vs Tools & extras
+
+Before adding a component to the table, read its `install_<component>.sh` and decide which column it belongs in:
+
+* **Packages** — the **foundational** software the build is centred on: runtimes, SDKs, core daemons, language toolchains, or baseline OS packages required for the build to be useful on its own. Examples: `node`, `nvm`, `yarn` (dev-js); `python3`, `conda` (dev-python); `cuda132`, `ollama` (ai); `docker` (devops); `awscli` (devops-aws); `mysql-server`, `postgres-client` (db); `essentials` and `update` in **system** and **dev** (baseline apt installs).
+* **Tools & extras** — anything **layered on top** of a foundational package, or that does not install one at all. Includes:
+  * auxiliary CLIs / utilities used alongside the core package (e.g. `terraform`, `packer`, `kubectl`, `k9s` in devops);
+  * language-ecosystem libraries / framework scaffolds installed via the runtime's own package manager (e.g. `react`, `nextjs`, `express`, dev-js `essentials` npm globals; `sg3`, `lsd`, `spleeter`, `rudalle` in ai-resources);
+  * shell aliases / functions / **qol** helpers (e.g. `qol` in `dev`, `system`, `devops-aws`; `cursor`'s `code` alias);
+  * WSL / system integrations and config-only components (e.g. `x11`, `smb`, `nfs`, `fstab`, `systemd`, `wslu` in system; `vscode` in dev, which only launches `code .`);
+  * fixes / workarounds that adjust existing files without installing anything new (e.g. **`cuda-wsl-lib-symlinks`**, which only recreates `libcuda.so*` symlinks and runs `ldconfig`).
+
+Quick decision rule: **if the component does not install a new foundational package — i.e. it only configures, aliases, fixes, scaffolds on top of an existing runtime, or layers an ecosystem tool — it goes in Tools & extras.** Mixed components (e.g. `cursor`, which `apt install`s `tree` but exists for the alias + launch) categorize by **primary purpose**, not by whether any apt call appears.
+
 ### Components
 
 #### apt conventions

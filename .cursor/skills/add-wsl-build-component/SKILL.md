@@ -14,7 +14,11 @@ Use this skill when adding or changing a build component in this repository.
 3. Add the component token to **the third argument (CSV)** of **`registerBuildMetadata`** in **`conf.sh`**.
 4. Add **`install_<name>.sh`**, mapping hyphens to underscores in the basename (examples: **`docker-desktop`** → `install_docker_desktop.sh`; **`postgres-server`** → `install_postgres_server.sh`).
 5. Leave **`install.sh`** as the thin **`source install-dispatch.sh`** stub unless you need build-specific behavior beyond **`src/install-dispatch.sh`**.
-6. Update the repo root `README.md` **Build List** if the component should appear there—add or edit table rows only. Keep that file strictly **end-user** focused (install, `./build.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc`.
+6. Update the repo root `README.md` **Build List** if the component should appear there—add or edit table rows only. **Categorize by primary purpose** (read the `install_<component>.sh` first):
+   - **Packages** = foundational installs the build is centred on (runtimes, SDKs, core daemons, language toolchains, baseline OS packages) — e.g. `node`, `python3`, `cuda132`, `ollama`, `docker`, `awscli`.
+   - **Tools & extras** = anything layered on top or that installs no foundational package — auxiliary CLIs (`terraform`, `kubectl`), ecosystem libs / framework scaffolds (`react`, `nextjs`, `sg3`), shell aliases / `qol`, WSL/system integration or config-only components (`x11`, `smb`, `fstab`, `systemd`, `wslu`, `vscode`), and fixes / workarounds that only adjust existing files (e.g. `cuda-wsl-lib-symlinks`).
+   - Quick rule: **no new foundational package installed → Tools & extras.** Mixed cases (e.g. `cursor` `apt install`s `tree` but exists for the alias + launch) categorize by **primary purpose**, not by whether any `apt install` appears.
+   - Keep that file strictly **end-user** focused (install, `./build.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc` and **`CONTRIBUTING.md`** § *Build List columns: Packages vs Tools & extras* (canonical prose).
 7. **Optional `wsl-builds.conf` keys** (large downloads / durable caches the user may want on a host path): add **commented examples** to **`wsl-builds.conf.example`** and document usage in the build’s **`README.md`**. See **`.cursor/rules/bash-component-patterns.mdc`**.
 8. Run Bash syntax checks for touched shell files.
 

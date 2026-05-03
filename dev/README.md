@@ -8,11 +8,13 @@ A good basic base for general purpose development work.
 
 ### `vscode`
 * Launch VSCode to automatically install extensions for native Windows VSCode integration
+* See the [VSCode section](../README.md#vscode-integration) of the main README for more info.
 
 ### `cursor`
 * Launch Cursor to automatically install extensions for native Windows Cursor integration
 * Adds a bash alias to launch cursor when using `code`
 * Install basic packages that Cursor editor likes to use (includes `tree`)
+* See the [Cursor section](../README.md#cursor-integration) of the main README for more info.
 
 ### `qol`
 * Quality of life bits
@@ -32,6 +34,7 @@ GIT_USER_EMAIL="my@email.com"
 GIT_PULL_REBASE=false
 ```
 * Using the credntials helper from the host machine can be convenient to avoid having to setup auth on each WSL instance.
+* See the [Git section](../README.md#git-integration) of the main README for more info.
 
 ## Build Arguments
 * No additional arguments for this build

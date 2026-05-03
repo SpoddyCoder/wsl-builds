@@ -73,7 +73,7 @@ change-hostname python-ai
 
 | Build | Packages | Tools & extras |
 | ----- | -------- | -------------- |
-| [ai](ai/) | **cuda124**CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**cuda-wsl-lib-symlinks**: fix 'not symlinks' issue<br>**ollama**: + optional **`OLLAMA_MODELS`** | |
+| [ai](ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**: + optional **`OLLAMA_MODELS`** | **cuda-wsl-lib-symlinks**: fix 'not symlinks' issue |
 | [ai-resources](ai-resources/) | | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** |
 | [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
 | [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq + optional git config from `wsl-builds.conf` | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
@@ -108,7 +108,9 @@ change-hostname python-ai
   * https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack
 
 ### CUDA Integration
-* Install an NVIDIA **Windows** driver with WSL CUDA support, then use the [CUDA on WSL User Guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) inside the distro (toolkit only; do not install Linux GPU drivers in WSL).
+* Install an NVIDIA **Windows** driver with WSL CUDA support
+* The use `./build.sh ai cuda132` to install the CUDA toolkit (or `cuda124` if you need CUDA 12.4) on the WSL instance. **Do not** install Linux GPU drivers in WSL.
+* For more info: [CUDA on WSL User Guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
 * If you see **`libcuda.so.1` is not a symbolic link**, run the [ai](ai/) **`cuda-wsl-lib-symlinks`** component (see [ai/README.md](ai/README.md)).
 
 ### Resource Allocation
