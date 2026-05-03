@@ -22,6 +22,9 @@
 # ai / ollama - (default is on the WSL instance: ~/.ollama)
 # OLLAMA_MODELS=/mnt/c/WSL/ollama-models    # store models on Windows host
 
-# ai-resources / stylegan3
-# STYLEGAN3_PKL_CACHE=/mnt/c/cached-pkls/stylegan3            # cache pkls on Windows host
-# STYLEGAN3_PYTORCH_CACHE=/mnt/c/cached-pytorch/stylegan3     # cache pytorch extensions on Windows host
+# ai-resources - (default is on the WSL instance: ~/ai-resources)
+# AI_RESOURCES_PROJECT_DIR=/mnt/c/WSL/ai-resources              # where the projects are cloned
+
+# ai-resource / stylegan3 - (default is on the WSL instance: ~/.cache/)
+# STYLEGAN3_PKL_CACHE=/mnt/c/WSL/stylegan3/pkl-cache            # cache pkls on Windows host
+# STYLEGAN3_PYTORCH_CACHE=/mnt/c/WSL/stylegan3/pytorch-cache    # cache pytorch extensions on Windows host

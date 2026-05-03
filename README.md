@@ -74,7 +74,7 @@ change-hostname python-ai
 | Build | Packages & Frameworks | Tools & extras |
 | ----- | ----------------------- | -------------- |
 | [ai](ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**: + optional **`OLLAMA_MODELS`** | **cuda-wsl-lib-symlinks**: fix 'not symlinks' issue |
-| [ai-resources](ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** | |
+| [ai-resources](ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** + optional **`AI_RESOURCES_PROJECT_DIR`** | |
 | [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
 | [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq + optional git config from `wsl-builds.conf` | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
 | [dev-bash](dev-bash/) | **shellcheck**<br>**bats** | |

@@ -1,5 +1,5 @@
 # `ai-resources`
-Install AI Projects & Tools. Creates an `~/ai-resources` directory containing project repos / files etc.
+Install AI Projects & Tools. Clones project repos to **`~/ai-resources`** by default, or under **`AI_RESOURCES_PROJECT_DIR`** if set in **`wsl-builds.conf`** (see **`wsl-builds.conf.example`**).
 
 ## Requires
 * `./build.sh dev-python conda`
@@ -55,4 +55,3 @@ python gen_video.py --output ../ai-music-viz/expt-renders/lerp.mp4 --trunc=1 --s
 
 ## Build Arguments
 * No additional arguments for this build
-build
