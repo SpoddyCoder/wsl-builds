@@ -25,6 +25,7 @@ Use this skill to review an existing component and report whether it should be u
    - WSL-specific requirements or warnings
    - deprecated commands such as `apt-key`
 7. Check repository conventions:
+   - If the review proposes **rewording user-visible scripted output** (especially from **`src/`** or **`build.sh`**), **`test/docker/*.bats`** frequently matches **`$output`** via **`[[ … =~ ]]`, `grep`**, etc. Flag that **`test/`**, **`test-fixture/`**, and Bats assertions should be updated **in the same implementation pass** (`./test/run-tests.sh` after substantive helper changes).
    - **Component messaging:** first user status line is `printInfo "Installing …"`; the **last** user-facing status is `printInfo "<Name> installed"` (same noun, past tense, no "successfully", ellipsis, or trailing period)
    - avoid `echo` for step/status lines (reserve `echo` for heredocs or file content)
    - optional version lines should go through `printInfo` (e.g. `printInfo "<Name> version: …"`), not raw `--version` as the script’s final output

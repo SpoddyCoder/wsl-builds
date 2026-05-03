@@ -74,6 +74,8 @@ printInfo "<Name> installed"
 
 Repo-wide **`./test/lint.sh`** (ShellCheck + `bash -n`; ShellCheck **`--shell=bats`** on **`test/docker/*.bats`**). After substantive edits to **`src/install-dispatch.sh`**, shared helpers, or **`test/docker/`** (skip for trivial one-off component scripts), run **`./test/run-tests.sh`** from the repo root (lint + Docker Bats), per [`test/README.md`](../../../test/README.md).
 
+If you change any **exact user-visible string** (e.g. **`printInfo`/`printWarning`/`printError`** lines, **`getFile`** cache warnings/prompts, usage text), **`rg`** **`test/`** and **`test-fixture/`** (especially **`test/docker/*.bats`**) for the old wording and update **assertions or golden substrings** in the same PR; stale regex/`grep` checks are a common regression.
+
 After editing, run targeted syntax checks:
 
 ```bash
