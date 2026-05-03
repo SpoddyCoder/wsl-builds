@@ -2,11 +2,12 @@
 [![Lint](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/lint.yml/badge.svg)](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/lint.yml)
 [![Tests](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/test.yml/badge.svg)](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/test.yml)
 
-This project contains clean, simple WSL2 builds that use Windows host native implementations of core components for maximum performance and flexibility. Stack components to create different WSL builds for different purposes.
+This project contains clean, simple WSL2 builds that use Windows host native implementations of core components for maximum performance and flexibility. 
 
+* Stack components to create different WSL builds for different purposes.
 * Simple installations, often featuring quality of life configurations and helpers
 * Caching of large downloads on the Windows host, so you don't have to re-download install packages for rebuilds
-* Other build specific cache directories on the Windows host for convenience (eg: AI .pkl cache)
+* Other build specific cache directories on the Windows host for convenience (eg: AI models and .pkl cache)
 * **Project motivation:** WSL instances are disposable - streamlines a clean rebuild whenever its needed
 
 ## Install
@@ -14,23 +15,25 @@ After provisioning a basic WSL instance, clone the project repo on it...
 ```
 git clone https://github.com/SpoddyCoder/wsl-builds.git
 ```
-### Configure
-Run the setup wizard once per distro (shared `wsl-builds.conf` on the Windows host is optional but recommended when you rebuild WSL often):
+
+### `wsl-builds.conf` 
+Run the setup wizard to create a config file from the template...
 ```
 cd wsl-builds
 ./wsl-builds-conf.sh
 ```
-It looks for `%USERPROFILE%\.wsl-builds\wsl-builds.conf`, can prompt for another host path, or copies [`wsl-builds.conf.example`](wsl-builds.conf.example) to repo-root `wsl-builds.conf`. A host path is stored as **`WSL_BUILDS_CONF`** in `~/.bashrc`. `./build.sh` prints which config file it loads.
+It looks for `%USERPROFILE%\.wsl-builds\wsl-builds.conf`, on the Windows host (convenient if you build lots of instances and want them all to be configured in the same way) - or uses `wsl-builds.conf` in the project repo.
 
-Non-interactive (e.g. snippets): `./wsl-builds-conf.sh --noninteractive` or `./wsl-builds-conf.sh --defaults`
+Edit the config file with paths that suit you (see the conf file itself for more info).
 
-Manual alternative — create your config from the template and edit:
+Manual alternative — create your config from the template and edit...
 ```
 cd wsl-builds
 cp wsl-builds.conf.example wsl-builds.conf
 nano wsl-builds.conf
 ```
-Tip: you can easily automate this using [WSL2-Distro-Manager snippets](#wsl2-distro-manager)
+
+Non-interactive mode: `./wsl-builds-conf.sh --noninteractive` or `./wsl-builds-conf.sh --defaults`
 
 ## Building
 ```
@@ -70,10 +73,10 @@ change-hostname python-ai
 
 | Build | Packages | Tools & extras |
 | ----- | -------- | -------------- |
-| [ai](ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2 (WSL network repo + `cuda-keyring`)<br>**cuda-wsl-lib-symlinks**: fix `libcuda.so` / `libcuda.so.1` layout under `/usr/lib/wsl/lib` when WSL warns they are not symlinks<br>**ollama**: [Ollama](https://ollama.com) via official `install.sh`; optional **`OLLAMA_MODELS`** in `wsl-builds.conf` | |
+| [ai](ai/) | **cuda124**CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**cuda-wsl-lib-symlinks**: fix 'not symlinks' issue<br>**ollama**: + optional **`OLLAMA_MODELS`** | |
 | [ai-resources](ai-resources/) | | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** |
 | [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
-| [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
+| [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq + optional git config from `wsl-builds.conf` | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
 | [dev-bash](dev-bash/) | **shellcheck**<br>**bats** | |
 | [dev-js](dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn** | **essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express** |
 | [dev-python](dev-python/) | **python3**<br>**conda**: Anaconda | |
@@ -89,7 +92,7 @@ change-hostname python-ai
 ### Git Integration
 * Install git on the Windows machine, ensure you select the option to use unix line endings.
   * We are coding in linux, not Windows.
-* To use the credentials from your Windows host on the WSL instance, see below.
+* To use the credentials from your Windows host on the WSL instance, see the [wsl-builds.conf](#wsl-builds) section.
 
 ### Cursor Integration
 * Install Cursor on the Windows machine, open it and launch it.
@@ -126,69 +129,9 @@ autoMemoryReclaim=gradual
 ## WSL2 Distro Manager
 Useful GUI for managing instances: https://github.com/bostrot/wsl2-distro-manager
 
-### Add WSL-Builds Snippets
-* This is a one time action - you will use these two snippets on all WSL-Builds you create.
-* Copy + paste each snippet, updating names / paths to suit you. Save it with the specified name.
-
-#### `git-config`
-```
-git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
-git config --global user.email "my@email.com"
-git config --global user.name "me"
-git config --global pull.rebase false
-```
-
-#### `wsl-builds`
-```
-git clone https://github.com/SpoddyCoder/wsl-builds.git /home/me/wsl-builds
-cd /home/me/wsl-builds
-./wsl-builds-conf.sh --noninteractive
-```
-If the default host file `%USERPROFILE%\.wsl-builds\wsl-builds.conf` does not exist yet, this creates `/home/me/wsl-builds/wsl-builds.conf` from the example — edit it or create the host file and re-run the wizard.
-
-### Build Using WSL2 Distro Manager
-Using the snippets, this becomes easy...
-* Add Instance
-  * Name: `biscuit`
-  * Distro: `Ubuntu 22.04`
-  * Username: `yourusername`
-* Run the `git-config` snippet
-* Run the `wsl-builds` snippet
-* Finally, open a terminal on the WSL instance and use the builder to cook your buttery biscuit base;
-* `./build.sh system update,qol`
-
-### Snapshots
-Useful if you are expecting to need to restore to a build point frequently and don't want to go through installation steps every time...
-* Make a template from the build and kill the instance.
-* It's now ready to use as a base for future instances.
-
 ---
 
-## Manually Creating, Exporting and Importing WSL Instances
-The pain point here is needing to add config everytime you build a new instance. That's what makes snippets so great.
-
-### Manual Build
-* Create a new WSL instance;
-  * `wsl --install Ubuntu-22.04`
-  * Complete the basic install steps
-* On the WSL instance, setup git for WSL;
-  * `git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"`
-  * `git config --global user.email "my@email.com"`
-  * `git config --global user.name "me"`
-  * `git config --global pull.rebase false`
-  * https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git
-* Clone this repo on the instance and add config file (update names / paths to suit);
-  * See the `wsl-builds` snippet in the WSL2 Distro Manager instructions
-* Add the buttery base;
-  * `./build.sh system update,qol`
-
-### Manual Snapshots
-* Shutdown the instance, export it to your build dir and kill it;
-  * `wsl --shutdown`
-  * `wsl --export Ubuntu-22.04 E:\WSL\builds\system-base`
-  * `wsl --unregister Ubuntu-22.04`
-* Your buttery biscuit base is ready to create new instances from :)
-  * `wsl --import my-new-project E:\WSL\instances\my-new-project E:\WSL\builds\biscuit`
+## WSL Command Reference
 
 ### Useful WSL commands
 ```
@@ -201,3 +144,11 @@ wsl --import my-project-name E:\WSL\instances\project-name D:\WSL\builds\build-n
 wsl --shutdown
 wsl --distribution my-project-name
 ```
+
+### Manual Snapshots
+* Shutdown the instance, export it to your build dir and kill it;
+  * `wsl --shutdown`
+  * `wsl --export Ubuntu-22.04 E:\WSL\builds\system-base`
+  * `wsl --unregister Ubuntu-22.04`
+* Your buttery biscuit base is ready to create new instances from :)
+  * `wsl --import my-new-project E:\WSL\instances\my-new-project E:\WSL\builds\biscuit`

@@ -5,20 +5,23 @@
 # builder
 # CACHE_DIR=/mnt/c/WSL/cache          # cache large downloads on Windows host
 
+# dev / essentials
+# GIT_CREDENTIALS_HELPER="/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
+# GIT_USER_NAME="me"
+# GIT_USER_EMAIL="my@email.com"
+# GIT_PULL_REBASE=false
+
 # system / qol
 # WIN_HOME_SYMLINK=/home/me/c-home    # Symlink placed in your home dir on the WSL instance
 # WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on the WSL instance
 
 # dev / qol
-# optional; 
 # CODE_HOME_SYMLINK=/home/me/code     # Symlink placed in your home dir on the WSL instance
 # CODE_HOME_TARGET=/mnt/c/code        # Location on your Windows host where you store code projects
 
-# ai / ollama
-# optional; default is ~/.ollama
-# OLLAMA_MODELS=/mnt/c/WSL/ollama-models    # store models on host
+# ai / ollama - (default is on the WSL instance: ~/.ollama)
+# OLLAMA_MODELS=/mnt/c/WSL/ollama-models    # store models on Windows host
 
 # ai-resources / stylegan3
-# optional; used by the sg3 component — see ai-resources/README.md
 # STYLEGAN3_PKL_CACHE=/mnt/c/cached-pkls/stylegan3            # cache pkls on Windows host
 # STYLEGAN3_PYTORCH_CACHE=/mnt/c/cached-pytorch/stylegan3     # cache pytorch extensions on Windows host

@@ -23,7 +23,15 @@ CODE_HOME_TARGET=/mnt/c/code        # Location on your Windows host where you st
 ```
 
 ### `essentials`
-* Essential dev tools: curl, wget, git, vim, nano, jq, yq
+* Essential dev tools: `curl`, `wget`, `git`, `vim`, `nano`, `jq`, `yq`
+* Optional global git config picked up from your `wsl-builds.conf` (each key is independent; unset keys are skipped):
+```bash
+GIT_CREDENTIALS_HELPER="/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
+GIT_USER_NAME="me"
+GIT_USER_EMAIL="my@email.com"
+GIT_PULL_REBASE=false
+```
+* Using the credntials helper from the host machine can be convenient to avoid having to setup auth on each WSL instance.
 
 ## Build Arguments
 * No additional arguments for this build
