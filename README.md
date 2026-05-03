@@ -16,30 +16,25 @@ After provisioning a basic WSL instance, clone the project repo on it...
 git clone https://github.com/SpoddyCoder/wsl-builds.git
 ```
 
-### `wsl-builds.conf` 
-Run the setup wizard to create a config file from the template...
+### Configure
+Run the configure wizard to create a `wsl-builds.conf` from the template...
 ```
 cd wsl-builds
 ./configure.sh
 ```
-It looks for `%USERPROFILE%\.wsl-builds\wsl-builds.conf`, on the Windows host (convenient if you build lots of instances and want them all to be configured in the same way) - or uses `wsl-builds.conf` in the project repo.
-
-Edit the config file with paths that suit you (see the conf file itself for more info).
-
-Manual alternative — create your config from the template and edit...
-```
-cd wsl-builds
-cp wsl-builds.conf.example wsl-builds.conf
-nano wsl-builds.conf
-```
-
-Non-interactive mode: `./configure.sh --noninteractive` or `./configure.sh --defaults`
+* It looks for `%USERPROFILE%\.wsl-builds\wsl-builds.conf`, on the Windows host
+  * Convenient if you build lots of instances and want them all to be configured in the same way.
+  * Or uses `wsl-builds.conf` in the project repo.
+* The `wsl-builds.conf` file contains **optional** paths and settings
+  * See the [wsl-builds.conf.example](wsl-builds.conf.example) for more info on each setting.
+  * Tip: Caching things on the host can be uesful.
+* Non-interactive mode: `./configure.sh --noninteractive` or `./configure.sh --defaults`
 
 ## Building
 ```
 ./build.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
 ```
-* `build-dir` — a valid build directory under the repo root (see [Build List](#build-list) below).
+* `build-dir` a valid build directory under the repo root (see [Build List](#build-list) below).
 * `component[,<component>...]` comma separated list of build components (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
 * `--force` by default components that are already installed will be skipped with warning messages. Use this flag to force reinstallation of already-installed components.
@@ -48,14 +43,13 @@ Non-interactive mode: `./configure.sh --noninteractive` or `./configure.sh --def
 
 ### Assembling and Stacking Builds
 ```bash
-# show all builds
-./build.sh
-# show components for a build
-./build.sh dev-js
+./build.sh            # show all builds
+./build.sh dev-js     # show components for build dev-js
 
 # build a gen dev env
 ./build.sh system update,qol
-./build.sh dev essentials,qol,vscode,python3
+./build.sh dev essentials,qol,vscode
+./build dev-js node,yarn,nvm,essentials
 change-hostname my-dev-box
 
 # build a python environment for AI coding

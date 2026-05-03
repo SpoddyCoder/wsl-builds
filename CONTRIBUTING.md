@@ -29,7 +29,7 @@ Requests, advice and PR's are welcome.
 ---
 
 ## Contributing builds / components
-* This project is heavily AI assisted.
+* This project is AI assisted.
 * [Rules](./.cursor/rules) help the AI agent understand the project and its conventions.
 * In almost all cases, you can simply ask the AI agent to use the [skills](./.cursor/skills) to add new things.
   * [add-wsl-build-dir](./.cursor/skills/add-wsl-build-dir.md)
