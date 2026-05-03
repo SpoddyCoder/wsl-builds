@@ -20,7 +20,7 @@
 # CODE_HOME_SYMLINK=/home/me/code     # Symlink placed in your home dir on the WSL instance
 # CODE_HOME_TARGET=/mnt/c/code        # Location on your Windows host where you store code projects
 
-# ai / ollama - (default is on the WSL instance: ~/.ollama)
+# ai / ollama - (default is on the WSL instance: /usr/share/ollama/.ollama/models/)
 # OLLAMA_MODELS=/mnt/c/WSL/ollama-models    # store models on Windows host
 
 # ai-resources - (default is on the WSL instance: ~/ai-resources)
