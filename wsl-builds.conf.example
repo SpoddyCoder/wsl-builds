@@ -1,16 +1,21 @@
-# wsl-builds
-CACHE_DIR=/mnt/c/WSL/cache          # cache large downloads on Windows host
+# wsl-builds conf
+# update this to suit your needs
+# everything is optional
 
-# system qol
-WIN_HOME_SYMLINK=/home/me/c-home    # Symlink placed in your home dir on the WSL instance
-WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on the WSL instance
+# builder
+# CACHE_DIR=/mnt/c/WSL/cache          # cache large downloads on Windows host
 
-# dev qol
-CODE_HOME_SYMLINK=/home/me/code     # Symlink placed in your home dir on the WSL instance
-CODE_HOME_TARGET=/mnt/c/code        # Location on your Windows host where you store code projects
+# system / qol
+# WIN_HOME_SYMLINK=/home/me/c-home    # Symlink placed in your home dir on the WSL instance
+# WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on the WSL instance
+
+# dev / qol
+# optional; 
+# CODE_HOME_SYMLINK=/home/me/code     # Symlink placed in your home dir on the WSL instance
+# CODE_HOME_TARGET=/mnt/c/code        # Location on your Windows host where you store code projects
 
 # ai / ollama
-# optional; default is ~/.ollama — use a host path to save WSL disk
+# optional; default is ~/.ollama
 # OLLAMA_MODELS=/mnt/c/WSL/ollama-models    # store models on host
 
 # ai-resources / stylegan3

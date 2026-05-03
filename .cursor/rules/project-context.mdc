@@ -9,7 +9,7 @@ alwaysApply: true
 
 - **`README.md` (repo root):** End users—what the project is, how to install/configure, how to run `./build.sh`, high-level build/component lists. Not maintainer walkthroughs, script wiring, or instructions aimed only at agents. Skip table “legends” or other meta lines about formatting (those belong in **CONTRIBUTING.md** or `.cursor/rules/`).
 - **`CONTRIBUTING.md`:** Contributors—ShellCheck/`bash -n` lint workflow (**Linting**), how to add builds/components, metadata/dispatch (`conf.sh`, `install.sh`, `src/install-dispatch.sh`). Canonical prose for that lives in **Contributing builds / components**.
-- **`test/README.md`:** Running `./test/run-tests.sh`, Docker/Bats harness, catalog of each regression test.
+- **`test/README.md`:** Running `./test/run-tests.sh`, Docker/Bats harness, catalogs for **build-fixture** tests (`build-test-fixture-harness.bats`) and **wizard** tests (`wsl-builds-conf-wizard.bats`).
 - **`.cursor/rules/`:** Operational context for the assistant—invariants (e.g. supported entrypoint is `build.sh`; `install.sh` is not meant to be executed standalone), bash conventions, where tests live. Keep rules short; point to **`CONTRIBUTING.md`** for contributor prose and **`test/README.md`** for the testing harness.
 
 ## Project behaviour

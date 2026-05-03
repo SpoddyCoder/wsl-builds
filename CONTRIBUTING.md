@@ -18,7 +18,7 @@ Requests, advice and PR's are welcome.
 
 ## Testing
 
-See **[`test/README.md`](test/README.md)** for lint vs Docker/Bats, CI pointers, harness layout, and a catalog of each Bats case.
+See **[`test/README.md`](test/README.md)** for lint vs Docker/Bats, CI pointers, harness layout, and catalogs for **`build-test-fixture-harness.bats`** and **`wsl-builds-conf-wizard.bats`**.
 
 
 ## Contributing builds / components

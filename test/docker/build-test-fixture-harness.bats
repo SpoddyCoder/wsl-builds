@@ -166,3 +166,17 @@ teardown() {
 	[[ "$(grep -c '^test-fixture v[0-9]' "${info}")" -eq 2 ]]
 	[[ "$(grep -cv '^test-fixture v[0-9]' "${info}")" -eq 1 ]]
 }
+
+@test 'WSL_BUILDS_CONF set to readable file is sourced and path is printed' {
+	local alt_conf="${BATS_TEST_TMPDIR}/alt-wsl-builds.conf"
+	cp "${TEST_DIR}/wsl-builds.conf" "${alt_conf}"
+	WSL_BUILDS_CONF="${alt_conf}" run ./build.sh test-fixture noop-hyphen
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" == *"Using: ${alt_conf}"* ]]
+}
+
+@test 'WSL_BUILDS_CONF set but not readable exits nonzero' {
+	WSL_BUILDS_CONF="${BATS_TEST_TMPDIR}/wsl-builds-does-not-exist.conf" run ./build.sh test-fixture noop-hyphen
+	[[ "${status:?}" -ne 0 ]]
+	[[ "${output:?}" == *'WSL_BUILDS_CONF is set but not readable:'* ]]
+}

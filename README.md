@@ -14,7 +14,17 @@ After provisioning a basic WSL instance, clone the project repo on it...
 ```
 git clone https://github.com/SpoddyCoder/wsl-builds.git
 ```
-Create your config file from the template and update it with your own details / paths...
+### Configure
+Run the setup wizard once per distro (shared `wsl-builds.conf` on the Windows host is optional but recommended when you rebuild WSL often):
+```
+cd wsl-builds
+./wsl-builds-conf.sh
+```
+It looks for `%USERPROFILE%\.wsl-builds\wsl-builds.conf`, can prompt for another host path, or copies [`wsl-builds.conf.example`](wsl-builds.conf.example) to repo-root `wsl-builds.conf`. A host path is stored as **`WSL_BUILDS_CONF`** in `~/.bashrc`. `./build.sh` prints which config file it loads.
+
+Non-interactive (e.g. snippets): `./wsl-builds-conf.sh --noninteractive` or `./wsl-builds-conf.sh --defaults`
+
+Manual alternative — create your config from the template and edit:
 ```
 cd wsl-builds
 cp wsl-builds.conf.example wsl-builds.conf
@@ -131,12 +141,10 @@ git config --global pull.rebase false
 #### `wsl-builds`
 ```
 git clone https://github.com/SpoddyCoder/wsl-builds.git /home/me/wsl-builds
-echo 'CACHE_DIR=/mnt/c/WSL/cache' >> /home/me/wsl-builds/wsl-builds.conf
-echo 'WIN_HOME_SYMLINK=/home/me/c-home' >> /home/me/wsl-builds/wsl-builds.conf
-echo 'WIN_HOME_TARGET=/mnt/c/Users/me' >> /home/me/wsl-builds/wsl-builds.conf
-echo 'CODE_HOME_SYMLINK=/home/me/e-apps' >> /home/me/wsl-builds/wsl-builds.conf
-echo 'CODE_HOME_TARGET=/mnt/e/Apps' >> /home/me/wsl-builds/wsl-builds.conf
+cd /home/me/wsl-builds
+./wsl-builds-conf.sh --noninteractive
 ```
+If the default host file `%USERPROFILE%\.wsl-builds\wsl-builds.conf` does not exist yet, this creates `/home/me/wsl-builds/wsl-builds.conf` from the example — edit it or create the host file and re-run the wizard.
 
 ### Build Using WSL2 Distro Manager
 Using the snippets, this becomes easy...

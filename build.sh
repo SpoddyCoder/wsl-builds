@@ -3,11 +3,26 @@ set -e
 
 # source user config + helpers
 TOOL_DIR=$(dirname "$0")
-# shellcheck source=wsl-builds.conf.example
-# ShellCheck only: follow the committed example (same variables as runtime). Runtime sources gitignored wsl-builds.conf.
-source "${TOOL_DIR}"/wsl-builds.conf
 # shellcheck source=src/print.sh
 source "${TOOL_DIR}"/src/print.sh
+# Prefer WSL_BUILDS_CONF (shared host file); else repo-root wsl-builds.conf. shellcheck source=wsl-builds.conf.example
+if [ -n "${WSL_BUILDS_CONF:-}" ]; then
+    if [ ! -r "${WSL_BUILDS_CONF}" ]; then
+        printError "WSL_BUILDS_CONF is set but not readable: ${WSL_BUILDS_CONF}"
+        exit 1
+    fi
+    # shellcheck source=wsl-builds.conf.example
+    source "${WSL_BUILDS_CONF}"
+    printInfo "Using: ${WSL_BUILDS_CONF}"
+else
+    if [ ! -r "${TOOL_DIR}/wsl-builds.conf" ]; then
+        printError "No wsl-builds.conf found. Run ./wsl-builds-conf.sh"
+        exit 1
+    fi
+    # shellcheck source=wsl-builds.conf.example
+    source "${TOOL_DIR}/wsl-builds.conf"
+    printInfo "Using: ${TOOL_DIR}/wsl-builds.conf"
+fi
 # shellcheck source=src/arg-helpers.sh
 source "${TOOL_DIR}"/src/arg-helpers.sh
 # shellcheck source=src/install-helpers.sh
