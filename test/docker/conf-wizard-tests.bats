@@ -2,8 +2,8 @@
 # shellcheck shell=bats
 
 # Docker-only regressions for ./configure.sh (wizard).
-# Snapshots repo-root wsl-builds.conf each test and restores in teardown so
-# build-test-fixture-harness.bats (same image run) keeps a valid harness file.
+# Snapshots repo-root wsl-builds.conf each test and restores in teardown.
+# run-bats.sh re-copies the harness before this suite and runs it after builder-tests.bats.
 
 setup() {
 	TEST_ROOT="$(cd "$(dirname "${BATS_TEST_FILENAME}")/../.." && pwd)"

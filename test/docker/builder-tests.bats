@@ -16,53 +16,53 @@ teardown() {
 	rm -rf "${_BATS_FAKE_HOME:-}"
 }
 
-@test 'build.sh with no arguments exits nonzero and prints usage' {
+@test 'B1: build.sh with no arguments exits nonzero and prints usage' {
 	run ./build.sh
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Usage: ]]
 	[[ "${output:?}" =~ Available\ build\ directories: ]]
 }
 
-@test 'unknown build directory exits nonzero' {
+@test 'B2: unknown build directory exits nonzero' {
 	run ./build.sh '__EARLY_EXIT_UNKNOWN_BUILD_DIR__'
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ "Build directory '__EARLY_EXIT_UNKNOWN_BUILD_DIR__' not found" ]]
 }
 
-@test 'single-arg test-fixture lists components without running install pipeline' {
+@test 'B3: single-arg test-fixture lists components without running install pipeline' {
 	run ./build.sh test-fixture
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Usage: ]]
 	[[ "${output:?}" =~ Available\ components\ for\ test-fixture: ]]
 }
 
-@test 'noop component noop-hyphen runs full harness and succeeds' {
+@test 'B4: noop component noop-hyphen runs full harness and succeeds' {
 	run ./build.sh test-fixture noop-hyphen
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Building\ test-fixture\ v1\.0\.0 ]]
 	[[ "${output:?}" =~ installed! ]]
 }
 
-@test 'comma-separated noop-hyphen (hyphen token) and noop (plain token) dispatch' {
+@test 'B5: comma-separated noop-hyphen (hyphen token) and noop (plain token) dispatch' {
 	run ./build.sh test-fixture noop,noop-hyphen
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Building\ test-fixture\ v1\.0\.0 ]]
 	[[ "${output:?}" =~ installed! ]]
 }
 
-@test 'invalid component for test-fixture fails' {
+@test 'B6: invalid component for test-fixture fails' {
 	run ./build.sh test-fixture not-a-listed-component-at-all
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Invalid\ build\ component ]]
 }
 
-@test '--force with noop-hyphen succeeds' {
+@test 'B7: --force with noop-hyphen succeeds' {
 	run ./build.sh test-fixture noop-hyphen --force
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ installed! ]]
 }
 
-@test 'successful install writes ~/.wsl-build.info with OS header and component line' {
+@test 'B8: successful install writes ~/.wsl-build.info with OS header and component line' {
 	run ./build.sh test-fixture noop-hyphen
 	[[ "${status:?}" -eq 0 ]]
 	local info="${HOME}/.wsl-build.info"
@@ -74,7 +74,7 @@ teardown() {
 	[[ "$(head -n1 "${info}")" =~ [[:space:]] ]]
 }
 
-@test 'comma-separated installs append one record line per component' {
+@test 'B9: comma-separated installs append one record line per component' {
 	run ./build.sh test-fixture noop,noop-hyphen
 	[[ "${status:?}" -eq 0 ]]
 	local info="${HOME}/.wsl-build.info"
@@ -84,7 +84,7 @@ teardown() {
 	[[ "$(grep -c -F 'test-fixture v1.0.0 (noop-hyphen)' "${info}")" -eq 1 ]]
 }
 
-@test 'second install without --force skips and does not duplicate build.info lines' {
+@test 'B10: second install without --force skips and does not duplicate build.info lines' {
 	run ./build.sh test-fixture noop-hyphen
 	[[ "${status:?}" -eq 0 ]]
 	run ./build.sh test-fixture noop-hyphen
@@ -95,7 +95,7 @@ teardown() {
 	[[ "$(grep -c -F 'test-fixture v1.0.0 (noop-hyphen)' "${info}")" -eq 1 ]]
 }
 
-@test '--force reinstall appends another identical component line to build.info' {
+@test 'B11: --force reinstall appends another identical component line to build.info' {
 	run ./build.sh test-fixture noop-hyphen
 	[[ "${status:?}" -eq 0 ]]
 	run ./build.sh test-fixture noop-hyphen --force
@@ -104,51 +104,51 @@ teardown() {
 	[[ "$(grep -c -F 'test-fixture v1.0.0 (noop-hyphen)' "${info}")" -eq 2 ]]
 }
 
-@test 'touch-marker writes sentinel file and records success in build.info' {
+@test 'B12: touch-marker writes sentinel file and records success in build.info' {
 	run ./build.sh test-fixture touch-marker
 	[[ "${status:?}" -eq 0 ]]
 	[[ -f "${HOME}/.wsl-builds-test-fixture-touch-marker" ]]
 	grep -Fxq 'test-fixture v1.0.0 (touch-marker)' "${HOME}/.wsl-build.info"
 }
 
-@test 'usage output lists test-fixture among available build directories' {
+@test 'B13: usage output lists test-fixture among available build directories' {
 	run ./build.sh
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Available\ build\ directories: ]]
 	[[ "${output:?}" =~ [[:space:]]test-fixture ]]
 }
 
-@test 'too many arguments exits nonzero' {
+@test 'B14: too many arguments exits nonzero' {
 	run ./build.sh test-fixture noop-hyphen extra-junk-arg
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Too\ many\ arguments ]]
 }
 
-@test 'comma-separated valid then invalid component fails' {
+@test 'B15: comma-separated valid then invalid component fails' {
 	run ./build.sh test-fixture noop,not-a-listed-component-at-all
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Invalid\ build\ component ]]
 }
 
-@test '--force alone without component fails validation' {
+@test 'B16: --force alone without component fails validation' {
 	run ./build.sh test-fixture --force
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Invalid\ build\ component ]]
 }
 
-@test 'empty component argument fails validation' {
+@test 'B17: empty component argument fails validation' {
 	run ./build.sh test-fixture ''
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Invalid\ build\ component ]]
 }
 
-@test 'component match is case-insensitive; build.info keeps canonical token' {
+@test 'B18: component match is case-insensitive; build.info keeps canonical token' {
 	run ./build.sh test-fixture NOOP-HYPHEN
 	[[ "${status:?}" -eq 0 ]]
 	grep -Fxq 'test-fixture v1.0.0 (noop-hyphen)' "${HOME}/.wsl-build.info"
 }
 
-@test 'failed validation leaves ~/.wsl-build.info absent' {
+@test 'B19: failed validation leaves ~/.wsl-build.info absent' {
 	run ./build.sh '__EARLY_EXIT_UNKNOWN_BUILD_DIR__'
 	[[ "${status:?}" -ne 0 ]]
 	[[ ! -f "${HOME}/.wsl-build.info" ]]
@@ -157,7 +157,7 @@ teardown() {
 	[[ ! -f "${HOME}/.wsl-build.info" ]]
 }
 
-@test 'multiple installs reuse single OS header line in build.info' {
+@test 'B20: multiple installs reuse single OS header line in build.info' {
 	run ./build.sh test-fixture noop
 	[[ "${status:?}" -eq 0 ]]
 	run ./build.sh test-fixture touch-marker
@@ -167,7 +167,7 @@ teardown() {
 	[[ "$(grep -cv '^test-fixture v[0-9]' "${info}")" -eq 1 ]]
 }
 
-@test 'WSL_BUILDS_CONF set to readable file is sourced and path is printed' {
+@test 'B21: WSL_BUILDS_CONF set to readable file is sourced and path is printed' {
 	local alt_conf="${BATS_TEST_TMPDIR}/alt-wsl-builds.conf"
 	cp "${TEST_DIR}/wsl-builds.conf" "${alt_conf}"
 	WSL_BUILDS_CONF="${alt_conf}" run ./build.sh test-fixture noop-hyphen
@@ -175,13 +175,13 @@ teardown() {
 	[[ "${output:?}" == *"Using: ${alt_conf}"* ]]
 }
 
-@test 'WSL_BUILDS_CONF set but not readable exits nonzero' {
+@test 'B22: WSL_BUILDS_CONF set but not readable exits nonzero' {
 	WSL_BUILDS_CONF="${BATS_TEST_TMPDIR}/wsl-builds-does-not-exist.conf" run ./build.sh test-fixture noop-hyphen
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" == *'WSL_BUILDS_CONF is set but not readable:'* ]]
 }
 
-@test 'getfile-harness exercises getFile cache hit download cleanupGetFiles and records success' {
+@test 'B23: getfile-harness exercises getFile cache hit download cleanupGetFiles and records success' {
 	run ./build.sh test-fixture getfile-harness
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Using\ locally\ cached\ version ]]
@@ -189,7 +189,7 @@ teardown() {
 	grep -Fxq 'test-fixture v1.0.0 (getfile-harness)' "${HOME}/.wsl-build.info"
 }
 
-@test 'file-edit-harness updates shell rc and /etc/wsl.conf' {
+@test 'B24: file-edit-harness updates shell rc and /etc/wsl.conf' {
 	_BATS_WSL_CONF_BAK="${BATS_TEST_TMPDIR}/wsl.conf.prior"
 	_BATS_WSL_CONF_EXISTS_prior=0
 	if [[ -f /etc/wsl.conf ]]; then
