@@ -9,19 +9,33 @@ Requests, advice and PR's are welcome.
   * Automates the install procedure
   * Acts as an NB for quality of life additions
 
-## Linting
-* Bash scripts are linted with [ShellCheck](https://www.shellcheck.net/) on every push and PR.
-* Run the same checks locally before pushing:
-  * `./test/lint.sh` — lint the whole repo
-  * `./test/lint.sh path/to/script.sh` — lint specific files
-* Install ShellCheck `./build.sh dev-bash shellcheck`.
+### Linting
+* Bash scripts are linted with [ShellCheck](https://www.shellcheck.net/).
+* `./test/lint.sh` — lint the whole repo
+* `./test/lint.sh path/to/script.sh` — lint specific files
+* Install ShellCheck `./build.sh dev-bash shellcheck`
 
-## Testing
+### Testing
+* [Bats](https://bats-core.readthedocs.io/en/stable/) is used as a testing framework for the bash scripts.
+* Bats tests are run in an isolated Docker container for safety and consistency.
+* `./test/run-tests.sh` to run all tests.
+* See **[`test/README.md`](test/README.md)** for more info.
+* Install Bats `./build.sh dev-bash bats`
 
-See **[`test/README.md`](test/README.md)** for lint vs Docker/Bats, CI pointers, harness layout, and catalogs for **`build-test-fixture-harness.bats`** and **`wsl-builds-conf-wizard.bats`**.
+### CI
+* Lint + Bats tests are run on every push and PR.
+* See: [`.github/workflows`](.github/workflows)
 
+---
 
 ## Contributing builds / components
+* This project is heavily AI assisted.
+* [Rules](./.cursor/rules) help the AI agent understand the project and its conventions.
+* In almost all cases, you can simply ask the AI agent to use the [skills](./.cursor/skills) to add new things.
+  * [add-wsl-build-dir](./.cursor/skills/add-wsl-build-dir.md)
+  * [add-wsl-build-component](./.cursor/skills/add-wsl-build-component.md)
+  * [review-wsl-build-component](./.cursor/skills/review-wsl-build-component.md)
+* In addition to adding the new builds / components, it will read this guide and automatically take care of docs and tests etc.
 
 ### Metadata and dispatch (`conf.sh`, `install.sh`)
 

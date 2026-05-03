@@ -2,7 +2,7 @@
 [![Lint](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/lint.yml/badge.svg)](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/lint.yml)
 [![Tests](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/test.yml/badge.svg)](https://github.com/SpoddyCoder/wsl-builds/actions/workflows/test.yml)
 
-This project contains clean, simple WSL2 builds that use Windows host native implementations of core components for maximum performance and flexibility. 
+This project contains clean, simple WSL2 builds that use Windows host native implementations of core components for maximum performance, convenience and flexibility. 
 
 * Stack components to create different WSL builds for different purposes.
 * Simple installations, often featuring quality of life configurations and helpers
@@ -83,7 +83,7 @@ change-hostname python-ai
 | [dev-ssg](dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
 | [devops](devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
 | [devops-aws](devops-aws/) | **awscli** | **qol**: `aws-profile` alias |
-| [system](system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys | **qol**: safety aliases, change-hostname, default user<br>**fstab**: WSL mount config |
+| [system](system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys | **qol**: safety aliases, `change-hostname` alias, default user<br>**fstab**: WSL mount config |
 
 ## Enabling + Configuring WSL2 on the Windows Host
 * Open PowerShell as an Administrator
@@ -109,9 +109,9 @@ change-hostname python-ai
 
 ### CUDA Integration
 * Install an NVIDIA **Windows** driver with WSL CUDA support
-* The use `./build.sh ai cuda132` to install the CUDA toolkit (or `cuda124` if you need CUDA 12.4) on the WSL instance. **Do not** install Linux GPU drivers in WSL.
+* Use `./build.sh ai cuda132` to install the CUDA toolkit (or `cuda124`) on the WSL instance. **Do not** install Linux GPU drivers in WSL.
 * For more info: [CUDA on WSL User Guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
-* If you see **`libcuda.so.1` is not a symbolic link**, run the [ai](ai/) **`cuda-wsl-lib-symlinks`** component (see [ai/README.md](ai/README.md)).
+* If you see **`libcuda.so.1` is not a symbolic link**, run the [ai cuda-wsl-lib-symlinks](ai/cuda-wsl-lib-symlinks) component to fix it.
 
 ### Resource Allocation
 * Default memory is 50% of the Windows host memory: https://learn.microsoft.com/en-us/windows/wsl/wsl-config
