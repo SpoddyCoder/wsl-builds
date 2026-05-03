@@ -16,7 +16,7 @@ if [ -n "${WSL_BUILDS_CONF:-}" ]; then
     printInfo "Using: ${WSL_BUILDS_CONF}"
 else
     if [ ! -r "${TOOL_DIR}/wsl-builds.conf" ]; then
-        printError "No wsl-builds.conf found. Run ./wsl-builds-conf.sh"
+        printError "No wsl-builds.conf found. Run ./configure.sh"
         exit 1
     fi
     # shellcheck source=wsl-builds.conf.example

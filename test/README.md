@@ -12,12 +12,12 @@ Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolate
 ./test/run-tests.sh
 ```
 
-[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions and **wizard** behaviour for `./wsl-builds-conf.sh`. The image **copies the repo at build time** (no host bind mount) so the tests run in an isolated environment.
+[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions and **wizard** behaviour for `./configure.sh`. The image **copies the repo at build time** (no host bind mount) so the tests run in an isolated environment.
 
 * **Do not** run [`docker/run-bats.sh`](docker/run-bats.sh) on the host — it overwrites repo-root **`wsl-builds.conf`**.
 * **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.
 
-Before changing `build.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, `wsl-builds-conf.sh`, or Bats tests, skim this doc and run **`./test/run-tests.sh`** when behaviour may regress.
+Before changing `build.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, `configure.sh`, or Bats tests, skim this doc and run **`./test/run-tests.sh`** when behaviour may regress.
 
 ## Bats catalog (`docker/build-test-fixture-harness.bats`)
 
@@ -58,7 +58,7 @@ Wizard tests snapshot repo-root **`wsl-builds.conf`** each test and restore it i
 | W2 | Unknown option fails | Nonzero; `Unknown option` in output. |
 | W3 | `--noninteractive` creates repo `wsl-builds.conf` from example | Linux-only env (no host default): file created; output mentions example. |
 | W4 | `--noninteractive` when repo conf exists is no-op | `already exists` message; file checksum unchanged. |
-| W5 | Non-TTY stdin auto-forces noninteractive | `./wsl-builds-conf.sh </dev/null` copies example when missing (same class as W3). |
+| W5 | Non-TTY stdin auto-forces noninteractive | `./configure.sh </dev/null` copies example when missing (same class as W3). |
 | W6 | `--defaults` alias | Same outcome as W3. |
 | W7 | No managed `~/.bashrc` block without host default | After noninteractive copy-example path, no `wsl-builds (managed)` markers in fake `$HOME`. |
 | W8 | `removeManagedBashrcBlock` with no `~/.bashrc` | No-op; no error (sourced script). |

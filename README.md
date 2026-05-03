@@ -20,7 +20,7 @@ git clone https://github.com/SpoddyCoder/wsl-builds.git
 Run the setup wizard to create a config file from the template...
 ```
 cd wsl-builds
-./wsl-builds-conf.sh
+./configure.sh
 ```
 It looks for `%USERPROFILE%\.wsl-builds\wsl-builds.conf`, on the Windows host (convenient if you build lots of instances and want them all to be configured in the same way) - or uses `wsl-builds.conf` in the project repo.
 
@@ -33,7 +33,7 @@ cp wsl-builds.conf.example wsl-builds.conf
 nano wsl-builds.conf
 ```
 
-Non-interactive mode: `./wsl-builds-conf.sh --noninteractive` or `./wsl-builds-conf.sh --defaults`
+Non-interactive mode: `./configure.sh --noninteractive` or `./configure.sh --defaults`
 
 ## Building
 ```

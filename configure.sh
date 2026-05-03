@@ -12,7 +12,7 @@ NONINTERACTIVE=false
 
 showWizardUsage() {
     cat <<'EOF'
-Usage: ./wsl-builds-conf.sh [options]
+Usage: ./configure.sh [options]
 
 Configure a shared wsl-builds.conf on the Windows host (WSL_BUILDS_CONF in ~/.bashrc),
 or create repo-root wsl-builds.conf from the example.
