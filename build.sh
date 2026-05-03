@@ -23,6 +23,8 @@ else
     source "${TOOL_DIR}/wsl-builds.conf"
     printInfo "Using: ${TOOL_DIR}/wsl-builds.conf"
 fi
+# getFile (install-helpers.sh); optional override in wsl-builds.conf
+CACHE_DIR="${CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/wsl-builds}"
 # shellcheck source=src/arg-helpers.sh
 source "${TOOL_DIR}"/src/arg-helpers.sh
 # shellcheck source=src/install-helpers.sh
