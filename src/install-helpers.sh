@@ -1,6 +1,27 @@
 #!/usr/bin/env bash
 # helper functions for build installers
 
+_helpers_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=prompt-yesno.sh
+source "${_helpers_dir}/prompt-yesno.sh"
+
+# Sets nameref $1 to stale-cache threshold in whole days (default 60; WARN_IF_CACHED_FILE_OLDER_THAN must be a positive integer).
+resolveGetFileStaleCacheDays() {
+    local -n _getfile_stale_days_out=$1
+    local raw
+    raw="${WARN_IF_CACHED_FILE_OLDER_THAN-}"
+    if [[ -z "${raw}" ]]; then
+        _getfile_stale_days_out=60
+        return 0
+    fi
+    if [[ "${raw}" =~ ^[1-9][0-9]*$ ]]; then
+        _getfile_stale_days_out="${raw}"
+        return 0
+    fi
+    printWarning "WARN_IF_CACHED_FILE_OLDER_THAN must be a positive integer; using 60"
+    _getfile_stale_days_out=60
+}
+
 # inline command
 # $1 - component name
 # Records successful component installation to ~/.wsl-build.info and sets BUILD_UPDATED=true
@@ -69,27 +90,57 @@ getFile() {
     
     printInfo "Getting file: $filename"
     
-    # Create download directory if it doesn't exist
     mkdir -p "$download_dir"
+    mkdir -p "${CACHE_DIR}"
     
     local cache_file="${CACHE_DIR}/$filename"
     local target_file="$download_dir/$filename"
+    local threshold
+    resolveGetFileStaleCacheDays threshold
     
     if [ -f "$cache_file" ]; then
-        printInfo "Using locally cached version"
-        if ! cp "$cache_file" "$target_file"; then
-            printError "Failed to copy cached file to $target_file"
-            return 1
+        local mtime now age_days use_cache=true
+        mtime=$(stat -c %Y "$cache_file")
+        now=$(date +%s)
+        age_days=$(( (now - mtime) / 86400 ))
+        
+        if (( age_days > threshold )); then
+            printWarning "Cached ${filename} is about ${age_days} days old (stale after ${threshold} days)"
+            if ! promptYesNoDefaultYesOnEof "Use cached file anyway?"; then
+                use_cache=false
+            fi
+        fi
+        
+        if [[ "${use_cache}" == true ]]; then
+            printInfo "Using locally cached version"
+            if ! cp "$cache_file" "$target_file"; then
+                printError "Failed to copy cached file to $target_file"
+                return 1
+            fi
+        else
+            printInfo "Downloading fresh copy"
+            local tmp="${cache_file}.part.$$"
+            if ! wget "$url" -O "$tmp"; then
+                printError "Failed to download $filename from $url"
+                rm -f "$tmp"
+                return 1
+            fi
+            if ! mv -f "$tmp" "$cache_file"; then
+                printError "Failed to replace cache for $filename"
+                rm -f "$tmp"
+                return 1
+            fi
+            if ! cp "$cache_file" "$target_file"; then
+                printError "Failed to copy refreshed cache to $target_file"
+                return 1
+            fi
         fi
     else
         printInfo "Downloading and caching"
-        # Download directly to target location
         if ! wget "$url" -O "$target_file"; then
             printError "Failed to download $filename from $url"
             return 1
         fi
-        
-        # Cache the file
         if ! cp "$target_file" "$cache_file"; then
             printWarning "Failed to cache file, continuing anyway"
         fi

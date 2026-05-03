@@ -222,3 +222,20 @@ EOF
 	grep -qF '# <<< wsl-builds:test-fixture-file-harness <<<' "${HOME}/.bashrc"
 	grep -Fxq 'test-fixture v1.0.0 (file-edit-harness)' "${HOME}/.wsl-build.info"
 }
+
+@test 'B25: getfile-stale-harness stale cache default yes keeps seeded payload' {
+	run bash -c 'export WSL_BUILDS_GETFILE_STALE_EXPECT=cache; printf "\n" | ./build.sh test-fixture getfile-stale-harness'
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" =~ Cached\ wsl-builds-fixture-stale-cache\.txt\ is\ about\ [0-9]+\ day\(s\)\ old ]]
+	[[ "${output:?}" =~ Use\ cached\ file\ anyway\? ]]
+	[[ "${output:?}" =~ Using\ locally\ cached\ version ]]
+	grep -Fxq 'test-fixture v1.0.0 (getfile-stale-harness)' "${HOME}/.wsl-build.info"
+}
+
+@test 'B26: getfile-stale-harness stale cache n refreshes from fixture URL' {
+	run bash -c 'export WSL_BUILDS_GETFILE_STALE_EXPECT=refresh; printf "n\n" | ./build.sh test-fixture getfile-stale-harness'
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" =~ Cached\ wsl-builds-fixture-stale-cache\.txt\ is\ about\ [0-9]+\ day\(s\)\ old ]]
+	[[ "${output:?}" =~ Downloading\ fresh\ copy ]]
+	grep -Fxq 'test-fixture v1.0.0 (getfile-stale-harness)' "${HOME}/.wsl-build.info"
+}

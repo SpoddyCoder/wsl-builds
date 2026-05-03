@@ -4,6 +4,7 @@
 
 # builder
 # CACHE_DIR=/mnt/c/WSL/cache          # cache large downloads on Windows host
+# WARN_IF_CACHED_FILE_OLDER_THAN=60   # positive integer; stale cache prompt after this many days (default 60 when unset)
 
 # dev / essentials
 # GIT_CREDENTIALS_HELPER="/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"

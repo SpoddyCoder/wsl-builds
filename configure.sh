@@ -5,6 +5,8 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=src/print.sh
 source "${REPO_ROOT}/src/print.sh"
+# shellcheck source=src/prompt-yesno.sh
+source "${REPO_ROOT}/src/prompt-yesno.sh"
 # shellcheck source=src/shell-rc.sh
 source "${REPO_ROOT}/src/shell-rc.sh"
 
@@ -141,26 +143,6 @@ runNonInteractive() {
         return 0
     fi
     copyExampleIfMissing
-}
-
-promptYesNo() {
-    local msg=$1
-    local yn
-    while true; do
-        printf '%s' "${msg} [Y/n]: "
-        read -r yn || return 1
-        case "${yn}" in
-            '' | y | Y | yes | YES)
-                return 0
-                ;;
-            n | N | no | NO)
-                return 1
-                ;;
-            *)
-                printWarning "Please answer y or n."
-                ;;
-        esac
-    done
 }
 
 stepDefaultHostConfInteractive() {

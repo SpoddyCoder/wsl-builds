@@ -21,7 +21,7 @@ Before changing `build.sh`, `src/install-dispatch.sh`, shared helpers under `src
 
 ## Bats catalog (`docker/builder-tests.bats`)
 
-Each row is one `@test`. The **`#`** column is the stable **B**… id (same order as TAP **`ok N …`** for **N** = **1–24** in this file). Tests use an isolated `$HOME` and harness `wsl-builds.conf`.
+Each row is one `@test`. The **`#`** column is the stable **B**… id (same order as TAP **`ok N …`** for **N** = **1–26** in this file). Tests use an isolated `$HOME` and harness `wsl-builds.conf`.
 
 | # | Test | What it checks |
 | -: | ---- | ---------------- |
@@ -49,6 +49,8 @@ Each row is one `@test`. The **`#`** column is the stable **B**… id (same orde
 | B22 | `WSL_BUILDS_CONF set but not readable exits nonzero` | Missing path → nonzero exit; output reports unreadable `WSL_BUILDS_CONF`. |
 | B23 | `getfile-harness exercises getFile cache hit download cleanupGetFiles and records success` | Runs harness component → success; stdout shows cache-hit and download paths (`wget` via short-lived localhost HTTP server); `~/.wsl-build.info` records `getfile-harness`. |
 | B24 | `file-edit-harness updates shell rc and /etc/wsl.conf` | Seeds dummy `/etc/wsl.conf`, runs harness component, asserts `ensureShellRcRegion` block in `~/.bashrc` and `ensureWslConfIniLine` under `[wsl-builds-test]`; restores `/etc/wsl.conf` after. |
+| B25 | `getfile-stale-harness stale cache default yes keeps seeded payload` | `WARN_IF_CACHED_FILE_OLDER_THAN=1` in harness conf; aged cache + `printf '\n'` → stale warning and “Using locally cached version”; payload matches seed; `WSL_BUILDS_GETFILE_STALE_EXPECT=cache`. |
+| B26 | `getfile-stale-harness stale cache n refreshes from fixture URL` | Same aged cache; `printf 'n\n'` → “Downloading fresh copy”; payload matches HTTP fixture; `WSL_BUILDS_GETFILE_STALE_EXPECT=refresh`. |
 
 ## Wizard catalog (`docker/conf-wizard-tests.bats`)
 
