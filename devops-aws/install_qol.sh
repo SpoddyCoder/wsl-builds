@@ -2,11 +2,7 @@
 
 printInfo "Installing AWS QoL bits"
 
-# Add aws-profile function to .bashrc if it doesn't exist
-if ! grep -q "aws-profile()" ~/.bashrc; then
-    printInfo "Adding aws-profile to .bashrc"
-    
-    cat >> ~/.bashrc << 'EOF'
+ensureShellRcRegion aws-profile-qol "$(cat <<'EOF'
 
 # AWS Profile switcher - added by wsl-builds devops-aws qol
 aws-profile() {
@@ -23,17 +19,17 @@ aws-profile() {
 _aws_profile_complete() {
     local cur="${COMP_WORDS[COMP_CWORD]}"
     local profiles=""
-    
+
     # Get profiles from ~/.aws/config
     if [ -f ~/.aws/config ]; then
         profiles+=$(grep '^\[profile ' ~/.aws/config | sed 's/^\[profile \([^]]*\)\].*/\1/' | tr '\n' ' ')
     fi
-    
+
     # Get profiles from ~/.aws/credentials
     if [ -f ~/.aws/credentials ]; then
         profiles+=$(grep '^\[' ~/.aws/credentials | sed 's/^\[\([^]]*\)\].*/\1/' | tr '\n' ' ')
     fi
-    
+
     # Remove duplicates and generate completions
     profiles=$(echo "$profiles" | tr ' ' '\n' | sort -u | tr '\n' ' ')
     COMPREPLY=($(compgen -W "$profiles" -- "$cur"))
@@ -42,13 +38,8 @@ _aws_profile_complete() {
 # Register the completion function
 complete -F _aws_profile_complete aws-profile
 EOF
+)"
 
-    printInfo "aws-profile added to .bashrc"
-    printInfo "    aws-profile <profile-name>    to switch AWS profiles"
-    printInfo "    aws-profile' (no args)        to see current profile"
-    printInfo "Tab completion will work for AWS profile names"
-else
-    printInfo "aws-profile function already exists in .bashrc"
-fi
+printInfo "aws-profile <profile-name> to switch AWS profiles (tab completion when ~/.aws is set up)"
 
 printInfo "AWS QoL bits installed"

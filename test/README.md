@@ -61,15 +61,16 @@ Wizard tests snapshot repo-root **`wsl-builds.conf`** each test and restore it i
 | W4 | `--noninteractive` when repo conf exists is no-op | `already exists` message; file checksum unchanged. |
 | W5 | Non-TTY stdin auto-forces noninteractive | `./configure.sh </dev/null` copies example when missing (same class as W3). |
 | W6 | `--defaults` alias | Same outcome as W3. |
-| W7 | No managed `~/.bashrc` block without host default | After noninteractive copy-example path, no `wsl-builds (managed)` markers in fake `$HOME`. |
-| W8 | `removeManagedBashrcBlock` with no `~/.bashrc` | No-op; no error (sourced script). |
-| W9 | `removeManagedBashrcBlock` strips managed region only | Outside lines survive; inner lines removed. |
-| W10 | `removeManagedBashrcBlock` with no markers | File byte-for-byte unchanged. |
-| W11 | `writeManagedBashrcBlock` replace / idempotent | Two calls → one block; final `WSL_BUILDS_CONF` path is the second. |
+| W7 | No managed shell rc markers after noninteractive without host default | No legacy `(managed)` or `wsl-builds:wsl-builds-conf` in fake `$HOME` `~/.bashrc` / `~/.zshrc` if present. |
+| W8 | `removeManagedShellRcRegion` with no `~/.bashrc` | No-op; no error (sourced script). |
+| W9 | `removeManagedShellRcRegion` strips named region only | Outside lines survive; inner lines removed. |
+| W10 | `removeManagedShellRcRegion` with no markers | File byte-for-byte unchanged. |
+| W11 | `replaceManagedShellRcRegion` replace / idempotent | Two calls → one block; final `WSL_BUILDS_CONF` path is the second. |
 | W12 | Path quoting in managed block | Path with spaces and `$`; `source ~/.bashrc` exports correct value. |
 | W13 | `normalizeHostConfPath` absolute readable | Returns same path. |
 | W14 | `normalizeHostConfPath` empty input | Fails. |
 | W15 | `normalizeHostConfPath` non-absolute | Fails without `wslpath` success (Linux image). |
-| W16 | Pre-seeded managed `~/.bashrc` block stripped on fall-through | `--noninteractive` removes managed markers, preserves surrounding lines. |
+| W16 | Pre-seeded legacy managed `~/.bashrc` block stripped on fall-through | `--noninteractive` removes legacy markers; no `wsl-builds:wsl-builds-conf` region added; surrounding lines kept. |
 | W17 | Shell hint warns when `WSL_BUILDS_CONF` is set in env | `WSL_BUILDS_CONF=/path … --noninteractive` → `WARN: WSL_BUILDS_CONF still set`. |
 | W18 | Shell hint silent when `WSL_BUILDS_CONF` is unset | `--noninteractive` with no env var → no `still set` line. |
+| W19 | `replaceManagedShellRcRegion` with bash and zsh | When both rc files exist, each gets exactly one `wsl-builds-conf` block and the same `export`. |

@@ -2,11 +2,11 @@
 # Interactive (or --noninteractive) setup for WSL_BUILDS_CONF and optional repo-root wsl-builds.conf.
 set -euo pipefail
 
-readonly MANAGED_BEGIN='# >>> wsl-builds (managed) >>>'
-readonly MANAGED_END='# <<< wsl-builds (managed) <<<'
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=src/print.sh
 source "${REPO_ROOT}/src/print.sh"
+# shellcheck source=src/shell-rc.sh
+source "${REPO_ROOT}/src/shell-rc.sh"
 
 NONINTERACTIVE=false
 
@@ -14,7 +14,7 @@ showWizardUsage() {
     cat <<'EOF'
 Usage: ./configure.sh [options]
 
-Configure a shared wsl-builds.conf on the Windows host (WSL_BUILDS_CONF in ~/.bashrc),
+Configure a shared wsl-builds.conf on the Windows host (WSL_BUILDS_CONF in ~/.bashrc and/or ~/.zshrc),
 or create repo-root wsl-builds.conf from the example.
 
 Options:
@@ -87,41 +87,11 @@ normalizeHostConfPath() {
     return 1
 }
 
-removeManagedBashrcBlock() {
-    local f
-    f="${HOME}/.bashrc"
-    [ -f "${f}" ] || return 0
-    local tmp
-    tmp="$(mktemp)"
-    local in_block=false
-    while IFS= read -r line || [ -n "${line}" ]; do
-        if [ "${line}" = "${MANAGED_BEGIN}" ]; then
-            in_block=true
-            continue
-        fi
-        if [ "${line}" = "${MANAGED_END}" ]; then
-            in_block=false
-            continue
-        fi
-        if [ "${in_block}" = false ]; then
-            printf '%s\n' "${line}"
-        fi
-    done <"${f}" >"${tmp}"
-    mv "${tmp}" "${f}"
-}
-
-writeManagedBashrcBlock() {
-    local conf_path=$1
-    removeManagedBashrcBlock
-    {
-        printf '%s\n' "${MANAGED_BEGIN}"
-        printf 'export WSL_BUILDS_CONF=%q\n' "${conf_path}"
-        printf '%s\n' "${MANAGED_END}"
-    } >>"${HOME}/.bashrc"
-}
-
 printReloadHint() {
     printInfo "Load this shell setting in new terminals, or run: source ~/.bashrc"
+    if [[ -f "${HOME}/.zshrc" ]] && grep -qF '# >>> wsl-builds:wsl-builds-conf >>>' "${HOME}/.zshrc" 2>/dev/null; then
+        printInfo "If you use zsh: source ~/.zshrc"
+    fi
 }
 
 printRepoConfShellHint() {
@@ -132,10 +102,12 @@ printRepoConfShellHint() {
 
 adoptHostConfPath() {
     local path=$1
+    local body
     export WSL_BUILDS_CONF="${path}"
-    writeManagedBashrcBlock "${path}"
+    body="$(printf 'export WSL_BUILDS_CONF=%q\n' "${path}")"
+    replaceManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}" "${body}"
     printInfo "Using host config: ${path}"
-    printInfo "WSL_BUILDS_CONF saved to ~/.bashrc"
+    printInfo "WSL_BUILDS_CONF saved (wsl-builds:${SHELL_RC_WIZARD_REGION_ID})"
     printReloadHint
 }
 
@@ -143,7 +115,7 @@ copyExampleIfMissing() {
     local example="${REPO_ROOT}/wsl-builds.conf.example"
     local dest="${REPO_ROOT}/wsl-builds.conf"
     # Repo-local config is used when WSL_BUILDS_CONF is unset; drop a stale managed export.
-    removeManagedBashrcBlock
+    removeManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}"
     if [ -f "${dest}" ]; then
         printInfo "Repo config already exists: ${dest}"
         printInfo "Edit with: nano ${dest}"

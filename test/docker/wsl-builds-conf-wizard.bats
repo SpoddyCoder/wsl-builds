@@ -75,33 +75,41 @@ teardown() {
 	[[ "${output:?}" =~ Created ]]
 }
 
-@test 'W7: no managed ~/.bashrc block after noninteractive when host default unavailable' {
+@test 'W7: no managed shell rc block after noninteractive when host default unavailable' {
 	rm -f "${TEST_ROOT}/wsl-builds.conf"
 	run ./configure.sh --noninteractive
 	[[ "${status:?}" -eq 0 ]]
 	if [[ -f "${HOME}/.bashrc" ]]; then
 		! grep -qF 'wsl-builds (managed)' "${HOME}/.bashrc"
+		! grep -qF 'wsl-builds:wsl-builds-conf' "${HOME}/.bashrc"
+	fi
+	if [[ -f "${HOME}/.zshrc" ]]; then
+		! grep -qF 'wsl-builds (managed)' "${HOME}/.zshrc"
+		! grep -qF 'wsl-builds:wsl-builds-conf' "${HOME}/.zshrc"
 	fi
 }
 
-@test 'W8: removeManagedBashrcBlock with no ~/.bashrc is no-op' {
+@test 'W8: removeManagedShellRcRegion with no ~/.bashrc is no-op' {
 	# shellcheck disable=SC1091
 	source "${TEST_ROOT}/configure.sh"
-	removeManagedBashrcBlock
+	removeManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}"
 	[[ ! -f "${HOME}/.bashrc" ]]
 }
 
-@test 'W9: removeManagedBashrcBlock strips only managed region' {
+@test 'W9: removeManagedShellRcRegion strips only named region' {
 	# shellcheck disable=SC1091
 	source "${TEST_ROOT}/configure.sh"
+	local begin end
+	begin='# >>> wsl-builds:wsl-builds-conf >>>'
+	end='# <<< wsl-builds:wsl-builds-conf <<<'
 	cat >"${HOME}/.bashrc" <<EOF
 before
-${MANAGED_BEGIN}
+${begin}
 inside line
-${MANAGED_END}
+${end}
 after
 EOF
-	removeManagedBashrcBlock
+	removeManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}"
 	run grep -c . "${HOME}/.bashrc"
 	[[ "${output:?}" == 2 ]]
 	grep -qx 'before' "${HOME}/.bashrc"
@@ -110,33 +118,37 @@ EOF
 	[[ "${status:?}" -ne 0 ]]
 }
 
-@test 'W10: removeManagedBashrcBlock with file but no markers leaves file unchanged' {
+@test 'W10: removeManagedShellRcRegion with file but no markers leaves file unchanged' {
 	# shellcheck disable=SC1091
 	source "${TEST_ROOT}/configure.sh"
 	echo 'user-only' >"${HOME}/.bashrc"
 	local sum_before
 	sum_before="$(sha256sum "${HOME}/.bashrc")"
-	removeManagedBashrcBlock
+	removeManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}"
 	[[ "${sum_before}" == "$(sha256sum "${HOME}/.bashrc")" ]]
 }
 
-@test 'W11: writeManagedBashrcBlock replace is idempotent; final path wins' {
+@test 'W11: replaceManagedShellRcRegion is idempotent; final path wins' {
 	# shellcheck disable=SC1091
 	source "${TEST_ROOT}/configure.sh"
 	echo 'outside' >"${HOME}/.bashrc"
-	writeManagedBashrcBlock '/first/path'
-	writeManagedBashrcBlock '/second/path'
-	[[ "$(grep -cF "${MANAGED_BEGIN}" "${HOME}/.bashrc")" -eq 1 ]]
+	local body
+	body="$(printf 'export WSL_BUILDS_CONF=%q\n' '/first/path')"
+	replaceManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}" "${body}"
+	body="$(printf 'export WSL_BUILDS_CONF=%q\n' '/second/path')"
+	replaceManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}" "${body}"
+	[[ "$(grep -cF '# >>> wsl-builds:wsl-builds-conf >>>' "${HOME}/.bashrc")" -eq 1 ]]
 	grep -qE '^export WSL_BUILDS_CONF=.*second/path' "${HOME}/.bashrc"
 	grep -qx 'outside' "${HOME}/.bashrc"
 }
 
-@test 'W12: writeManagedBashrcBlock quotes path with spaces and $' {
+@test 'W12: replaceManagedShellRcRegion quotes path with spaces and $' {
 	# shellcheck disable=SC1091
 	source "${TEST_ROOT}/configure.sh"
-	local weird
+	local weird body
 	weird=$'/tmp/weird dir/with $ymbol'
-	writeManagedBashrcBlock "${weird}"
+	body="$(printf 'export WSL_BUILDS_CONF=%q\n' "${weird}")"
+	replaceManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}" "${body}"
 	run grep '^export WSL_BUILDS_CONF=' "${HOME}/.bashrc"
 	# shellcheck disable=SC1090,SC1091
 	source "${HOME}/.bashrc"
@@ -181,8 +193,26 @@ EOF
 	[[ "${status:?}" -eq 0 ]]
 	run grep -qF 'wsl-builds (managed)' "${HOME}/.bashrc"
 	[[ "${status:?}" -ne 0 ]]
+	run grep -qF 'wsl-builds:wsl-builds-conf' "${HOME}/.bashrc"
+	[[ "${status:?}" -ne 0 ]]
 	grep -qx 'before' "${HOME}/.bashrc"
 	grep -qx 'after' "${HOME}/.bashrc"
+}
+
+@test 'W19: replaceManagedShellRcRegion updates bashrc and zshrc when both exist' {
+	# shellcheck disable=SC1091
+	source "${TEST_ROOT}/configure.sh"
+	echo 'b' >"${HOME}/.bashrc"
+	echo 'z' >"${HOME}/.zshrc"
+	local body
+	body="$(printf 'export WSL_BUILDS_CONF=%q\n' '/host/conf')"
+	replaceManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}" "${body}"
+	[[ "$(grep -cF '# >>> wsl-builds:wsl-builds-conf >>>' "${HOME}/.bashrc")" -eq 1 ]]
+	[[ "$(grep -cF '# >>> wsl-builds:wsl-builds-conf >>>' "${HOME}/.zshrc")" -eq 1 ]]
+	grep -qE '^export WSL_BUILDS_CONF=.*/host/conf' "${HOME}/.bashrc"
+	grep -qE '^export WSL_BUILDS_CONF=.*/host/conf' "${HOME}/.zshrc"
+	grep -qx 'b' "${HOME}/.bashrc"
+	grep -qx 'z' "${HOME}/.zshrc"
 }
 
 @test 'W17: shell hint warns when WSL_BUILDS_CONF is still set in env' {

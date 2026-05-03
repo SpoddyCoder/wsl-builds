@@ -4,13 +4,7 @@ printInfo "Installing QoL bits"
 
 # wsl --import's start as root: https://github.com/microsoft/WSL/issues/4276
 # ensure our user started by default
-if ! grep -q "\[user\]" /etc/wsl.conf; then
-    printInfo "Setting WSL default username: $LOGNAME"
-    sudo tee -a /etc/wsl.conf > /dev/null <<EOF
-[user]
-default=$LOGNAME
-EOF
-fi
+ensureWslConfIniLine user '[user]' "default=${LOGNAME}"
 
 if [ ! -L "${WIN_HOME_SYMLINK}" ] && [ -n "${WIN_HOME_TARGET}" ]; then
     printInfo "Creating win home symlink"
@@ -26,11 +20,7 @@ if ! grep -q '# safety aliases' ~/.bash_aliases 2>/dev/null; then
     } >> ~/.bash_aliases
 fi
 
-# Add change-hostname function to .bashrc if it doesn't exist
-if ! grep -q "change-hostname()" ~/.bashrc; then
-    printInfo "Adding change-hostname to .bashrc"
-    
-    cat >> ~/.bashrc << 'EOF'
+ensureShellRcRegion qol-change-hostname "$(cat <<'EOF'
 
 # Change WSL hostname - added by wsl-builds system qol
 change-hostname() {
@@ -44,10 +34,10 @@ change-hostname() {
         echo "  change-hostname my-dev-box"
         return 1
     fi
-    
+
     local new_hostname="$1"
     echo "Updating hostname to: $new_hostname"
-    
+
     # Update or add hostname to /etc/wsl.conf
     if ! cat /etc/wsl.conf | grep -q 'hostname ='; then
         sudo tee -a /etc/wsl.conf > /dev/null <<WSLEOF
@@ -58,7 +48,7 @@ WSLEOF
     else
         sudo sed -i "/^\[network\]/,/^\[/ {/^hostname\s*=/ s/=.*/= $new_hostname/;}" /etc/wsl.conf
     fi
-    
+
     # Update or add hostname to /etc/hosts
     if ! cat /etc/hosts | grep -q '# wsl instance name'; then
         sudo tee -a /etc/hosts > /dev/null <<HOSTSEOF
@@ -68,17 +58,13 @@ HOSTSEOF
     else
         sudo sed -i "/# wsl instance name/{n;s/127.0.0.1\s\+.*/127.0.0.1       $new_hostname/;}" /etc/hosts
     fi
-    
+
     echo "Hostname updated successfully!"
     echo "This requires a restart for changes to take effect."
 }
 EOF
-    
-    printInfo "change-hostname added to .bashrc"
-    printInfo "    change-hostname <new-hostname>    to change WSL hostname"
-    
-else
-    printInfo "change-hostname function already exists in .bashrc"
-fi
+)"
+
+printInfo "change-hostname <new-hostname> to change WSL hostname (restart WSL afterward)"
 
 printInfo "QoL bits installed"

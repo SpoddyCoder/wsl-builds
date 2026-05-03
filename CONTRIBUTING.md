@@ -45,6 +45,8 @@ Each **`install.sh`** is a thin wrapper: it sources **`src/install-dispatch.sh`*
 
 Do not duplicate per-component `if`/`source` blocks in **`install.sh`**; that logic lives in **`src/install-dispatch.sh`**.
 
+For **`~/.bashrc`** / **`~/.zshrc`** and **`/etc/wsl.conf`** changes, prefer **`ensureShellRcRegion`**, **`replaceManagedShellRcRegion`**, and **`removeManagedShellRcRegion`** ([`src/shell-rc.sh`](src/shell-rc.sh)), and **`ensureWslConfIniLine`** ([`src/wsl-conf.sh`](src/wsl-conf.sh)), sourced by **`build.sh`** and **`configure.sh`**, over ad hoc **`grep`**, append, and **`sed`**.
+
 ### Repo root `README.md`
 
 When you change user-visible builds or components, update the **Build List** in the repo root `README.md`. That file is for **people using the project** (install, `./build.sh`, the list itself). Do not add meta lines that explain how the document or table is formatted or maintained—forbidden examples include “one row per build” or “bold means …”. Editorial conventions belong in **`.cursor/rules/readme-user-facing.mdc`** and contributor context here, not in the user-facing README.

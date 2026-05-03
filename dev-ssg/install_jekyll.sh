@@ -9,15 +9,12 @@ sudo apt install -y ruby-full build-essential zlib1g-dev
 
 # Set up gem installation directory for user (avoid root gems)
 printInfo "Configuring gem installation directory"
-if ! grep -q "GEM_HOME.*gems" ~/.bashrc; then
-    {
-        echo '# Install Ruby Gems to ~/gems'
-        # shellcheck disable=SC2016 # literal export line; $HOME expands when ~/.bashrc is sourced
-        echo 'export GEM_HOME="$HOME/gems"'
-        # shellcheck disable=SC2016 # literal export line; $HOME and $PATH expand when ~/.bashrc is sourced
-        echo 'export PATH="$HOME/gems/bin:$PATH"'
-    } >> ~/.bashrc
-fi
+ensureShellRcRegion jekyll-gems "$(cat <<'EOF'
+# Install Ruby Gems to ~/gems
+export GEM_HOME="$HOME/gems"
+export PATH="$HOME/gems/bin:$PATH"
+EOF
+)"
 
 # Apply environment variables for current session
 export GEM_HOME="$HOME/gems"
@@ -31,6 +28,6 @@ gem install jekyll bundler
 printInfo "Jekyll version: $(jekyll --version)"
 printInfo "Bundler version: $(bundler --version)"
 
-printInfo "Note: You may need to restart your shell or run 'source ~/.bashrc' to use Jekyll commands"
+printInfo "You may need to restart your shell or run 'source ~/.bashrc' to use Jekyll in new terminals"
 
 printInfo "Jekyll installed"

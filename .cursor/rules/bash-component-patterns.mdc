@@ -7,10 +7,12 @@ alwaysApply: false
 # Bash Component Patterns
 
 - Keep scripts Bash-first and consistent with nearby files; avoid introducing heavier tooling for simple install steps.
-- Name **all Bash functions in camelCase** (no `snake_case` or leading underscores); match helpers in [`src/`](/src/) (e.g. `registerBuildMetadata`, `showUsage`, `getFile`, `printInfo`).
+- Name **all Bash functions in camelCase** (no `snake_case` or leading underscores); match helpers in [`src/`](/src/) (e.g. `registerBuildMetadata`, `showUsage`, `ensureShellRcRegion`, `ensureWslConfIniLine`, `getFile`, `printInfo`).
 - **`conf.sh`** calls **`registerBuildMetadata`** (`src/build-metadata.sh`): `BUILD_DIR_NAME`, `BUILD_VER`, CSV of valid components, `NUM_ADDITIONAL_ARGS`. **`ai-resources`**: optional **`AI_RESOURCES_PROJECT_DIR`** in **`wsl-builds.conf`**; **`conf.sh`** sets **`PROJECT_DIR`** (default **`$HOME/ai-resources`**) for **`install_<component>.sh`**.
 - Add new components to the third argument CSV. Use names that round-trip to **`install_<underscore_name>.sh`** (hyphens in the CSV become underscores in filenames: `mysql-client` → `install_mysql_client.sh`).
 - **`install.sh`** is only **`source "${TOOL_DIR}/src/install-dispatch.sh"`**. The dispatch loop runs **at top level** inside **`src/install-dispatch.sh`** (no wrapper function) so **`build.sh`** remains the supported entrypoint and `$@` propagates when `install.sh` is sourced. Keep `install.sh` free of duplicated `if` blocks.
+- **`~/.bashrc` / `~/.zshrc`:** use **`ensureShellRcRegion`**, **`replaceManagedShellRcRegion`**, or **`removeManagedShellRcRegion`** from [`src/shell-rc.sh`](../../src/shell-rc.sh) (named `wsl-builds:<id>` blocks) instead of one-off `grep` + `>>`.
+- **`/etc/wsl.conf`:** use **`ensureWslConfIniLine`** from [`src/wsl-conf.sh`](../../src/wsl-conf.sh) for add-only, idempotent section lines (with `sudo`).
 - Put component logic in **`install_<component>.sh`** (underscore filename as above).
 - **apt (Ubuntu):** run `sudo apt update` before repo-backed `sudo apt install`; always pass `-y`; use `apt` not `apt-get`. Skip `apt update` for local `.deb` / `dpkg -i` only. Snippet: `printInfo "Installing X"` → `sudo apt update` → `sudo apt install -y …` → optional version line → `printInfo "X installed"`.
 - **Component messaging** — user-visible status should be consistent and easy to scan:

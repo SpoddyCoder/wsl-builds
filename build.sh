@@ -29,6 +29,10 @@ CACHE_DIR="${CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/wsl-builds}"
 source "${TOOL_DIR}"/src/arg-helpers.sh
 # shellcheck source=src/install-helpers.sh
 source "${TOOL_DIR}"/src/install-helpers.sh
+# shellcheck source=src/shell-rc.sh
+source "${TOOL_DIR}"/src/shell-rc.sh
+# shellcheck source=src/wsl-conf.sh
+source "${TOOL_DIR}"/src/wsl-conf.sh
 # shellcheck source=src/build-metadata.sh
 source "${TOOL_DIR}"/src/build-metadata.sh
 # shellcheck disable=SC2034 # consumed by src/install-helpers.sh after sourcing
