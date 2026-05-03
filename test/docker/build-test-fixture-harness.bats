@@ -180,3 +180,11 @@ teardown() {
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" == *'WSL_BUILDS_CONF is set but not readable:'* ]]
 }
+
+@test 'getfile-harness exercises getFile cache hit download cleanupGetFiles and records success' {
+	run ./build.sh test-fixture getfile-harness
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" =~ Using\ locally\ cached\ version ]]
+	[[ "${output:?}" =~ Downloading\ and\ caching ]]
+	grep -Fxq 'test-fixture v1.0.0 (getfile-harness)' "${HOME}/.wsl-build.info"
+}
