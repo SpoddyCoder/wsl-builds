@@ -11,6 +11,13 @@ sh "$ollama_install_script"
 
 cleanupGetFiles
 
+if command -v systemctl >/dev/null 2>&1 && [ -f /etc/systemd/system/ollama.service ]; then
+    if promptYesNo "Disable the Ollama systemd service from starting on boot"; then
+        sudo systemctl disable ollama
+        printInfo "Ollama will not start automatically on boot"
+    fi
+fi
+
 if [ -n "${OLLAMA_MODELS:-}" ]; then
     printInfo "Configuring Ollama models directory from wsl-builds.conf: ${OLLAMA_MODELS}"
     sudo install -d -m 0755 "$OLLAMA_MODELS"
