@@ -12,7 +12,7 @@ Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolate
 ./test/run-tests.sh
 ```
 
-[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions and **wizard** behaviour for `./configure.sh`. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own **`bats` process** (builder, then wizard) and re-copies harness **`wsl-builds.conf`** between them.
+[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **wizard** behaviour for `./configure.sh`, and **commands** helpers under **`system/`**. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own **`bats` process** (builder, then wizard, then commands) and re-copies harness **`wsl-builds.conf`** between them.
 
 * **Do not** run [`docker/run-bats.sh`](docker/run-bats.sh) on the host — it overwrites repo-root **`wsl-builds.conf`**.
 * **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.
@@ -52,9 +52,24 @@ Each row is one `@test`. The **`#`** column is the stable **B**… id (same orde
 | B25 | `getfile-stale-harness stale cache default yes keeps seeded payload` | `WARN_IF_CACHED_FILE_OLDER_THAN=1` in harness conf; aged cache + `printf '\n'` → stale warning and “Using locally cached version”; payload matches seed; `WSL_BUILDS_GETFILE_STALE_EXPECT=cache`. |
 | B26 | `getfile-stale-harness stale cache n refreshes from fixture URL` | Same aged cache; `printf 'n\n'` → “Downloading fresh copy”; payload matches HTTP fixture; `WSL_BUILDS_GETFILE_STALE_EXPECT=refresh`. |
 
+## Commands catalog (`docker/commands-tests.bats`)
+
+Each row is one `@test`; labels **C**… are stable ids. Tests run with **`WSL_BUILDS_COMMAND_TEST_ROOT`** so scripts read/write seeded files under **`$CMD_ROOT/etc/...`** (no host `/etc` changes).
+
+| # | Test | What it checks |
+| -: | ---- | ---------------- |
+| C1 | `apt-mirror-switch with no args prints usage and current mirror` | Seeded canonical `ubuntu.sources`; status 0; usage mentions `canonical` / `uni-of-kent`; `Current mirror: canonical`. |
+| C2 | `apt-mirror-switch classifies mixed Ubuntu archive URLs` | Mixed URIs → `Current mirror: mixed`. |
+| C3 | `apt-mirror-switch switches Kent ubuntu.sources to canonical (root)` | Kent URIs rewritten to archive + security hosts; classifier reports canonical. |
+| C4 | `apt-mirror-switch switches canonical ubuntu.sources to uni-of-kent (root)` | Canonical URIs → mirrorservice URLs; classifier reports uni-of-kent. |
+| C5 | `apt-mirror-switch rejects unknown mirror` | Exit **2**, `Unknown mirror` in output. |
+| C6 | `apt-mirror-switch with too many args fails` | Exit **1**, extra positional rejected. |
+| C7 | `change-hostname with no args prints usage and fails` | Exit **1**; `Usage:` in output. |
+| C8 | `change-hostname updates wsl.conf and hosts under test root` | Hostname applies under test root **`/etc`**. |
+
 ## Wizard catalog (`docker/conf-wizard-tests.bats`)
 
-Wizard tests snapshot repo-root **`wsl-builds.conf`** each test and restore it in `teardown`. [`run-bats.sh`](docker/run-bats.sh) runs this file in a **second** `bats` process after [`builder-tests.bats`](docker/builder-tests.bats) and re-copies the harness between processes so the wizard starts from a known repo-root conf. Each row is one `@test`. TAP numbers for this file alone are **1–19** (see file order; labels **W**… are stable ids, not TAP order).
+Wizard tests snapshot repo-root **`wsl-builds.conf`** each test and restore it in `teardown`. [`run-bats.sh`](docker/run-bats.sh) runs this file **after [`builder-tests.bats`](docker/builder-tests.bats)** (and before [`commands-tests.bats`](docker/commands-tests.bats)); the harness **`wsl-builds.conf`** is re-copied before this process so each suite starts clean. Each row is one `@test`. TAP numbers for this file alone are **1–19** (see file order; labels **W**… are stable ids, not TAP order).
 
 | # | Test | What it checks |
 | -: | ---- | -------------- |

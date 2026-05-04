@@ -1,0 +1,374 @@
+#!/usr/bin/env bash
+# Installed to /usr/local/bin. Optional test root: WSL_BUILDS_COMMAND_TEST_ROOT.
+set -euo pipefail
+
+resolveEtc() {
+	if [[ -n "${WSL_BUILDS_COMMAND_TEST_ROOT:-}" ]]; then
+		echo "${WSL_BUILDS_COMMAND_TEST_ROOT%/}/etc"
+	else
+		echo "/etc"
+	fi
+}
+
+ETC="$(resolveEtc)"
+APTDIR="${ETC}/apt"
+SOURCES_LIST="${APTDIR}/sources.list"
+UBUNTU_SOURCES="${APTDIR}/sources.list.d/ubuntu.sources"
+
+maybeSudo() {
+	if [[ "${EUID}" -eq 0 ]]; then
+		"$@"
+	else
+		sudo "$@"
+	fi
+}
+
+ensureAptLayout() {
+	if [[ -n "${WSL_BUILDS_COMMAND_TEST_ROOT:-}" ]]; then
+		mkdir -p "${APTDIR}/sources.list.d"
+	fi
+}
+
+printUsage() {
+	echo "Usage: sudo apt-mirror-switch <mirror>"
+	echo "       apt-mirror-switch"
+	echo
+	echo 'Mirrors:'
+	echo '  canonical     Default Ubuntu mirrors (archive.ubuntu.com / security.ubuntu.com)'
+	echo '  uni-of-kent   University of Kent mirrorservice.org Ubuntu mirror'
+}
+
+extractDeb822Uris() {
+	local f=$1
+	[[ -r "${f}" ]] || return 0
+	local line
+	while IFS= read -r line || [[ -n "${line}" ]]; do
+		if [[ "${line}" =~ ^[Uu][Rr][Ii][Ss]:[[:space:]]*(.*)$ ]]; then
+			local rest="${BASH_REMATCH[1]}"
+			local tok
+			for tok in ${rest}; do
+				if [[ "${tok}" =~ ^https?:// ]]; then
+					echo "${tok}"
+				fi
+			done
+		fi
+	done <"${f}"
+}
+
+extractSourcesListUriSuite() {
+	local f=$1
+	[[ -r "${f}" ]] || return 0
+	local line stripped u suite parts
+	while IFS= read -r line || [[ -n "${line}" ]]; do
+		[[ -z "${line//[[:space:]]/}" || "${line}" =~ ^[[:space:]]*# ]] && continue
+		[[ "${line}" =~ ^[[:space:]]*deb ]] || [[ "${line}" =~ ^[[:space:]]*deb-src ]] || continue
+		stripped="${line#*[[:space:]]}"
+		stripped="${stripped#deb-src}"
+		stripped="${stripped#deb}"
+		stripped="${stripped#"${stripped%%[![:space:]]*}"}"
+		while [[ "${stripped}" =~ ^\[[^]]*\][[:space:]]*(.*)$ ]]; do
+			stripped="${BASH_REMATCH[1]}"
+		done
+		read -ra parts <<<"${stripped}"		u="${parts[0]-}"
+		suite="${parts[1]-}"
+		[[ "${u}" =~ ^https?:// ]] || continue
+		printf '%s\t%s\n' "${u}" "${suite}"
+	done <"${f}"
+}
+
+uriTag() {
+	local u="$1"
+	if [[ "${u}" == *'ports.ubuntu.com'* ]]; then
+		echo PORTS
+		return
+	fi
+	if [[ "${u}" == *'mirrorservice.org'* && "${u}" == *'sites/archive.ubuntu.com/ubuntu'* ]]; then
+		echo KENT
+		return
+	fi
+	if [[ "${u}" == *'archive.ubuntu.com/ubuntu'* ]] || [[ "${u}" == *'security.ubuntu.com/ubuntu'* ]]; then
+		echo CANON
+		return
+	fi
+	echo OTHER
+}
+
+portsWarningShown=false
+warnPortsIfPresentInFile() {
+	local f=$1
+	[[ -r "${f}" ]] || return 0
+	if grep -Fq 'ports.ubuntu.com' "${f}"; then
+		if [[ "${portsWarningShown}" == false ]]; then
+			echo 'Warning: ports.ubuntu.com entries are present — not rewritten by apt-mirror-switch' >&2
+			portsWarningShown=true
+		fi
+	fi
+}
+
+classifyCombined() {
+	local hasCanon=false hasKent=false
+	local u suite t
+
+	for scan in "${SOURCES_LIST}" "${UBUNTU_SOURCES}"; do
+		warnPortsIfPresentInFile "${scan}"
+		[[ -r "${scan}" ]] || continue
+		while IFS= read -r u || [[ -n "${u:-}" ]]; do
+			[[ -z "${u}" ]] && continue
+			t="$(uriTag "${u}")"
+			case "${t}" in
+				CANON) hasCanon=true ;;
+				KENT) hasKent=true ;;
+			esac
+		done < <(extractDeb822Uris "${scan}")
+
+		while IFS=$'\t' read -r u suite || [[ -n "${u:-}" ]]; do
+			[[ -z "${u}" ]] && continue
+			t="$(uriTag "${u}")"
+			case "${t}" in
+				CANON) hasCanon=true ;;
+				KENT) hasKent=true ;;
+			esac
+		done < <(extractSourcesListUriSuite "${scan}")
+	done
+
+	if [[ "${hasCanon}" == false && "${hasKent}" == false ]]; then
+		echo unknown
+	elif [[ "${hasCanon}" == true && "${hasKent}" == true ]]; then
+		echo mixed
+	elif [[ "${hasKent}" == true ]]; then
+		echo 'uni-of-kent'
+	else
+		echo canonical
+	fi
+}
+
+showCurrentLine() {
+	local v
+	v="$(classifyCombined)"
+	echo "Current mirror: ${v}"
+}
+
+rewriteUbuntuSourcesToCanonical() {
+	local f=$1
+	[[ -f "${f}" ]] || return 0
+	if ! command -v python3 >/dev/null 2>&1; then
+		echo "apt-mirror-switch: python3 is required to restore ubuntu.sources back to canonical mirrors" >&2
+		exit 1
+	fi
+	local tmp
+	tmp="$(mktemp)"
+	if ! python3 - "${f}" "${tmp}" <<'PY'
+import re
+import sys
+
+path_in, path_out = sys.argv[1], sys.argv[2]
+with open(path_in, encoding="utf-8") as fh:
+	text = fh.read()
+ends_nl = text.endswith("\n") or len(text) == 0
+
+mirrorsvc = re.compile(
+	r"https?://www\.mirrorservice\.org/sites/archive\.ubuntu\.com/ubuntu/?"
+)
+
+
+def rewrite_block(bl: str) -> str:
+	if "mirrorservice.org/sites/archive.ubuntu.com" not in bl:
+		return bl
+	if not re.search(r"^Types:\s*deb(?:-src)?", bl, flags=re.MULTILINE):
+		return bl
+	m = re.search(r"^Suites:\s*([^\r\n]*)", bl, flags=re.MULTILINE)
+	suite_line = m.group(1) if m else ""
+	is_security = "-security" in suite_line
+	rep = (
+		"http://security.ubuntu.com/ubuntu/"
+		if is_security
+		else "http://archive.ubuntu.com/ubuntu/"
+	)
+	return mirrorsvc.sub(rep, bl)
+
+
+blocks = text.split("\n\n")
+out = "\n\n".join(rewrite_block(b) for b in blocks)
+if ends_nl and not out.endswith("\n"):
+	out += "\n"
+elif not ends_nl and out.endswith("\n") and len(text) > 0 and not text.endswith("\n"):
+	out = out.rstrip("\n")
+with open(path_out, "w", encoding="utf-8") as fh:
+	fh.write(out)
+PY
+	then
+		rm -f "${tmp}"
+		return 1
+	fi
+	if ! maybeSudo install -o root -g root -m 0644 "${tmp}" "${f}"; then
+		rm -f "${tmp}"
+		return 1
+	fi
+	rm -f "${tmp}"
+}
+
+rewriteSourcesListLinesToKent() {
+	local f=$1
+	[[ -f "${f}" ]] || return 0
+	maybeSudo sed -i \
+		-e 's|http://archive.ubuntu.com/ubuntu/|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/|g' \
+		-e 's|https://archive.ubuntu.com/ubuntu/|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/|g' \
+		-e 's|http://security.ubuntu.com/ubuntu/|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/|g' \
+		-e 's|https://security.ubuntu.com/ubuntu/|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/|g' \
+		-e 's|http://security.ubuntu.com/ubuntu|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu|g' \
+		-e 's|https://security.ubuntu.com/ubuntu|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu|g' \
+		"${f}"
+}
+
+rewriteSourcesListLinesToCanonicalFromKent() {
+	local f=$1
+	[[ -f "${f}" ]] || return 0
+	local tmp
+	tmp="$(mktemp)"
+	local line stripped u suite rest preamble newu rl
+	while IFS= read -r line || [[ -n "${line}" ]]; do
+		if [[ -z "${line//[[:space:]]/}" || "${line}" =~ ^[[:space:]]*# ]]; then
+			printf '%s\n' "${line}" >>"${tmp}"
+			continue
+		fi
+		if [[ "${line}" != *[Mm]irror[Ss]ervice* ]]; then
+			printf '%s\n' "${line}" >>"${tmp}"
+			continue
+		fi
+		if ! [[ "${line}" =~ ^[[:space:]]*deb ]] && ! [[ "${line}" =~ ^[[:space:]]*deb-src ]]; then
+			printf '%s\n' "${line}" >>"${tmp}"
+			continue
+		fi
+		preamble=""
+		rl=""
+		stripped="$line"
+		stripped="${stripped#"${stripped%%[![:space:]]*}"}"
+		rl="${stripped}"
+		if [[ "${rl}" == deb-src* ]]; then
+			preamble='deb-src'
+			stripped="${rl#deb-src}"
+		elif [[ "${rl}" == deb* ]]; then
+			preamble='deb'
+			stripped="${rl#deb}"
+		else
+			printf '%s\n' "${line}" >>"${tmp}"
+			continue
+		fi
+		stripped="${stripped#"${stripped%%[![:space:]]*}"}"
+		while [[ "${stripped}" =~ ^\[[^]]*\][[:space:]]*(.*)$ ]]; do
+			stripped="${BASH_REMATCH[1]}"
+		done
+		read -r u suite rest <<<"${stripped}"
+		if [[ ! "${u}" =~ ^https?:// ]]; then
+			printf '%s\n' "${line}" >>"${tmp}"
+			continue
+		fi
+		if grep -q -- '-security' <<<"${suite}"; then
+			newu='http://security.ubuntu.com/ubuntu/'
+		else
+			newu='http://archive.ubuntu.com/ubuntu/'
+		fi
+		if [[ -n "${rest}" ]]; then
+			printf '%s %s %s %s\n' "${preamble}" "${newu}" "${suite}" "${rest}" >>"${tmp}"
+		else
+			printf '%s %s %s\n' "${preamble}" "${newu}" "${suite}" >>"${tmp}"
+		fi
+	done <"${f}"
+	if ! maybeSudo install -o root -g root -m 0644 "${tmp}" "${f}"; then
+		rm -f "${tmp}"
+		return 1
+	fi
+	rm -f "${tmp}"
+}
+
+rewriteUbuntuSourcesToKent() {
+	local f=$1
+	[[ -f "${f}" ]] || return 0
+	maybeSudo sed -i \
+		-e 's|http://archive.ubuntu.com/ubuntu/|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/|g' \
+		-e 's|https://archive.ubuntu.com/ubuntu/|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/|g' \
+		-e 's|http://security.ubuntu.com/ubuntu/|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/|g' \
+		-e 's|https://security.ubuntu.com/ubuntu/|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/|g' \
+		-e 's|http://security.ubuntu.com/ubuntu|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu|g' \
+		-e 's|https://security.ubuntu.com/ubuntu|http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu|g' \
+		"${f}"
+}
+
+applyMirror() {
+	local mode=$1
+	ensureAptLayout
+	local found=false
+
+	if [[ -f "${UBUNTU_SOURCES}" ]]; then
+		found=true
+		if [[ "${mode}" == canonical ]]; then
+			rewriteUbuntuSourcesToCanonical "${UBUNTU_SOURCES}"
+		else
+			rewriteUbuntuSourcesToKent "${UBUNTU_SOURCES}"
+		fi
+	fi
+	if [[ -f "${SOURCES_LIST}" ]]; then
+		found=true
+		if [[ "${mode}" == canonical ]]; then
+			rewriteSourcesListLinesToCanonicalFromKent "${SOURCES_LIST}"
+		else
+			rewriteSourcesListLinesToKent "${SOURCES_LIST}"
+		fi
+	fi
+
+	if [[ "${found}" == false ]]; then
+		echo "No ${UBUNTU_SOURCES} or ${SOURCES_LIST} found to update" >&2
+		exit 1
+	fi
+}
+
+usageAndCurrent() {
+	printUsage
+	echo
+	showCurrentLine
+}
+
+main() {
+	if [[ "${#}" -eq 0 ]]; then
+		usageAndCurrent
+		exit 0
+	fi
+	if [[ "${#}" -gt 1 ]]; then
+		printUsage
+		showCurrentLine
+		exit 1
+	fi
+
+	local mirror="${1}"
+
+	if [[ "${mirror}" != canonical && "${mirror}" != uni-of-kent ]]; then
+		echo "Unknown mirror '${mirror}'. Use canonical or uni-of-kent." >&2
+		printUsage
+		echo >&2
+		showCurrentLine >&2
+		exit 2
+	fi
+
+	local want=canonical
+	if [[ "${mirror}" == uni-of-kent ]]; then
+		want='uni-of-kent'
+	fi
+
+	if [[ "$(id -u)" -ne 0 ]]; then
+		echo 'Switching mirrors requires sudo. Run: sudo apt-mirror-switch '"${mirror}" >&2
+		printUsage >&2
+		echo >&2
+		showCurrentLine >&2
+		exit 3
+	fi
+
+	if [[ "${want}" == canonical ]]; then
+		applyMirror canonical
+	else
+		applyMirror 'uni-of-kent'
+	fi
+
+	showCurrentLine
+}
+
+main "$@"

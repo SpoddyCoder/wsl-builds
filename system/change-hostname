@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Installed to /usr/local/bin by system qol. Optional test root: WSL_BUILDS_COMMAND_TEST_ROOT.
+
+set -euo pipefail
+
+resolveEtc() {
+	if [[ -n "${WSL_BUILDS_COMMAND_TEST_ROOT:-}" ]]; then
+		echo "${WSL_BUILDS_COMMAND_TEST_ROOT%/}/etc"
+	else
+		echo "/etc"
+	fi
+}
+
+ETC="$(resolveEtc)"
+WSL_CONF="${ETC}/wsl.conf"
+HOSTS="${ETC}/hosts"
+
+maybeSudo() {
+	if [[ "${EUID}" -eq 0 ]]; then
+		"$@"
+	else
+		sudo "$@"
+	fi
+}
+
+printUsage() {
+	echo "Usage: change-hostname <new-hostname>"
+	echo
+	echo "Updates ${WSL_CONF} and ${HOSTS} with the new hostname."
+	echo "Requires a restart for changes to take effect."
+	echo
+	echo "Example:"
+	echo "  sudo change-hostname my-dev-box"
+}
+
+if [[ -z "${1:-}" ]] || [[ "$1" == -* ]]; then
+	printUsage
+	exit 1
+fi
+
+new_hostname="$1"
+
+if [[ -n "${WSL_BUILDS_COMMAND_TEST_ROOT:-}" ]]; then
+	mkdir -p "$(dirname "${WSL_CONF}")" "$(dirname "${HOSTS}")"
+fi
+
+echo "Updating hostname to: ${new_hostname}"
+
+if ! grep -q 'hostname[[:space:]]*=' "${WSL_CONF}" 2>/dev/null; then
+	maybeSudo tee -a "${WSL_CONF}" >/dev/null <<WSLEOF
+[network]
+hostname = ${new_hostname}
+generateHosts = false
+WSLEOF
+else
+	maybeSudo sed -i "/^\\[network\\]/,/^\\[/ {/^hostname[[:space:]]*=/ s/=.*/= ${new_hostname}/;}" "${WSL_CONF}"
+fi
+
+if ! grep -q '# wsl instance name' "${HOSTS}" 2>/dev/null; then
+	maybeSudo tee -a "${HOSTS}" >/dev/null <<HOSTSEOF
+# wsl instance name
+127.0.0.1       ${new_hostname}
+HOSTSEOF
+else
+	maybeSudo sed -i "/# wsl instance name/{n;s/127.0.0.1\s\+.*/127.0.0.1       ${new_hostname}/}" "${HOSTS}"
+fi
+
+echo "Hostname updated successfully!"
+echo "This requires a restart for changes to take effect."

@@ -77,7 +77,8 @@ change-hostname python-ai
 | [dev-ssg](dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
 | [devops](devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
 | [devops-aws](devops-aws/) | **awscli** | **qol**: `aws-profile` alias |
-| [system](system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys | **qol**: safety aliases, `change-hostname` alias, default user<br>**fstab**: WSL mount config |
+| [system](system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys | **qol**: safety aliases, `change-hostname`, default user<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config |
+
 
 ## Enabling + Configuring WSL2 on the Windows Host
 * Open PowerShell as an Administrator

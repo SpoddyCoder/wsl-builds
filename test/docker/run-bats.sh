@@ -7,10 +7,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 cd "$REPO_ROOT"
 unset WSL_BUILDS_CONF
-/bin/cp -f "${SCRIPT_DIR}/wsl-builds.conf" "${REPO_ROOT}/wsl-builds.conf"
 
 fail=0
+
+/bin/cp -f "${SCRIPT_DIR}/wsl-builds.conf" "${REPO_ROOT}/wsl-builds.conf"
 bats "${SCRIPT_DIR}/builder-tests.bats" || fail=1
+
 /bin/cp -f "${SCRIPT_DIR}/wsl-builds.conf" "${REPO_ROOT}/wsl-builds.conf"
 bats "${SCRIPT_DIR}/conf-wizard-tests.bats" || fail=1
+
+/bin/cp -f "${SCRIPT_DIR}/wsl-builds.conf" "${REPO_ROOT}/wsl-builds.conf"
+bats "${SCRIPT_DIR}/commands-tests.bats" || fail=1
+
 exit "$fail"
