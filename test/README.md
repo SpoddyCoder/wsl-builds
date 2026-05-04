@@ -12,7 +12,7 @@ Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolate
 ./test/run-tests.sh
 ```
 
-[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **wizard** behaviour for `./configure.sh`, and **commands** helpers under **`system/`**. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own **`bats` process** (builder, then wizard, then commands) and re-copies harness **`wsl-builds.conf`** between them.
+[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **wizard** behaviour for `./configure.sh`, and **commands** helpers under **`builds/system/`**. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own **`bats` process** (builder, then wizard, then commands) and re-copies harness **`wsl-builds.conf`** between them.
 
 * **Do not** run [`docker/run-bats.sh`](docker/run-bats.sh) on the host — it overwrites repo-root **`wsl-builds.conf`**.
 * **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.

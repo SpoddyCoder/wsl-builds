@@ -9,7 +9,7 @@ Use this skill when adding or changing a build component in this repository.
 
 ## Workflow
 
-1. Identify the target build directory. Valid build directories are directories containing both `conf.sh` and `install.sh`, such as `dev`, `dev-js`, `system`, or `devops`. The **`test-fixture`** directory is **testing-only** ([`test-fixture/README.md`](../../../test-fixture/README.md); noop harness for CI/agents)—do **not** use it like a production stack unless explicitly asked.
+1. Identify the target build directory under **`builds/<name>/`**. Valid build directories contain both `conf.sh` and `install.sh`, such as **`builds/dev`**, **`builds/dev-js`**, **`builds/system`**, or **`builds/devops`**. The **`builds/test-fixture`** directory is **testing-only** ([`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md); noop harness for CI/agents)—do **not** use it like a production stack unless explicitly asked.
 2. Read the target build's `conf.sh`, `install.sh`, and nearby `install_<component>.sh` files before editing.
 3. Add the component token to **the third argument (CSV)** of **`registerBuildMetadata`** in **`conf.sh`**.
 4. Add **`install_<name>.sh`**, mapping hyphens to underscores in the basename (examples: **`docker-desktop`** → `install_docker_desktop.sh`; **`postgres-server`** → `install_postgres_server.sh`).
@@ -20,7 +20,7 @@ Use this skill when adding or changing a build component in this repository.
    - Quick rule: **substantive install or framework/stack scaffold → Packages & Frameworks;** config, QoL, launch wrappers, DX-only tooling, symlink fixes → **Tools & extras.** Mixed cases (e.g. `cursor` `apt install`s `tree` but exists for the alias + launch) categorize by **primary purpose**, not by whether any `apt install` appears.
    - Keep that file strictly **end-user** focused (install, `./build.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc` and **`CONTRIBUTING.md`** § *Build List columns: Packages & Frameworks vs Tools & extras* (canonical prose).
 7. **Optional `wsl-builds.conf` keys** (large downloads / durable caches the user may want on a host path): add **commented examples** to **`wsl-builds.conf.example`** and document usage in the build’s **`README.md`**. See **`.cursor/rules/bash-component-patterns.mdc`**.
-8. **Start on boot:** After you know what the component installs, check whether it enables a **systemd unit** (or equivalent) that **starts automatically on boot**. If yes, and the component script does not already offer an optional disable step, **ask the user** in chat whether to add the standard **`promptYesNo`** + **`sudo systemctl disable --now <unit>`** pattern (see **`.cursor/rules/bash-component-patterns.mdc`**, *Optional: disable start on boot*, and **`ai/install_ollama.sh`**). Multi-unit stacks encode **`disable --now`** and ordering locally—do not introduce a generic **`src/`** helper without several identical callers. Only implement after they agree—do not assume every daemon should be disabled by default.
+8. **Start on boot:** After you know what the component installs, check whether it enables a **systemd unit** (or equivalent) that **starts automatically on boot**. If yes, and the component script does not already offer an optional disable step, **ask the user** in chat whether to add the standard **`promptYesNo`** + **`sudo systemctl disable --now <unit>`** pattern (see **`.cursor/rules/bash-component-patterns.mdc`**, *Optional: disable start on boot*, and **`builds/ai/install_ollama.sh`**). Multi-unit stacks encode **`disable --now`** and ordering locally—do not introduce a generic **`src/`** helper without several identical callers. Only implement after they agree—do not assume every daemon should be disabled by default.
 9. Run Bash syntax checks for touched shell files.
 
 ## Dispatcher (`install.sh`)
@@ -52,9 +52,9 @@ Full conventions: [`.cursor/rules/bash-component-patterns.mdc`](../../rules/bash
 - Do not call `recordComponentSuccess` inside `install_<component>.sh`; the dispatcher records success after the script completes.
 - Avoid broad error handling that hides failures; `build.sh` runs with `set -e`.
 - Preserve the repository's simple Bash style unless the user asks for a larger refactor.
-- If the user agrees to a **disable start-on-boot** prompt, follow **`.cursor/rules/bash-component-patterns.mdc`** (*Optional: disable start on boot*) and mirror **`ai/install_ollama.sh`** (and multi-unit examples such as **`devops/install_docker.sh`**): gate on **`systemctl`** and the unit(s), use **`promptYesNo`**, run **`sudo systemctl disable --now`** on yes (stop now + no boot), confirm with **`printInfo`**; document wording in the build **`README.md`**.
+- If the user agrees to a **disable start-on-boot** prompt, follow **`.cursor/rules/bash-component-patterns.mdc`** (*Optional: disable start on boot*) and mirror **`builds/ai/install_ollama.sh`** (and multi-unit examples such as **`builds/devops/install_docker.sh`**): gate on **`systemctl`** and the unit(s), use **`promptYesNo`**, run **`sudo systemctl disable --now`** on yes (stop now + no boot), confirm with **`printInfo`**; document wording in the build **`README.md`**.
 
-**Golden example:** [`dev-js/install_node.sh`](../../../dev-js/install_node.sh).
+**Golden example:** [`builds/dev-js/install_node.sh`](../../../builds/dev-js/install_node.sh).
 
 ### Minimal `install_<component>.sh` template
 
@@ -76,16 +76,16 @@ printInfo "<Name> installed"
 
 Repo-wide **`./test/lint.sh`** (ShellCheck + `bash -n`; ShellCheck **`--shell=bats`** on **`test/docker/*.bats`**). After substantive edits to **`src/install-dispatch.sh`**, shared helpers, or **`test/docker/`** (skip for trivial one-off component scripts), run **`./test/run-tests.sh`** from the repo root (lint + Docker Bats), per [`test/README.md`](../../../test/README.md).
 
-If you change any **exact user-visible string** (e.g. **`printInfo`/`printWarning`/`printError`** lines, **`getFile`** cache warnings/prompts, usage text), **`rg`** **`test/`** and **`test-fixture/`** (especially **`test/docker/*.bats`**) for the old wording and update **assertions or golden substrings** in the same PR; stale regex/`grep` checks are a common regression.
+If you change any **exact user-visible string** (e.g. **`printInfo`/`printWarning`/`printError`** lines, **`getFile`** cache warnings/prompts, usage text), **`rg`** **`test/`** and **`builds/test-fixture/`** (especially **`test/docker/*.bats`**) for the old wording and update **assertions or golden substrings** in the same PR; stale regex/`grep` checks are a common regression.
 
 After editing, run targeted syntax checks:
 
 ```bash
 bash -n build.sh
 bash -n src/*.sh
-bash -n <build-dir>/conf.sh
-bash -n <build-dir>/install.sh
-bash -n <build-dir>/install_<component>.sh
+bash -n builds/<build-dir>/conf.sh
+bash -n builds/<build-dir>/install.sh
+bash -n builds/<build-dir>/install_<component>.sh
 ```
 
 If `shellcheck` is installed, run it on the touched shell files and fix clear issues that fit the existing style.

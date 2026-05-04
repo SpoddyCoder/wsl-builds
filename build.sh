@@ -46,7 +46,7 @@ if [ "$#" == "0" ]; then
     exit 1
 
 fi
-if [ ! -d "${TOOL_DIR}/$1" ] || [ ! -f "${TOOL_DIR}/$1/conf.sh" ]; then
+if [ ! -d "${TOOL_DIR}/builds/$1" ] || [ ! -f "${TOOL_DIR}/builds/$1/conf.sh" ]; then
 
     printError "Build directory '$1' not found"
     exit 1
@@ -54,7 +54,7 @@ if [ ! -d "${TOOL_DIR}/$1" ] || [ ! -f "${TOOL_DIR}/$1/conf.sh" ]; then
 fi
 
 # source the build conf
-BUILD_DIR="${TOOL_DIR}/$1"
+BUILD_DIR="${TOOL_DIR}/builds/$1"
 # shellcheck source=/dev/null # build-dir conf.sh chosen at runtime via $1
 source "${BUILD_DIR}"/conf.sh
 

@@ -31,10 +31,11 @@ cd wsl-builds
 * Non-interactive mode: `./configure.sh --noninteractive` or `./configure.sh --defaults`
 
 ## Building
+Each stack’s `conf.sh`, `install.sh`, and components live under **`builds/<name>/`**; pass only **`<name>`** (the basename) to `./build.sh`.
 ```
 ./build.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
 ```
-* `build-dir` a valid build directory under the repo root (see [Build List](#build-list) below).
+* `build-dir` is the basename of a directory under `builds/` (see [Build List](#build-list) below).
 * `component[,<component>...]` comma separated list of build components (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
 * `--force` by default components that are already installed will be skipped with warning messages. Use this flag to force reinstallation of already-installed components.
@@ -67,17 +68,17 @@ change-hostname python-ai
 
 | Build | Packages & Frameworks | Tools & extras |
 | ----- | ----------------------- | -------------- |
-| [ai](ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**: + optional **`OLLAMA_MODELS`** | **cuda-wsl-lib-symlinks**: fix 'not symlinks' issue |
-| [ai-resources](ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** + optional **`AI_RESOURCES_PROJECT_DIR`** | |
-| [db](db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
-| [dev](dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq + optional git config from `wsl-builds.conf` | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
-| [dev-bash](dev-bash/) | **shellcheck**<br>**bats** | |
-| [dev-js](dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn**<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express** | **essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve |
-| [dev-python](dev-python/) | **python3**<br>**conda**: Anaconda | |
-| [dev-ssg](dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
-| [devops](devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
-| [devops-aws](devops-aws/) | **awscli** | **qol**: `aws-profile` alias |
-| [system](system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys | **qol**: safety aliases, `change-hostname`, default user<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config |
+| [ai](builds/ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**: + optional **`OLLAMA_MODELS`** | **cuda-wsl-lib-symlinks**: fix 'not symlinks' issue |
+| [ai-resources](builds/ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** + optional **`AI_RESOURCES_PROJECT_DIR`** | |
+| [db](builds/db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
+| [dev](builds/dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq + optional git config from `wsl-builds.conf` | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
+| [dev-bash](builds/dev-bash/) | **shellcheck**<br>**bats** | |
+| [dev-js](builds/dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn**<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express** | **essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve |
+| [dev-python](builds/dev-python/) | **python3**<br>**conda**: Anaconda | |
+| [dev-ssg](builds/dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
+| [devops](builds/devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
+| [devops-aws](builds/devops-aws/) | **awscli** | **qol**: `aws-profile` alias |
+| [system](builds/system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys | **qol**: safety aliases, `change-hostname`, default user<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config |
 
 
 ## Enabling + Configuring WSL2 on the Windows Host
@@ -106,7 +107,7 @@ change-hostname python-ai
 * Install an NVIDIA **Windows** driver with WSL CUDA support
 * Use `./build.sh ai cuda132` to install the CUDA toolkit (or `cuda124`) on the WSL instance. **Do not** install Linux GPU drivers in WSL.
 * For more info: [CUDA on WSL User Guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
-* If you see **`libcuda.so.1` is not a symbolic link**, run the [ai cuda-wsl-lib-symlinks](ai/cuda-wsl-lib-symlinks) component to fix it.
+* If you see **`libcuda.so.1` is not a symbolic link**, run the [ai **cuda-wsl-lib-symlinks** component](builds/ai/) to fix it.
 
 ### Resource Allocation
 * Default memory is 50% of the Windows host memory: https://learn.microsoft.com/en-us/windows/wsl/wsl-config

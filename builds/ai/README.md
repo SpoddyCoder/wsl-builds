@@ -11,7 +11,7 @@ A good basic base for AI work using CUDA.
 * Do not install `cuda`, `cuda-drivers`, or other meta-packages that pull the Linux GPU driver into WSL. Same rules as the WSL user guide.
 * https://docs.nvidia.com/cuda/wsl-user-guide/index.html
 * https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_network
-* See the [CUDA section](../README.md#cuda-integration) of the main README for more info.
+* See the [CUDA section](../../README.md#cuda-integration) of the main README for more info.
 
 ### `cuda124`
 * Install WSL-specific **CUDA 12.4** toolkit (local `.deb` repo), for environments that must stay on 12.4.

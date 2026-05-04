@@ -6,7 +6,7 @@ alwaysApply: false
 
 # `README.md` at repository root
 
-When this is the **top-level** `README.md` (repo root, not a nested `build-dir/README.md`):
+When this is the **top-level** `README.md` (repo root, not a nested **`builds/<build-dir>/README.md`**):
 
 - Keep content aimed at **people using** the builds (install, `./build.sh` usage, build list, tips).
 - Do **not** add maintainer wiring, dispatch/source-order details, or agent-only instructions here—use **`CONTRIBUTING.md`** for contributor docs and **`.cursor/rules/`** for compressed agent context.
