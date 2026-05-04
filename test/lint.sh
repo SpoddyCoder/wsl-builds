@@ -48,7 +48,17 @@ else
     fi
 
     # Syntax-only sanity check on Bash-shaped scripts (.bats use bats syntax and are omitted here).
-    for _lint_bash_file in "${REPO_ROOT}/build.sh" "${REPO_ROOT}/configure.sh" "${REPO_ROOT}/test/run-tests.sh" "${REPO_ROOT}/test/docker/run-bats.sh" "${REPO_ROOT}/test/lint.sh" "${REPO_ROOT}"/src/*.sh "${REPO_ROOT}"/*/install*.sh "${REPO_ROOT}"/*/conf.sh "${REPO_ROOT}/system/apt-mirror-switch" "${REPO_ROOT}/system/change-hostname"; do
+    for _lint_bash_file in \
+        "${REPO_ROOT}/build.sh" \
+        "${REPO_ROOT}/configure.sh" \
+        "${REPO_ROOT}/test/run-tests.sh" \
+        "${REPO_ROOT}/test/docker/run-bats.sh" \
+        "${REPO_ROOT}/test/lint.sh" \
+        "${REPO_ROOT}"/src/*.sh \
+        "${REPO_ROOT}"/*/install*.sh \
+        "${REPO_ROOT}"/*/conf.sh \
+        "${REPO_ROOT}/system/apt-mirror-switch" \
+        "${REPO_ROOT}/system/change-hostname"; do
         [[ -f "${_lint_bash_file:-}" ]] || continue
         bash -n -- "${_lint_bash_file}" || exit "${?}"
     done
