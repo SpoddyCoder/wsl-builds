@@ -114,10 +114,13 @@ change-hostname python-ai
 ```
 [wsl2]
 memory=24GB
-swap=8GB
+swap=16GB
+networkingMode=mirrored       # Bridge Windows and WSL2 networking (use this carefully)
 
 [experimental]
 autoMemoryReclaim=gradual
+autoMemoryReclaim=dropcache   # better for ai workloads
+sparseVhd=true                # reduces disk space usage with neglibible i/o overhead
 ```
 
 ---
