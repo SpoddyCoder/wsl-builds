@@ -20,7 +20,8 @@ Use this skill when adding or changing a build component in this repository.
    - Quick rule: **substantive install or framework/stack scaffold → Packages & Frameworks;** config, QoL, launch wrappers, DX-only tooling, symlink fixes → **Tools & extras.** Mixed cases (e.g. `cursor` `apt install`s `tree` but exists for the alias + launch) categorize by **primary purpose**, not by whether any `apt install` appears.
    - Keep that file strictly **end-user** focused (install, `./build.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc` and **`CONTRIBUTING.md`** § *Build List columns: Packages & Frameworks vs Tools & extras* (canonical prose).
 7. **Optional `wsl-builds.conf` keys** (large downloads / durable caches the user may want on a host path): add **commented examples** to **`wsl-builds.conf.example`** and document usage in the build’s **`README.md`**. See **`.cursor/rules/bash-component-patterns.mdc`**.
-8. Run Bash syntax checks for touched shell files.
+8. **Start on boot:** After you know what the component installs, check whether it enables a **systemd unit** (or equivalent) that **starts automatically on boot**. If yes, and the component script does not already offer an optional disable step, **ask the user** in chat whether to add the standard **`promptYesNo`** + **`sudo systemctl disable <unit>`** pattern (see **`.cursor/rules/bash-component-patterns.mdc`**, *Optional: disable start on boot*, and **`ai/install_ollama.sh`**). Only implement after they agree—do not assume every daemon should be disabled by default.
+9. Run Bash syntax checks for touched shell files.
 
 ## Dispatcher (`install.sh`)
 
@@ -51,6 +52,7 @@ Full conventions: [`.cursor/rules/bash-component-patterns.mdc`](../../rules/bash
 - Do not call `recordComponentSuccess` inside `install_<component>.sh`; the dispatcher records success after the script completes.
 - Avoid broad error handling that hides failures; `build.sh` runs with `set -e`.
 - Preserve the repository's simple Bash style unless the user asks for a larger refactor.
+- If the user agrees to a **disable start-on-boot** prompt, follow **`.cursor/rules/bash-component-patterns.mdc`** (*Optional: disable start on boot*) and mirror **`ai/install_ollama.sh`**: gate on **`systemctl`** and the unit, use **`promptYesNo`**, confirm with **`printInfo`**; document wording in the build **`README.md`**.
 
 **Golden example:** [`dev-js/install_node.sh`](../../../dev-js/install_node.sh).
 
