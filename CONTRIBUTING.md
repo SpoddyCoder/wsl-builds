@@ -122,7 +122,7 @@ Each `install_<component>.sh` should follow one small pattern so output stays co
 
 See [`dev-js/install_node.sh`](dev-js/install_node.sh) for a full example (including `getFile` / `cleanupGetFiles`).
 
-**Optional: disable start on boot (systemd)** — If a vendor installer or package enables a daemon at boot (common for databases, LLM runners, etc.), you may add an interactive opt-out: after the install steps, use **`promptYesNo`** and **`sudo systemctl disable <unit>`**, gated on **`systemctl`** and the unit being present. **`ai/install_ollama.sh`** is the reference; full conventions and agent guidance live in **`.cursor/rules/bash-component-patterns.mdc`**. Document new prompts in the build **`README.md`**; new prompt strings affect **`test/`** if anything asserts on output.
+**Optional: disable start on boot (systemd)** — If a vendor installer or package enables a daemon at boot (common for databases, LLM runners, etc.), you may add an interactive opt-out: after the install steps, use **`promptYesNo`** and **`sudo systemctl disable --now <unit>`** (stop now if running; omit generic **`src/`** helpers—encode multi-unit order in the component script, e.g. Docker), gated on **`systemctl`** and the unit being present. **`ai/install_ollama.sh`**, **`devops/install_docker.sh`**, **`db/install_mysql_server.sh`**, and **`db/install_postgres_server.sh`** illustrate the pattern; full conventions live in **`.cursor/rules/bash-component-patterns.mdc`**. Document new prompts in the build **`README.md`**; new prompt strings affect **`test/`** if anything asserts on output.
 
 ## FAQ
 * Ubuntu only?

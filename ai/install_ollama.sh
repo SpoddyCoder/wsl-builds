@@ -13,8 +13,8 @@ cleanupGetFiles
 
 if command -v systemctl >/dev/null 2>&1 && [ -f /etc/systemd/system/ollama.service ]; then
     if promptYesNo "Disable the Ollama systemd service from starting on boot"; then
-        sudo systemctl disable ollama
-        printInfo "Ollama will not start automatically on boot"
+        sudo systemctl disable --now ollama
+        printInfo "Ollama is stopped and will not start automatically on boot"
     fi
 fi
 
