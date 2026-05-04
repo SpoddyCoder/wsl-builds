@@ -31,9 +31,9 @@ cd wsl-builds
 * Non-interactive mode: `./configure.sh --noninteractive` or `./configure.sh --defaults`
 
 ## Building
-Each stack’s `conf.sh`, `install.sh`, and components live under **`builds/<name>/`**; pass only **`<name>`** (the basename) to `./build.sh`.
+Each stack’s `conf.sh`, `install.sh`, and components live under **`builds/<name>/`**; pass only **`<name>`** (the basename) to `./wsl-builder.sh`.
 ```
-./build.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
+./wsl-builder.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
 ```
 * `build-dir` is the basename of a directory under `builds/` (see [Build List](#build-list) below).
 * `component[,<component>...]` comma separated list of build components (packages to install etc.), varies per build.
@@ -44,20 +44,20 @@ Each stack’s `conf.sh`, `install.sh`, and components live under **`builds/<nam
 
 ### Assembling and Stacking Builds
 ```bash
-./build.sh            # show all builds
-./build.sh dev-js     # show components for build dev-js
+./wsl-builder.sh            # show all builds
+./wsl-builder.sh dev-js     # show components for build dev-js
 
 # build a gen dev env
-./build.sh system update,qol
-./build.sh dev essentials,qol,vscode
-./build dev-js node,yarn,nvm,essentials
+./wsl-builder.sh system update,qol
+./wsl-builder.sh dev essentials,qol,vscode
+./wsl-builder.sh dev-js node,yarn,nvm,essentials
 change-hostname my-dev-box
 
 # build a python environment for AI coding
-./build.sh system update,qol
-./build.sh dev essentials,qol,cursor
-./build.sh dev-python conda
-./build.sh ai cuda132
+./wsl-builder.sh system update,qol
+./wsl-builder.sh dev essentials,qol,cursor
+./wsl-builder.sh dev-python conda
+./wsl-builder.sh ai cuda132
 change-hostname python-ai
 ```
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
@@ -105,7 +105,7 @@ change-hostname python-ai
 
 ### CUDA Integration
 * Install an NVIDIA **Windows** driver with WSL CUDA support
-* Use `./build.sh ai cuda132` to install the CUDA toolkit (or `cuda124`) on the WSL instance. **Do not** install Linux GPU drivers in WSL.
+* Use `./wsl-builder.sh ai cuda132` to install the CUDA toolkit (or `cuda124`) on the WSL instance. **Do not** install Linux GPU drivers in WSL.
 * For more info: [CUDA on WSL User Guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
 * If you see **`libcuda.so.1` is not a symbolic link**, run the [ai **cuda-wsl-lib-symlinks** component](builds/ai/) to fix it.
 

@@ -2,7 +2,7 @@
 
 **Automated testing only.** 
 
-* This build exists to exercise `./build.sh` → `install.sh` → [`src/install-dispatch.sh`](../../src/install-dispatch.sh)
+* This build exists to exercise `./wsl-builder.sh` → `install.sh` → [`src/install-dispatch.sh`](../../src/install-dispatch.sh)
 * noop components
 * `getfile-harness` component that covers [`getFile` / `cleanupGetFiles`](../../src/install-helpers.sh)
 * `getfile-stale-harness`stale-cache prompt + refresh;

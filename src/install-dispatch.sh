@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Sourced by each `<build-dir>/install.sh` (which `build.sh` sources). Do not wrap this
+# Sourced by each `<build-dir>/install.sh` (which `wsl-builder.sh` sources). Do not wrap this
 # loop in a function: SIGINT during `source …/install_<comp>.sh` + nested function frames
 # has triggered Bash `pop_var_context` noise on some versions.
 #
 # Inherited when sourced: `VALID_INSTALL_COMPONENTS`, `BUILD_DIR`, `INSTALL_*`, and `$@`
-# from `build.sh` (positional args propagate through the source chain).
+# from `wsl-builder.sh` (positional args propagate through the source chain).
 
 IFS=',' read -r -a dispatch_install_component_names <<< "$VALID_INSTALL_COMPONENTS"
 for dispatch_install_component_name in "${dispatch_install_component_names[@]}"; do

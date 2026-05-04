@@ -2,8 +2,8 @@
 Install AI Projects & Tools. Clones project repos to **`~/ai-resources`** by default, or under **`AI_RESOURCES_PROJECT_DIR`** if set in **`wsl-builds.conf`** (see **`wsl-builds.conf.example`**).
 
 ## Requires
-* `./build.sh dev-python conda`
-* `./build.sh ai cuda132` (or `cuda124` if you need CUDA 12.4)
+* `./wsl-builder.sh dev-python conda`
+* `./wsl-builder.sh ai cuda132` (or `cuda124` if you need CUDA 12.4)
 
 ## Build Components
 ### `sg3`

@@ -24,7 +24,7 @@ Use this skill to scaffold a brand-new build directory with no components yet. C
 registerBuildMetadata "<build-dir>" "1.0.0" "" 0
 ```
 
-(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./build.sh`, which loads `src/build-metadata.sh` first. The first argument is stored as **`BUILD_DIR_NAME`** and should match the build directory basename — e.g. `registerBuildMetadata "dev-rust" ...` for a `dev-rust/` dir.)
+(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./wsl-builder.sh`, which loads `src/build-metadata.sh` first. The first argument is stored as **`BUILD_DIR_NAME`** and should match the build directory basename — e.g. `registerBuildMetadata "dev-rust" ...` for a `dev-rust/` dir.)
 
 ## install.sh template
 
@@ -34,7 +34,7 @@ registerBuildMetadata "<build-dir>" "1.0.0" "" 0
 source "${TOOL_DIR}/src/install-dispatch.sh"
 ```
 
-(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./build.sh`; `install-dispatch.sh` runs at top level when sourced. Use **`./build.sh`**, not executing `install.sh` directly.)
+(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./wsl-builder.sh`; `install-dispatch.sh` runs at top level when sourced. Use **`./wsl-builder.sh`**, not executing `install.sh` directly.)
 
 ## README.md template
 
@@ -50,8 +50,8 @@ source "${TOOL_DIR}/src/install-dispatch.sh"
 
 ## Notes
 
-- The new dir is intentionally non-buildable until a component is added: `./build.sh <build-dir>` will print an empty component list and exit 1. This is expected.
-- `src/arg-helpers.sh::showAvailableBuildDirs` scans **`builds/*/`** for dirs containing `conf.sh`, so the new dir appears in `./build.sh` listings without further wiring.
+- The new dir is intentionally non-buildable until a component is added: `./wsl-builder.sh <build-dir>` will print an empty component list and exit 1. This is expected.
+- `src/arg-helpers.sh::showAvailableBuildDirs` scans **`builds/*/`** for dirs containing `conf.sh`, so the new dir appears in `./wsl-builder.sh` listings without further wiring.
 - Defaults (version `"1.0.0"` and zero additional args) are set in **`registerBuildMetadata`**. Edit the second or fourth argument afterward if needed; add components via the CSV third argument once `add-wsl-build-component` is used.
 - `conf.sh` and `install.sh` are sourced (not executed); `install.sh` has a shebang for consistency and local `shellcheck`; `conf.sh` does not require a shebang.
 - If the user asks for something that sounds like **`test-fixture`** (noop components, CI-only), read [`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md) and [`test/README.md`](../../../test/README.md) first. **`test-fixture`** is **not** a README “Build List” stack unless the maintainer explicitly asks to list it—it exists for Bats in Docker.

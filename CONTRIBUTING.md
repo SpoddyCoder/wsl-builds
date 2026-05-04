@@ -13,14 +13,14 @@ Requests, advice and PR's are welcome.
 * Bash scripts are linted with [ShellCheck](https://www.shellcheck.net/).
 * `./test/lint.sh` — lint the whole repo
 * `./test/lint.sh path/to/script.sh` — lint specific files
-* Install ShellCheck `./build.sh dev-bash shellcheck`
+* Install ShellCheck `./wsl-builder.sh dev-bash shellcheck`
 
 ### Testing
 * [Bats](https://bats-core.readthedocs.io/en/stable/) is used as a testing framework for the bash scripts.
 * Bats tests are run in an isolated Docker container for safety and consistency.
 * `./test/run-tests.sh` to run all tests.
 * See **[`test/README.md`](test/README.md)** for more info.
-* Install Bats `./build.sh dev-bash bats`
+* Install Bats `./wsl-builder.sh dev-bash bats`
 
 ### CI
 * Lint + Bats tests are run on every push and PR.
@@ -41,15 +41,15 @@ Requests, advice and PR's are welcome.
 
 Each build directory under **`builds/<name>/`** has a **`conf.sh`** that calls **`registerBuildMetadata`** (defined in [`src/build-metadata.sh`](src/build-metadata.sh)). Pass the build directory name (`BUILD_DIR_NAME`, usually the same as the directory basename), version string, comma-separated **`VALID_INSTALL_COMPONENTS`**, and **`NUM_ADDITIONAL_ARGS`**. The **`ai-resources`** build sets **`PROJECT_DIR`** from optional repo-root **`AI_RESOURCES_PROJECT_DIR`** in **`wsl-builds.conf`** (default **`$HOME/ai-resources`**) for its **`install_<component>.sh`** scripts.
 
-Each **`install.sh`** is a thin wrapper: it sources **`src/install-dispatch.sh`**, where the loop runs **at top level** when sourced from **`build.sh`** (positional args propagate; do not execute `install.sh` as a standalone script). Adding a component means extending the CSV in **`registerBuildMetadata`'s third argument** and adding **`install_<name>.sh`**, using underscores for hyphenated component tokens (example: **`mysql-client`** maps to **`install_mysql_client.sh`**). **`install-dispatch.sh`** calls **`recordComponentSuccess`** using the canonical component token (including hyphens) so `~/.wsl-build.info` lines stay stable.
+Each **`install.sh`** is a thin wrapper: it sources **`src/install-dispatch.sh`**, where the loop runs **at top level** when **the builder** (`./wsl-builder.sh`) sources `install.sh` (positional args propagate; do not execute `install.sh` as a standalone script). Adding a component means extending the CSV in **`registerBuildMetadata`'s third argument** and adding **`install_<name>.sh`**, using underscores for hyphenated component tokens (example: **`mysql-client`** maps to **`install_mysql_client.sh`**). **`install-dispatch.sh`** calls **`recordComponentSuccess`** using the canonical component token (including hyphens) so `~/.wsl-build.info` lines stay stable.
 
 Do not duplicate per-component `if`/`source` blocks in **`install.sh`**; that logic lives in **`src/install-dispatch.sh`**.
 
-For **`~/.bashrc`** / **`~/.zshrc`** and **`/etc/wsl.conf`** changes, prefer **`ensureShellRcRegion`**, **`replaceManagedShellRcRegion`**, and **`removeManagedShellRcRegion`** ([`src/shell-rc.sh`](src/shell-rc.sh)), and **`ensureWslConfIniLine`** ([`src/wsl-conf.sh`](src/wsl-conf.sh)), sourced by **`build.sh`** and **`configure.sh`**, over ad hoc **`grep`**, append, and **`sed`**.
+For **`~/.bashrc`** / **`~/.zshrc`** and **`/etc/wsl.conf`** changes, prefer **`ensureShellRcRegion`**, **`replaceManagedShellRcRegion`**, and **`removeManagedShellRcRegion`** ([`src/shell-rc.sh`](src/shell-rc.sh)), and **`ensureWslConfIniLine`** ([`src/wsl-conf.sh`](src/wsl-conf.sh)), sourced by **`./wsl-builder.sh`** and **`configure.sh`**, over ad hoc **`grep`**, append, and **`sed`**.
 
 ### Repo root `README.md`
 
-When you change user-visible builds or components, update the **Build List** in the repo root `README.md`. That file is for **people using the project** (install, `./build.sh`, the list itself). Do not add meta lines that explain how the document or table is formatted or maintained—forbidden examples include “one row per build” or “bold means …”. Editorial conventions belong in **`.cursor/rules/readme-user-facing.mdc`** and contributor context here, not in the user-facing README.
+When you change user-visible builds or components, update the **Build List** in the repo root `README.md`. That file is for **people using the project** (install, `./wsl-builder.sh`, the list itself). Do not add meta lines that explain how the document or table is formatted or maintained—forbidden examples include “one row per build” or “bold means …”. Editorial conventions belong in **`.cursor/rules/readme-user-facing.mdc`** and contributor context here, not in the user-facing README.
 
 #### Build List columns: Packages & Frameworks vs Tools & extras
 
@@ -92,7 +92,7 @@ printInfo "Example installed"
 
 #### Other conventions
 
-* The `build.sh` tool will exit on any error
+* **The builder** (`./wsl-builder.sh`) will exit on any error
   * This is by choice (simple by design)
   * But means you cannot cleanup / handle errors inside the install scripts
 * Use the `getFile` helper function to get any installation files
@@ -118,7 +118,7 @@ Each `install_<component>.sh` should follow one small pattern so output stays co
 * **In progress:** use `printInfo` for step lines without ellipsis (`…` / `...`)—same tone as the closing line.
 * **Close** with one final line: `printInfo "<Name> installed"` — past tense, no “successfully”, no ellipsis, no trailing period. This must be the **last** user-facing line (after any version check).
 * Use `printInfo`, `printWarning`, and `printError` for install progress. Use `echo` only for data you are writing into a file or heredoc, not for step status.
-* **Optional:** when a version command exists, prefer `printInfo "<Name> version: $(…)"` (or the first line of output) instead of ending on raw `--version` stdout. No fallbacks like `2>/dev/null || echo …`; `set -e` in `build.sh` is the error contract (`cd … || exit` is the only routine guard).
+* **Optional:** when a version command exists, prefer `printInfo "<Name> version: $(…)"` (or the first line of output) instead of ending on raw `--version` stdout. No fallbacks like `2>/dev/null || echo …`; `set -e` in `./wsl-builder.sh` is the error contract (`cd … || exit` is the only routine guard).
 
 See [`builds/dev-js/install_node.sh`](builds/dev-js/install_node.sh) for a full example (including `getFile` / `cleanupGetFiles`).
 

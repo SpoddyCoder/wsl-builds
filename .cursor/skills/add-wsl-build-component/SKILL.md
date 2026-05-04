@@ -18,7 +18,7 @@ Use this skill when adding or changing a build component in this repository.
    - **Packages & Frameworks** = substantive installs: vendor/OS packages (runtimes, CUDA, databases, `docker`, `awscli`, infra CLIs such as `terraform` / `kubectl` / `k9s`, apt-backed stacks like `x11` / `smb` / `nfs` / `systemd` / `wslu`), **framework/stack installers** (`react`, `nextjs`, `angular`, `vue`, `express`; **ai-resources** components), baseline `essentials` / `update`, `node` / `nvm` / `yarn`, `python3` / `conda`.
    - **Tools & extras** = config / QoL / thin wrappers / DX-only layers (`dev-js` **`essentials`** npm globals only), `qol`, `fstab`, `vscode`, `cursor`, `devops-aws` qol, `cuda-wsl-lib-symlinks`.
    - Quick rule: **substantive install or framework/stack scaffold → Packages & Frameworks;** config, QoL, launch wrappers, DX-only tooling, symlink fixes → **Tools & extras.** Mixed cases (e.g. `cursor` `apt install`s `tree` but exists for the alias + launch) categorize by **primary purpose**, not by whether any `apt install` appears.
-   - Keep that file strictly **end-user** focused (install, `./build.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc` and **`CONTRIBUTING.md`** § *Build List columns: Packages & Frameworks vs Tools & extras* (canonical prose).
+   - Keep that file strictly **end-user** focused (install, `./wsl-builder.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc` and **`CONTRIBUTING.md`** § *Build List columns: Packages & Frameworks vs Tools & extras* (canonical prose).
 7. **Optional `wsl-builds.conf` keys** (large downloads / durable caches the user may want on a host path): add **commented examples** to **`wsl-builds.conf.example`** and document usage in the build’s **`README.md`**. See **`.cursor/rules/bash-component-patterns.mdc`**.
 8. **Start on boot:** After you know what the component installs, check whether it enables a **systemd unit** (or equivalent) that **starts automatically on boot**. If yes, and the component script does not already offer an optional disable step, **ask the user** in chat whether to add the standard **`promptYesNo`** + **`sudo systemctl disable --now <unit>`** pattern (see **`.cursor/rules/bash-component-patterns.mdc`**, *Optional: disable start on boot*, and **`builds/ai/install_ollama.sh`**). Multi-unit stacks encode **`disable --now`** and ordering locally—do not introduce a generic **`src/`** helper without several identical callers. Only implement after they agree—do not assume every daemon should be disabled by default.
 9. Run Bash syntax checks for touched shell files.
@@ -33,7 +33,7 @@ Build directory **`install.sh`** files should remain:
 source "${TOOL_DIR}/src/install-dispatch.sh"
 ```
 
-Component iteration and **`recordComponentSuccess`** live in **`src/install-dispatch.sh`** (top level when sourced from **`build.sh`**).
+Component iteration and **`recordComponentSuccess`** live in **`src/install-dispatch.sh`** (top level when sourced from **`./wsl-builder.sh`**).
 
 `declareInstallComponents` (from `src/arg-helpers.sh`) maps component tokens like **`postgres-client`** to **`INSTALL_POSTGRES_CLIENT`**. Filename mapping for `source` targets is the underscore form (**`install_postgres_client.sh`**).
 
@@ -50,7 +50,7 @@ Full conventions: [`.cursor/rules/bash-component-patterns.mdc`](../../rules/bash
 - Call `cleanupGetFiles` after using downloaded installers when cleanup is appropriate.
 - Prefer existing helper functions in `src/` over new helpers.
 - Do not call `recordComponentSuccess` inside `install_<component>.sh`; the dispatcher records success after the script completes.
-- Avoid broad error handling that hides failures; `build.sh` runs with `set -e`.
+- Avoid broad error handling that hides failures; **the builder** (`./wsl-builder.sh`) runs with `set -e`.
 - Preserve the repository's simple Bash style unless the user asks for a larger refactor.
 - If the user agrees to a **disable start-on-boot** prompt, follow **`.cursor/rules/bash-component-patterns.mdc`** (*Optional: disable start on boot*) and mirror **`builds/ai/install_ollama.sh`** (and multi-unit examples such as **`builds/devops/install_docker.sh`**): gate on **`systemctl`** and the unit(s), use **`promptYesNo`**, run **`sudo systemctl disable --now`** on yes (stop now + no boot), confirm with **`printInfo`**; document wording in the build **`README.md`**.
 
@@ -81,7 +81,7 @@ If you change any **exact user-visible string** (e.g. **`printInfo`/`printWarnin
 After editing, run targeted syntax checks:
 
 ```bash
-bash -n build.sh
+bash -n wsl-builder.sh
 bash -n src/*.sh
 bash -n builds/<build-dir>/conf.sh
 bash -n builds/<build-dir>/install.sh

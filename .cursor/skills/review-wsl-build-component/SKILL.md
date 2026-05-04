@@ -11,7 +11,7 @@ Use this skill to review an existing component and report whether it should be u
 
 1. Identify the target build directory and component under **`builds/<name>/`**. Build directories contain `conf.sh` and `install.sh`; components usually live in `install_<component>.sh`. If the scope is **`builds/test-fixture`** (noop harness only; see [`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md)), treat as convention review only unless real install logic appeared—otherwise skip vendor/CVE deep-dives except as requested.
 2. Read the target build's `conf.sh`, `install.sh`, `install_<component>.sh`, and nearby README entries.
-3. Confirm the component token appears in `registerBuildMetadata`'s CSV in `conf.sh` and that **`src/install-dispatch.sh`** loads **`install_<underscore_name>.sh`** for that token (when `build.sh` sources `install.sh`).
+3. Confirm the component token appears in `registerBuildMetadata`'s CSV in `conf.sh` and that **`src/install-dispatch.sh`** loads **`install_<underscore_name>.sh`** for that token (when **the builder** (`./wsl-builder.sh`) sources `install.sh`).
 4. Inspect current official install instructions for the component. Prefer vendor documentation over blogs, package mirrors, or stale examples.
 5. Run a security check anchored to today's date (use the date provided in the system context; confirm with `date -u +%F` if unsure). Focus on advisories from roughly the last 12 months that affect the version range the script installs:
    - vendor advisory or security page for the component (e.g. `docs.docker.com/engine/security`, `nodejs.org/en/blog/vulnerability`)
@@ -25,7 +25,7 @@ Use this skill to review an existing component and report whether it should be u
    - WSL-specific requirements or warnings
    - deprecated commands such as `apt-key`
 7. Check repository conventions:
-   - If the review proposes **rewording user-visible scripted output** (especially from **`src/`** or **`build.sh`**), **`test/docker/*.bats`** frequently matches **`$output`** via **`[[ … =~ ]]`, `grep`**, etc. Flag that **`test/`**, **`builds/test-fixture/`**, and Bats assertions should be updated **in the same implementation pass** (`./test/run-tests.sh` after substantive helper changes).
+   - If the review proposes **rewording user-visible scripted output** (especially from **`src/`** or **`./wsl-builder.sh`**), **`test/docker/*.bats`** frequently matches **`$output`** via **`[[ … =~ ]]`, `grep`**, etc. Flag that **`test/`**, **`builds/test-fixture/`**, and Bats assertions should be updated **in the same implementation pass** (`./test/run-tests.sh` after substantive helper changes).
    - **Start on boot:** From the script and vendor docs, infer whether the install enables a **systemd** (or other) **start-on-boot** service. If it does and **`install_<component>.sh`** has no optional **`promptYesNo`** step to **`systemctl disable --now`** that unit (stop now + no boot), **ask the user** at the end of the review (after the summary) whether they want that UX added—point to **`.cursor/rules/bash-component-patterns.mdc`** (*Optional: disable start on boot*) and **`builds/ai/install_ollama.sh`** / **`builds/devops/install_docker.sh`**. Treat as a product/UX choice, not a severity finding unless the service is inappropriate for WSL.
    - **Component messaging:** first user status line is `printInfo "Installing …"`; the **last** user-facing status is `printInfo "<Name> installed"` (same noun, past tense, no "successfully", ellipsis, or trailing period)
    - avoid `echo` for step/status lines (reserve `echo` for heredocs or file content)
@@ -33,7 +33,7 @@ Use this skill to review an existing component and report whether it should be u
    - use `printInfo`, `printWarning`, and `printError` for output
    - use `getFile` for downloaded installers or binaries when caching is useful
    - call `cleanupGetFiles` after installer downloads when appropriate
-   - rely on `build.sh` error handling instead of broad error swallowing
+   - rely on **the builder** (`./wsl-builder.sh`) error handling instead of broad error swallowing
    - **`recordComponentSuccess`** stays in **`src/install-dispatch.sh`**, not in `install_<component>.sh`
 
 ## Security Check Execution

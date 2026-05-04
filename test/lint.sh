@@ -25,10 +25,10 @@ if [ "$#" -gt 0 ]; then
     shellcheck --shell=bash --external-sources --source-path=SCRIPTDIR -- "$@"
 else
     # wsl-builds.conf.example is omitted from this list: the file is only a template (assignments).
-    # build.sh still points ShellCheck at that example path (see # shellcheck source= in build.sh);
+    # wsl-builder.sh still points ShellCheck at that example path (see # shellcheck source= in wsl-builder.sh);
     # The real config file wsl-builds.conf is gitignored and not used during lint.
     shellcheck --shell=bash --external-sources --source-path=SCRIPTDIR -- \
-        build.sh \
+        wsl-builder.sh \
         configure.sh \
         test/run-tests.sh \
         test/docker/run-bats.sh \
@@ -49,7 +49,7 @@ else
 
     # Syntax-only sanity check on Bash-shaped scripts (.bats use bats syntax and are omitted here).
     for _lint_bash_file in \
-        "${REPO_ROOT}/build.sh" \
+        "${REPO_ROOT}/wsl-builder.sh" \
         "${REPO_ROOT}/configure.sh" \
         "${REPO_ROOT}/test/run-tests.sh" \
         "${REPO_ROOT}/test/docker/run-bats.sh" \

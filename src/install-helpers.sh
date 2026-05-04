@@ -47,7 +47,7 @@ recordComponentSuccess() {
     echo "${BUILD_NAME} (${component})" >> "${BUILD_INFO_FILE}"
     printInfo "$(tail -1 "${BUILD_INFO_FILE}") installed!"
     
-    # Set the BUILD_UPDATED flag (consumed by build.sh after sourcing this file)
+    # Set the BUILD_UPDATED flag (consumed by wsl-builder.sh after sourcing this file)
     # shellcheck disable=SC2034
     BUILD_UPDATED=true
 }

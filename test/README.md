@@ -17,7 +17,7 @@ Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolate
 * **Do not** run [`docker/run-bats.sh`](docker/run-bats.sh) on the host — it overwrites repo-root **`wsl-builds.conf`**.
 * **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.
 
-Before changing `build.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, `configure.sh`, or Bats tests, skim this doc and run **`./test/run-tests.sh`** when behaviour may regress.
+Before changing `./wsl-builder.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, `configure.sh`, or Bats tests, skim this doc and run **`./test/run-tests.sh`** when behaviour may regress.
 
 ## Bats catalog (`docker/builder-tests.bats`)
 
@@ -25,7 +25,7 @@ Each row is one `@test`. The **`#`** column is the stable **B**… id (same orde
 
 | # | Test | What it checks |
 | -: | ---- | ---------------- |
-| B1 | `build.sh with no arguments exits nonzero and prints usage` | No args → failure, usage line, “available build directories” line. |
+| B1 | `wsl-builder.sh with no arguments exits nonzero and prints usage` | No args → failure, usage line, “available build directories” line. |
 | B2 | `unknown build directory exits nonzero` | Fake build dir → error and nonzero exit. |
 | B3 | `single-arg test-fixture lists components without running install pipeline` | Only `test-fixture` → usage + component list, no successful install. |
 | B4 | `noop component noop-hyphen runs full harness and succeeds` | Full path for `noop-hyphen` → success, banner, `installed!`. |
