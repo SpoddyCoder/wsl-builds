@@ -18,11 +18,11 @@ alwaysApply: true
 - **Terminology:** In prose, **the builder** = `./wsl-builder.sh`; use the literal path in commands, lint lists, and `bash -n` examples.
 - Bash **function** names: **camelCase**. Not a package manager; small, explicit changes.
 - Builds: `./wsl-builder.sh` `<build-dir> <component>[,<component>...] [additionalargs]... [--force]`.
-- Each stack under `builds/<name>/`: `conf.sh` (`registerBuildMetadata`), `install.sh` (sources `install-dispatch.sh` only), optional `install_<component>.sh`. Dispatch runs at top level when **the builder** sources `install.sh`. Details: [bash-component-patterns.mdc](bash-component-patterns.mdc).
+- Each build under `builds/<name>/`: `conf.sh` (`registerBuildMetadata`), `install.sh` (sources `install-dispatch.sh` only), optional `install_<component>.sh`. Dispatch runs at top level when **the builder** sources `install.sh`. Details: [bash-component-patterns.mdc](bash-component-patterns.mdc).
 - One focused thing per component; prefer helpers in `src/`.
 - **Systemd / boot:** If an install enables a **start-on-boot** daemon and the script lacks an optional disable UX, **ask the user** before adding `promptYesNo` + `systemctl disable --now`—see [bash-component-patterns.mdc](bash-component-patterns.mdc) (*Optional: disable start on boot*). Do not add without agreement.
 - **Caches / large artifacts:** optional `wsl-builds.conf` keys—see [bash-component-patterns.mdc](bash-component-patterns.mdc) (*Downloads, caches*).
-- Update **root** `README.md` Build List when user-visible stacks change; keep prose end-user focused ([readme-user-facing.mdc](readme-user-facing.mdc)).
+- Update **root** `README.md` Build List when user-visible builds change; keep prose end-user focused ([readme-user-facing.mdc](readme-user-facing.mdc)).
 - After changes to contributor workflow, test/lint mechanics, scaffolding patterns, or agent invariants, sync `CONTRIBUTING.md`, `.cursor/rules/`, and `.cursor/skills/` only where stale text would mislead.
 - Before non-trivial work, skim root `README.md`, `CONTRIBUTING.md`, and the relevant `builds/<build-dir>/README.md` if scoped to one build.
 - **Bats** in `test/docker/*.bats` run **only in Docker** (image copies repo at build; no host bind). Before editing `wsl-builder.sh`, `src/install-dispatch.sh`, helpers, or Bats, skim `test/README.md`.

@@ -4,7 +4,7 @@
 
 This project contains clean, simple WSL2 builds that use Windows host native implementations of core components for maximum performance, convenience and flexibility. 
 
-* Stack components to create different WSL builds for different purposes.
+* Combine components from different builds to tailor WSL environments for different purposes.
 * Simple installations, often featuring quality of life configurations and helpers.
 * Caching of large downloads on the Windows host, so you don't have to re-download install packages for rebuilds.
 * Other build specific cache directories on the Windows host for convenience (eg: AI models and .pkl cache).
@@ -34,7 +34,7 @@ cd wsl-builds
 * The builder should be run as your current user, but some components will run commands that require escalated privileges using `sudo`.
 * It is not designed to be used non-interactively, many installs require user input / confirmation.
 
-### Assembling and Stacking Builds
+### Assembling and combining builds
 ```bash
 ./wsl-builder.sh            # show all builds
 ./wsl-builder.sh dev-js     # show components for build dev-js
@@ -53,7 +53,7 @@ change-hostname my-dev-box
 change-hostname python-ai
 ```
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
-* Pick and choose! Use multiple runs of the build tool to stack components / packages / features from different builds as you need.
+* Pick and choose! Use multiple runs of the build tool to combine components, packages, and features from different builds as you need.
 * Build history is kept in `~/.wsl-build.info`
 
 ## Build List

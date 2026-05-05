@@ -17,7 +17,7 @@ Use this skill for **ideation and early scope**, not for shipping code, unless t
 
 1. **Ground in the repo (read-only)**  
    - Read **in full** repo root [`README.md`](../../../README.md) and [`CONTRIBUTING.md`](../../../CONTRIBUTING.md).  
-   - If the idea targets a particular stack, read that [`builds/<name>/README.md`](../../../builds) (and only what is relevant).  
+   - If the idea targets a particular build, read that [`builds/<name>/README.md`](../../../builds) (and only what is relevant).  
    - Skim rule files that constrain design: at least [`.cursor/rules/bash-component-patterns.mdc`](../../rules/bash-component-patterns.mdc). When the idea touches the root Build List or end-user prose in `README.md`, read [`.cursor/rules/readme-user-facing.mdc`](../../rules/readme-user-facing.mdc). For doc-heavy ideas, read [`.cursor/rules/documentation-style.mdc`](../../rules/documentation-style.mdc). If the idea would touch `./test/run-tests.sh`, Bats, Docker harness, or `wsl-builds.conf` handling, skim [`test/README.md`](../../../test/README.md) and the **Harness vs user config** notes in [`.cursor/rules/project-context.mdc`](../../rules/project-context.mdc).
 
 2. **Restate the request**  

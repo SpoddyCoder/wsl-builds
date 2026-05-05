@@ -224,7 +224,7 @@ teardown() {
 	[[ "${output:?}" == *'configure.sh'* ]]
 }
 
-@test 'B27: EXTERNAL_BUILDS_ROOT symlinked stack runs install and prints external root' {
+@test 'B27: EXTERNAL_BUILDS_ROOT symlinked build runs install and prints external root' {
 	local ext="${BATS_TEST_TMPDIR}/ext-builds-root"
 	mkdir -p "${ext}"
 	ln -s "${TEST_ROOT}/builds/test-fixture" "${ext}/test-fixture"

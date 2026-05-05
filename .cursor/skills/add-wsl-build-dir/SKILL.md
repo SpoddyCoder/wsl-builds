@@ -55,7 +55,7 @@ source "${TOOL_DIR}/src/install-dispatch.sh"
 - `src/arg-helpers.sh::showAvailableBuildDirs` scans `builds/*/` for dirs containing `conf.sh`, so the new dir appears in `./wsl-builder.sh` listings without further wiring.
 - Defaults (version `"1.0.0"` and zero additional args) are set in `registerBuildMetadata`. Edit the second or fourth argument afterward if needed; add components via the CSV third argument once `add-wsl-build-component` is used.
 - `conf.sh` and `install.sh` are sourced (not executed); `install.sh` has a shebang for consistency and local `shellcheck`; `conf.sh` does not require a shebang.
-- If the user asks for something that sounds like `test-fixture` (noop components, CI-only), read [`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md) and [`test/README.md`](../../../test/README.md) first. `test-fixture` is **not** a README “Build List” stack unless the maintainer explicitly asks to list it—it exists for Bats in Docker.
+- If the user asks for something that sounds like `test-fixture` (noop components, CI-only), read [`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md) and [`test/README.md`](../../../test/README.md) first. `test-fixture` is **not** a README “Build List” build unless the maintainer explicitly asks to list it—it exists for Bats in Docker.
 - When adding the first real component, follow **Component messaging** and the minimal `install_<component>.sh` template in the `add-wsl-build-component` skill (open/close `printInfo`, helpers-only status, optional version line).
 
 ## Verification

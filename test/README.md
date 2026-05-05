@@ -52,7 +52,7 @@ Each row is one `@test`. The `#` column is the stable **B**… id (same order as
 | B31 | `WSL_BUILDS_CONF takes precedence over poisonous ~/.wsl-builds.conf` | Home config contains `exit 1`; env points at harness copy → success; `Using:` is env path. |
 | B32 | `empty WSL_BUILDS_CONF falls back to ~/.wsl-builds.conf` | `WSL_BUILDS_CONF=""` → same as default; `Using:` is `"${HOME}/.wsl-builds.conf"`. |
 | B33 | `unreadable ~/.wsl-builds.conf exits nonzero with configure hint` | Dangling symlink at `~/.wsl-builds.conf` (`-r` false; avoids root reading mode `000`) → same error class as missing file. |
-| B27 | `EXTERNAL_BUILDS_ROOT symlinked stack runs install and prints external root` | External builds root via conf; symlinked `test-fixture`; success and banner. |
+| B27 | `EXTERNAL_BUILDS_ROOT symlinked build runs install and prints external root` | External builds root via conf; symlinked `test-fixture`; success and banner. |
 | B28 | `EXTERNAL_BUILDS_ROOT missing directory exits nonzero` | Bad `EXTERNAL_BUILDS_ROOT` in conf → nonzero; error names missing directory. |
 | B23 | `getfile-harness exercises getFile cache hit download cleanupGetFiles and records success` | Runs harness component → success; stdout shows cache-hit and download paths (`wget` via short-lived localhost HTTP server); `~/.wsl-build.info` records `getfile-harness`. |
 | B24 | `file-edit-harness updates shell rc and /etc/wsl.conf` | Seeds dummy `/etc/wsl.conf`, runs harness component, asserts `ensureShellRcRegion` block in `~/.bashrc` and `ensureWslConfIniLine` under `[wsl-builds-test]`; restores `/etc/wsl.conf` after. |
