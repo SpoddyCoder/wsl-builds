@@ -1,5 +1,5 @@
 # `ai-resources`
-Install AI Projects & Tools. Clones project repos to **`~/ai-resources`** by default, or under **`AI_RESOURCES_PROJECT_DIR`** if set in **`wsl-builds.conf`** (see **`wsl-builds.conf.example`**).
+Install AI Projects & Tools. Clones project repos to `~/ai-resources` by default, or under `AI_RESOURCES_PROJECT_DIR` if set in `wsl-builds.conf` (see `wsl-builds.conf.example`).
 
 ## Requires
 * `./wsl-builder.sh dev-python conda`

@@ -12,7 +12,7 @@ Basic system utilities and services for system admin and network file sharing.
 ### `qol`
 * Set default user
 * Add bash safety aliases
-* Installs **`change-hostname`** to `/usr/local/bin` for renaming the WSL instance (restart required)
+* Installs `change-hostname` to `/usr/local/bin` for renaming the WSL instance (restart required)
 ```bash
 sudo change-hostname <new-hostname>
 ```
@@ -23,13 +23,13 @@ WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on 
 ```
 
 ### `apt-mirror-switch`
-* Installs **`apt-mirror-switch`** on **`PATH`** for switching Ubuntu **archive/security** APT mirrors (`/etc/apt/sources.list` or `sources.list.d/ubuntu.sources`)
+* Installs `apt-mirror-switch` on `PATH` for switching Ubuntu **archive/security** APT mirrors (`/etc/apt/sources.list` or `sources.list.d/ubuntu.sources`)
 ```bash
 apt-mirror-switch                  # usage + mirror list + current mirror (classification)
 sudo apt-mirror-switch canonical    # Canonical archive/security hosts
 sudo apt-mirror-switch uni-of-kent  # Uni of Kent mirrorservice mirror
 ```
-* Restoring `canonical` when using **DEB822** `ubuntu.sources` requires **`python3`** on the distro
+* Restoring `canonical` when using **DEB822** `ubuntu.sources` requires `python3` on the distro
 
 ### `x11`
 * Install the X11-Apps package for native Windows GUI support

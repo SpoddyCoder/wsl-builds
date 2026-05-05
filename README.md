@@ -22,21 +22,21 @@ Run the configure wizard to create a `wsl-builds.conf` from the template...
 cd wsl-builds
 ./configure.sh
 ```
-* **`./wsl-builder.sh`** loads config in this order: **`WSL_BUILDS_CONF`** (full path) if set, else **`~/.wsl-builds.conf`**.
-* On the Windows host, a shared file under **`%USERPROFILE%\.wsl-builds\wsl-builds.conf`** is useful across distros; choosing it in the wizard saves **`export WSL_BUILDS_CONF=…`** in your shell rc.
-* Otherwise the wizard creates **`~/.wsl-builds.conf`** on the WSL instance (from [wsl-builds.conf.example](wsl-builds.conf.example) in the repo).
+* `./wsl-builder.sh` loads config in this order: `WSL_BUILDS_CONF` (full path) if set, else `~/.wsl-builds.conf`.
+* On the Windows host, a shared file under `%USERPROFILE%\.wsl-builds\wsl-builds.conf` is useful across distros; choosing it in the wizard saves `export WSL_BUILDS_CONF=…` in your shell rc.
+* Otherwise the wizard creates `~/.wsl-builds.conf` on the WSL instance (from [wsl-builds.conf.example](wsl-builds.conf.example) in the repo).
 * The `wsl-builds.conf` file contains **optional** paths and settings
   * See the [wsl-builds.conf.example](wsl-builds.conf.example) for more info on each setting.
-  * Optional **`EXTERNAL_BUILDS_ROOT`** (see example file) lets **`./wsl-builder.sh`** use a stack tree outside the repo instead of **`builds/<name>/`** here.
+  * Optional `EXTERNAL_BUILDS_ROOT` (see example file) lets `./wsl-builder.sh` use a stack tree outside the repo instead of `builds/<name>/` here.
   * Tip: Caching things on the host can be uesful.
 * **Non-interactive:** `./configure.sh --noninteractive` — no prompts; if the default Windows host `wsl-builds.conf` already exists it is adopted (`WSL_BUILDS_CONF` in shell rc), otherwise the wizard copies [wsl-builds.conf.example](wsl-builds.conf.example) to `~/.wsl-builds.conf` when that file is missing (same behavior when stdin is not a terminal, e.g. `./configure.sh </dev/null`).
 
 ## Building
-By default each stack’s `conf.sh`, `install.sh`, and components live under **`builds/<name>/`** in this repo (`EXTERNAL_BUILDS_ROOT` in **`wsl-builds.conf`** can point at another directory with the same layout). Pass only **`<name>`** (the basename) to **`./wsl-builder.sh`**.
+By default each stack’s `conf.sh`, `install.sh`, and components live under `builds/<name>/` in this repo (`EXTERNAL_BUILDS_ROOT` in `wsl-builds.conf` can point at another directory with the same layout). Pass only `<name>` (the basename) to `./wsl-builder.sh`.
 ```
 ./wsl-builder.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
 ```
-* `build-dir` is the basename of a stack directory (default **`builds/<name>/`** in this repo, or **`<name>/`** under **`EXTERNAL_BUILDS_ROOT`** when set — see [Build List](#build-list)).
+* `build-dir` is the basename of a stack directory (default `builds/<name>/` in this repo, or `<name>/` under `EXTERNAL_BUILDS_ROOT` when set — see [Build List](#build-list)).
 * `component[,<component>...]` comma separated list of build components (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
 * `--force` by default components that are already installed will be skipped with warning messages. Use this flag to force reinstallation of already-installed components.
@@ -69,17 +69,17 @@ change-hostname python-ai
 
 | Build | Packages, Frameworks, Tools & Extras | Additional Conf |
 | ----- | -------------------------------------- | --------------- |
-| [ai](builds/ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**<br>**cuda-wsl-lib-symlinks**: fix 'not symlinks' issue | **ollama**: **`OLLAMA_MODELS`** |
-| [ai-resources](builds/ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** | **sg3**, **lsd**, **spleeter**,<br/>**rudalle**:<br/>**`AI_RESOURCES_PROJECT_DIR`**<br/>**sg3**: **`STYLEGAN3_PKL_CACHE`**,<br/>**`STYLEGAN3_PYTORCH_CACHE`** |
+| [ai](builds/ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**<br>**cuda-wsl-lib-symlinks**: fix 'not symlinks' issue | **ollama**: `OLLAMA_MODELS` |
+| [ai-resources](builds/ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** | **sg3**, **lsd**, **spleeter**,<br/>**rudalle**:<br/>`AI_RESOURCES_PROJECT_DIR`<br/>**sg3**: `STYLEGAN3_PKL_CACHE`,<br/>`STYLEGAN3_PYTORCH_CACHE` |
 | [db](builds/db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
-| [dev](builds/dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq<br>**vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias | **essentials**: **`GIT_*`**,<br/>**`GIT_CREDENTIALS_HELPER`**<br/>**qol**: **`CODE_HOME_SYMLINK`**,<br/>**`CODE_HOME_TARGET`** |
+| [dev](builds/dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq<br>**vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias | **essentials**: `GIT_*`,<br/>`GIT_CREDENTIALS_HELPER`<br/>**qol**: `CODE_HOME_SYMLINK`,<br/>`CODE_HOME_TARGET` |
 | [dev-bash](builds/dev-bash/) | **shellcheck**<br>**bats** | |
 | [dev-js](builds/dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn**<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express**<br>**essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve | |
 | [dev-python](builds/dev-python/) | **python3**<br>**conda**: Anaconda | |
 | [dev-ssg](builds/dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
 | [devops](builds/devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
 | [devops-aws](builds/devops-aws/) | **awscli**<br>**qol**: `aws-profile` alias | |
-| [system](builds/system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys<br>**qol**: safety aliases, `change-hostname`, default user<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config | **qol**: **`WIN_HOME_SYMLINK`**,<br/>**`WIN_HOME_TARGET`** |
+| [system](builds/system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys<br>**qol**: safety aliases, `change-hostname`, default user<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config | **qol**: `WIN_HOME_SYMLINK`,<br/>`WIN_HOME_TARGET` |
 
 
 ## Enabling + Configuring WSL2 on the Windows Host
@@ -108,7 +108,7 @@ change-hostname python-ai
 * Install an NVIDIA **Windows** driver with WSL CUDA support
 * Use `./wsl-builder.sh ai cuda132` to install the CUDA toolkit (or `cuda124`) on the WSL instance. **Do not** install Linux GPU drivers in WSL.
 * For more info: [CUDA on WSL User Guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
-* If you see **`libcuda.so.1` is not a symbolic link**, run the [ai **cuda-wsl-lib-symlinks** component](builds/ai/) to fix it.
+* If you see `libcuda.so.1 is not a symbolic link`, run the [ai **cuda-wsl-lib-symlinks** component](builds/ai/) to fix it.
 
 ### Resource Allocation
 * Default memory is 50% of the Windows host memory: https://learn.microsoft.com/en-us/windows/wsl/wsl-config

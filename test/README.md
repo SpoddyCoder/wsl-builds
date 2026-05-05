@@ -12,16 +12,16 @@ Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolate
 ./test/run-tests.sh
 ```
 
-[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **wizard** behaviour for `./configure.sh`, and **commands** helpers under **`builds/system/`**. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own **`bats` process** (builder, then wizard, then commands).
+[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **wizard** behaviour for `./configure.sh`, and **commands** helpers under `builds/system/`. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own `bats` process (builder, then wizard, then commands).
 
-* Builder tests use an isolated **`$HOME`** and copy harness [`docker/wsl-builds.conf`](docker/wsl-builds.conf) to **`~/.wsl-builds.conf`**. Wizard tests use their own fake **`$HOME`** only.
+* Builder tests use an isolated `$HOME` and copy harness [`docker/wsl-builds.conf`](docker/wsl-builds.conf) to `~/.wsl-builds.conf`. Wizard tests use their own fake `$HOME` only.
 * **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.
 
-Before changing `./wsl-builder.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, `configure.sh`, or Bats tests, skim this doc and run **`./test/run-tests.sh`** when behaviour may regress.
+Before changing `./wsl-builder.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, `configure.sh`, or Bats tests, skim this doc and run `./test/run-tests.sh` when behaviour may regress.
 
 ## Bats catalog (`docker/builder-tests.bats`)
 
-Each row is one `@test`. The **`#`** column is the stable **B**… id (same order as TAP **`ok N …`** in this file). Builder tests use an isolated `$HOME` with harness **`~/.wsl-builds.conf`** (or **`WSL_BUILDS_CONF`** where noted).
+Each row is one `@test`. The `#` column is the stable **B**… id (same order as TAP `ok N …` in this file). Builder tests use an isolated `$HOME` with harness `~/.wsl-builds.conf` (or `WSL_BUILDS_CONF` where noted).
 
 | # | Test | What it checks |
 | -: | ---- | ---------------- |
@@ -61,7 +61,7 @@ Each row is one `@test`. The **`#`** column is the stable **B**… id (same orde
 
 ## Commands catalog (`docker/commands-tests.bats`)
 
-Each row is one `@test`; labels **C**… are stable ids. Tests run with **`WSL_BUILDS_COMMAND_TEST_ROOT`** so scripts read/write seeded files under **`$CMD_ROOT/etc/...`** (no host `/etc` changes).
+Each row is one `@test`; labels **C**… are stable ids. Tests run with `WSL_BUILDS_COMMAND_TEST_ROOT` so scripts read/write seeded files under `$CMD_ROOT/etc/...` (no host `/etc` changes).
 
 | # | Test | What it checks |
 | -: | ---- | ---------------- |
@@ -72,11 +72,11 @@ Each row is one `@test`; labels **C**… are stable ids. Tests run with **`WSL_B
 | C5 | `apt-mirror-switch rejects unknown mirror` | Exit **2**, `Unknown mirror` in output. |
 | C6 | `apt-mirror-switch with too many args fails` | Exit **1**, extra positional rejected. |
 | C7 | `change-hostname with no args prints usage and fails` | Exit **1**; `Usage:` in output. |
-| C8 | `change-hostname updates wsl.conf and hosts under test root` | Hostname applies under test root **`/etc`**. |
+| C8 | `change-hostname updates wsl.conf and hosts under test root` | Hostname applies under test root `/etc`. |
 
 ## Wizard catalog (`docker/conf-wizard-tests.bats`)
 
-Each test uses a fresh fake **`$HOME`**; [`run-bats.sh`](docker/run-bats.sh) runs this file **after [`builder-tests.bats`](docker/builder-tests.bats)** (and before [`commands-tests.bats`](docker/commands-tests.bats)). Each row is one `@test`. TAP numbers follow file order; labels **W**… are stable ids.
+Each test uses a fresh fake `$HOME`; [`run-bats.sh`](docker/run-bats.sh) runs this file **after [`builder-tests.bats`](docker/builder-tests.bats)** (and before [`commands-tests.bats`](docker/commands-tests.bats)). Each row is one `@test`. TAP numbers follow file order; labels **W**… are stable ids.
 
 | # | Test | What it checks |
 | -: | ---- | -------------- |

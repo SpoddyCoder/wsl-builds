@@ -1,0 +1,8 @@
+---
+description: Markdown and prose emphasis in repo docs
+alwaysApply: true
+---
+
+# Documentation style (Markdown)
+
+- Do not bold and backtick the same span: use backticks alone for literals (paths, commands, env vars) and bold only for plain emphasis, not wrapped around a code span.

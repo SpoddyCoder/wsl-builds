@@ -15,7 +15,7 @@ Database development and server tools.
 * Installs MySQL server via apt package manager
 * Full MySQL database server installation
 * Includes configuration and service management
-* After install, if **`systemd`** is available and **`mysql.service`** is present, you are optionally prompted to **`systemctl disable --now mysql`** so the server stops immediately if running and does not start on boot (default **Y**)
+* After install, if `systemd` is available and `mysql.service` is present, you are optionally prompted to `systemctl disable --now mysql` so the server stops immediately if running and does not start on boot (default **Y**)
 
 ### `postgres-client`
 * Installs PostgreSQL client tools via apt package manager
@@ -26,7 +26,7 @@ Database development and server tools.
 * Installs PostgreSQL server via apt package manager
 * Full PostgreSQL database server installation
 * Includes configuration and service management
-* After install, if **`systemd`** is available, you are optionally prompted to **`systemctl disable --now`** the **`postgresql@<version>-<cluster>`** unit derived from the **first row** of **`pg_lsclusters`** (typical fresh install: one default cluster; default **Y**). Multiple pre-existing clusters are not enumerated individually
+* After install, if `systemd` is available, you are optionally prompted to `systemctl disable --now` the `postgresql@<version>-<cluster>` unit derived from the **first row** of `pg_lsclusters` (typical fresh install: one default cluster; default **Y**). Multiple pre-existing clusters are not enumerated individually
 
 ## Build Arguments
 * No additional arguments for this build 
