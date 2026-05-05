@@ -1,5 +1,10 @@
 # Contributing
-Requests, advice and PR's are welcome.
+Requests, advice and PR's are welcome. 
+
+Only two rules for PR submissions;
+
+1. The PR fixes a bug, security flaw, addresses an open issue or adds a new feature that is inline with the project and its ethos.
+2. It is your responsibility to have reviewed AI generated changes before submitting a PR. Human readable docs and code are very important.
 
 ## Things To Note
 * Simple by design
@@ -29,13 +34,15 @@ Requests, advice and PR's are welcome.
 ---
 
 ## Contributing builds / components
-* This project is AI assisted.
+* This project is AI assisted. With human controlled quality and structure. Human readable docs and code are very important.
 * [Rules](./.cursor/rules) help the AI agent understand the project and its conventions.
 * In almost all cases, you can simply ask the AI agent to use the [skills](./.cursor/skills) to add new things.
   * [add-wsl-build-dir](./.cursor/skills/add-wsl-build-dir/SKILL.md)
   * [add-wsl-build-component](./.cursor/skills/add-wsl-build-component/SKILL.md)
   * [review-wsl-build-component](./.cursor/skills/review-wsl-build-component/SKILL.md)
-* In addition to adding the new builds / components, it will read this guide and automatically take care of docs and tests etc.
+* In addition to adding the new builds / components, it should automatically take care of docs and tests etc.
+* If you want to understand the project architecture (it's pretty simple tbh), ask the AI agent for an overview.
+  * Or review the [Cursor rules and skills files directly](./.cursor).
 
 ### Metadata and dispatch (`conf.sh`, `install.sh`)
 

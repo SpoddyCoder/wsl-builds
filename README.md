@@ -5,10 +5,10 @@
 This project contains clean, simple WSL2 builds that use Windows host native implementations of core components for maximum performance, convenience and flexibility. 
 
 * Stack components to create different WSL builds for different purposes.
-* Simple installations, often featuring quality of life configurations and helpers
-* Caching of large downloads on the Windows host, so you don't have to re-download install packages for rebuilds
-* Other build specific cache directories on the Windows host for convenience (eg: AI models and .pkl cache)
-* **Project motivation:** WSL instances are disposable - streamlines a clean rebuild whenever its needed
+* Simple installations, often featuring quality of life configurations and helpers.
+* Caching of large downloads on the Windows host, so you don't have to re-download install packages for rebuilds.
+* Other build specific cache directories on the Windows host for convenience (eg: AI models and .pkl cache).
+* **Project motivation:** WSL instances are disposable - streamlines a clean rebuild whenever its needed.
 
 ## Install
 After provisioning a basic WSL instance, clone the project repo on it...
@@ -22,26 +22,17 @@ Run the configure wizard to create a `wsl-builds.conf` from the template...
 cd wsl-builds
 ./configure.sh
 ```
-* `./wsl-builder.sh` loads config in this order: `WSL_BUILDS_CONF` (full path) if set, else `~/.wsl-builds.conf`.
-* On the Windows host, a shared file under `%USERPROFILE%\.wsl-builds\wsl-builds.conf` is useful across distros; choosing it in the wizard saves `export WSL_BUILDS_CONF=…` in your shell rc.
-* Otherwise the wizard creates `~/.wsl-builds.conf` on the WSL instance (from [wsl-builds.conf.example](wsl-builds.conf.example) in the repo).
-* The `wsl-builds.conf` file contains **optional** paths and settings
-  * See the [wsl-builds.conf.example](wsl-builds.conf.example) for more info on each setting.
-  * Optional `EXTERNAL_BUILDS_ROOT` (see example file) lets `./wsl-builder.sh` use a stack tree outside the repo instead of `builds/<name>/` here.
-  * Tip: Caching things on the host can be uesful.
-* **Non-interactive:** `./configure.sh --noninteractive` — no prompts; if the default Windows host `wsl-builds.conf` already exists it is adopted (`WSL_BUILDS_CONF` in shell rc), otherwise the wizard copies [wsl-builds.conf.example](wsl-builds.conf.example) to `~/.wsl-builds.conf` when that file is missing (same behavior when stdin is not a terminal, e.g. `./configure.sh </dev/null`).
 
 ## Building
-By default each stack’s `conf.sh`, `install.sh`, and components live under `builds/<name>/` in this repo (`EXTERNAL_BUILDS_ROOT` in `wsl-builds.conf` can point at another directory with the same layout). Pass only `<name>` (the basename) to `./wsl-builder.sh`.
 ```
 ./wsl-builder.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
 ```
-* `build-dir` is the basename of a stack directory (default `builds/<name>/` in this repo, or `<name>/` under `EXTERNAL_BUILDS_ROOT` when set — see [Build List](#build-list)).
+* `build-dir` any valid build directory name, see [Build List](#build-list). Each build has it's own `README.md`.
 * `component[,<component>...]` comma separated list of build components (packages to install etc.), varies per build.
-* `additionalargs...` additional arguments required for some builds
+* `additionalargs...` additional arguments required for some builds.
 * `--force` by default components that are already installed will be skipped with warning messages. Use this flag to force reinstallation of already-installed components.
-* The builder should be run as your current user, but some components will run commands that require escalated privileges using `sudo`
-* It is not designed to be used non-interactively, some installs need user input / confirmation.
+* The builder should be run as your current user, but some components will run commands that require escalated privileges using `sudo`.
+* It is not designed to be used non-interactively, many installs require user input / confirmation.
 
 ### Assembling and Stacking Builds
 ```bash
@@ -62,7 +53,7 @@ change-hostname my-dev-box
 change-hostname python-ai
 ```
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
-* Pick and choosem use multiple runs of the build tool to stack components / packages / features from different builds as you need.
+* Pick and choose! Use multiple runs of the build tool to stack components / packages / features from different builds as you need.
 * Build history is kept in `~/.wsl-build.info`
 
 ## Build List
@@ -81,6 +72,21 @@ change-hostname python-ai
 | [devops-aws](builds/devops-aws/) | **awscli**<br>**qol**: `aws-profile` alias | |
 | [system](builds/system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys<br>**qol**: safety aliases, `change-hostname`, default user<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config | **qol**: `WIN_HOME_SYMLINK`,<br/>`WIN_HOME_TARGET` |
 
+## Advanced Configuration
+* The builder loads `WSL_BUILDS_CONF` (full path) if set, else `~/.wsl-builds.conf`.
+* On the Windows host, a shared file under `%USERPROFILE%\.wsl-builds\wsl-builds.conf` is useful if you want many WSL2 instances configured in the same way.
+  * Choosing it in the configuration wizard saves `export WSL_BUILDS_CONF=…` in your shell rc.
+* Otherwise the configuration wizard creates `~/.wsl-builds.conf` on the WSL instance
+* The `wsl-builds.conf` file contains **optional** paths and settings
+  * See the [wsl-builds.conf.example](wsl-builds.conf.example) for more info on what's available.
+  * Each build directory README will call out configurable values for that component.
+  * Tip: Caching things on the host can be uesful.
+* `./configure.sh --noninteractive` if the default Windows host `wsl-builds.conf` already exists it is adopted, otherwise the wizard uses the shipped default.
+
+### External Builds Root
+* `EXTERNAL_BUILDS_ROOT` in `wsl-builds.conf` can point at another `builds/` directory outside the repo.
+* Each inner build directory must have a `conf.sh`, `install.sh` and `install_<component>.sh` files.
+* See [CONTRIBUTING.md](CONTRIBUTING.md) for more info.
 
 ## Enabling + Configuring WSL2 on the Windows Host
 * Open PowerShell as an Administrator
@@ -110,9 +116,9 @@ change-hostname python-ai
 * For more info: [CUDA on WSL User Guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)
 * If you see `libcuda.so.1 is not a symbolic link`, run the [ai **cuda-wsl-lib-symlinks** component](builds/ai/) to fix it.
 
-### Resource Allocation
+### Windows Host Resource Allocation
 * Default memory is 50% of the Windows host memory: https://learn.microsoft.com/en-us/windows/wsl/wsl-config
-* For ai work in particular you may find it useful to increase default memory, swap space and enable gradual memory reclaim, eg...
+* For AI work in particular you may find it useful to increase default memory, swap space and enable gradual memory reclaim, eg...
 
 ```
 [wsl2]
