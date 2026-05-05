@@ -51,22 +51,16 @@ For **`~/.bashrc`** / **`~/.zshrc`** and **`/etc/wsl.conf`** changes, prefer **`
 
 When you change user-visible builds or components, update the **Build List** in the repo root `README.md`. That file is for **people using the project** (install, `./wsl-builder.sh`, the list itself). Do not add meta lines that explain how the document or table is formatted or maintained—forbidden examples include “one row per build” or “bold means …”. Editorial conventions belong in **`.cursor/rules/readme-user-facing.mdc`** and contributor context here, not in the user-facing README.
 
-#### Build List columns: Packages & Frameworks vs Tools & extras
+#### Build List columns: middle vs Additional Conf
 
-Before adding a component to the table, read its `install_<component>.sh` and decide which column it belongs in:
+The **Build List** table has three columns: **Build** | **Packages, Frameworks, Tools & Extras** | **Additional Conf**.
 
-* **Packages & Frameworks** — substantive software the build installs or pulls in as the main deliverable:
-  * OS/repo packages and vendor installers (apt, `.deb`, official scripts): runtimes, SDKs, daemons, databases, CUDA toolkits, **`docker`**, **`awscli`**, **`shellcheck`**, **`bats`**, **`hugo`**, **`jekyll`**, **`ollama`**, feature installs that primarily add packages (**`x11-apps`**, **`smbclient`** / **`cifs-utils`**, **`nfs-common`**, **`systemd`** packages, **`wslu`**, etc.).
-  * **Framework / stack installers** via npm/yarn/pip/conda or similar: **`react`**, **`nextjs`**, **`angular`**, **`vue`**, **`express`** (dev-js); **`sg3`**, **`lsd`**, **`spleeter`**, **`rudalle`** (ai-resources).
-  * Infra CLIs delivered as installed products: **`terraform`**, **`packer`**, **`kubectl`**, **`k9s`** (devops).
-  * Baseline bundles whose primary job is installing packages: **`essentials`**, **`update`** (**system**, **dev**), plus **`node`**, **`nvm`**, **`yarn`**, **`python3`**, **`conda`**.
+* **Packages, Frameworks, Tools & Extras** — every component for that build (bold component token, short description). Read each `install_<component>.sh` first. For readability, list **substantive installs and framework/stack scaffolds** before **config, QoL, wrappers, DX-only layers, and workaround fixes** in the same cell:
+  * *Substantive* — OS/repo/vendor packages (runtimes, SDKs, CUDA, databases, **`docker`**, **`awscli`**, infra CLIs, **`x11`** / **`smb`** / **`nfs`** / **`systemd`** / **`wslu`** stacks), framework installers (**`react`**, **`nextjs`**, etc.; **ai-resources** components), baseline **`essentials`** / **`update`**, **`node`** / **`nvm`** / **`yarn`**, **`python3`** / **`conda`**, **`shellcheck`**, **`bats`**, **`hugo`**, **`jekyll`**, **`ollama`**.
+  * *QoL / thin / fix* — **`dev-js` `essentials`** (npm globals), **`qol`**, **`fstab`**, **`vscode`**, **`cursor`**, **`devops-aws` `qol`**, **`cuda-wsl-lib-symlinks`**.
+  * Mixed components (e.g. `cursor`): order by **primary purpose**, not by whether any `apt install` appears.
 
-* **Tools & extras** — configuration, QoL, thin wrappers, DX layers on top of an existing runtime, or fixes that do not deliver the named stack:
-  * npm globals that only add editor/lint/serve workflow (**`dev-js` `essentials`**: TypeScript, ESLint, Prettier, PM2, nodemon, serve).
-  * **`qol`** components, **`fstab`** (mostly `/etc/wsl.conf`), **`vscode`** (launcher only), **`cursor`** (alias + small adjunct install), **`devops-aws` `qol`**.
-  * **`cuda-wsl-lib-symlinks`** (symlink fix + `ldconfig` only).
-
-Quick decision rule: **substantive install or framework/stack scaffold → Packages & Frameworks.** **Config, QoL, aliases, IDE launch wrappers, DX-only tooling, or symlink/workaround fixes → Tools & extras.** Mixed components (e.g. `cursor`) categorize by **primary purpose**, not by whether any `apt install` appears.
+* **Additional Conf** — keys in user **`wsl-builds.conf`** that this build’s components read (see **`wsl-builds.conf.example`**). Prefix each group with **`component`:** like the middle column (e.g. **ollama** then the keys); separate groups with `<br>`. If one key is shared by every component in the build, use a comma-separated list of bold component tokens before the colon (**ai-resources** table: **sg3**, **lsd**, **spleeter**, **rudalle**). Leave the cell empty when nothing applies. Omit builder-global keys (**`CACHE_DIR`**, **`EXTERNAL_BUILDS_ROOT`**, etc.) from per-build rows unless you have a strong reason to repeat them.
 
 ### Components
 

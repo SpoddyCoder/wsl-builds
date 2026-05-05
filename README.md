@@ -67,19 +67,19 @@ change-hostname python-ai
 
 ## Build List
 
-| Build | Packages & Frameworks | Tools & extras |
-| ----- | ----------------------- | -------------- |
-| [ai](builds/ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**: + optional **`OLLAMA_MODELS`** | **cuda-wsl-lib-symlinks**: fix 'not symlinks' issue |
-| [ai-resources](builds/ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** + optional **`AI_RESOURCES_PROJECT_DIR`** | |
+| Build | Packages, Frameworks, Tools & Extras | Additional Conf |
+| ----- | -------------------------------------- | --------------- |
+| [ai](builds/ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**<br>**cuda-wsl-lib-symlinks**: fix 'not symlinks' issue | **ollama**: **`OLLAMA_MODELS`** |
+| [ai-resources](builds/ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** | **sg3**, **lsd**, **spleeter**, **rudalle**: **`AI_RESOURCES_PROJECT_DIR`**<br>**sg3**: **`STYLEGAN3_PKL_CACHE`**, **`STYLEGAN3_PYTORCH_CACHE`** |
 | [db](builds/db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
-| [dev](builds/dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq + optional git config from `wsl-builds.conf` | **vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias |
+| [dev](builds/dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq<br>**vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias | **essentials**: **`GIT_*`**, **`GIT_CREDENTIALS_HELPER`**<br>**qol**: **`CODE_HOME_SYMLINK`**, **`CODE_HOME_TARGET`** |
 | [dev-bash](builds/dev-bash/) | **shellcheck**<br>**bats** | |
-| [dev-js](builds/dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn**<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express** | **essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve |
+| [dev-js](builds/dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn**<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express**<br>**essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve | |
 | [dev-python](builds/dev-python/) | **python3**<br>**conda**: Anaconda | |
 | [dev-ssg](builds/dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
 | [devops](builds/devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
-| [devops-aws](builds/devops-aws/) | **awscli** | **qol**: `aws-profile` alias |
-| [system](builds/system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys | **qol**: safety aliases, `change-hostname`, default user<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config |
+| [devops-aws](builds/devops-aws/) | **awscli**<br>**qol**: `aws-profile` alias | |
+| [system](builds/system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys<br>**qol**: safety aliases, `change-hostname`, default user<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config | **qol**: **`WIN_HOME_SYMLINK`**, **`WIN_HOME_TARGET`** |
 
 
 ## Enabling + Configuring WSL2 on the Windows Host
