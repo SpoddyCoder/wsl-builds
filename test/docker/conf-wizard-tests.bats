@@ -2,8 +2,7 @@
 # shellcheck shell=bats
 
 # Docker-only regressions for ./configure.sh (wizard).
-# Snapshots repo-root wsl-builds.conf each test and restores in teardown.
-# run-bats.sh re-copies the harness before this suite and runs it after builder-tests.bats.
+# Each test uses an isolated fake HOME; configure writes ~/.wsl-builds.conf there only.
 
 setup() {
 	TEST_ROOT="$(cd "$(dirname "${BATS_TEST_FILENAME}")/../.." && pwd)"
@@ -11,20 +10,9 @@ setup() {
 	export HOME="${WIZARD_FAKE_HOME}"
 	unset WSL_BUILDS_CONF
 	cd "${TEST_ROOT}" || return 1
-	WIZARD_CONF_SNAPSHOT="$(mktemp)"
-	if [[ -f "${TEST_ROOT}/wsl-builds.conf" ]]; then
-		cp -f "${TEST_ROOT}/wsl-builds.conf" "${WIZARD_CONF_SNAPSHOT}"
-	else
-		rm -f "${WIZARD_CONF_SNAPSHOT}"
-		WIZARD_CONF_SNAPSHOT=""
-	fi
 }
 
 teardown() {
-	if [[ -n "${WIZARD_CONF_SNAPSHOT:-}" ]] && [[ -f "${WIZARD_CONF_SNAPSHOT}" ]]; then
-		cp -f "${WIZARD_CONF_SNAPSHOT}" "${TEST_ROOT}/wsl-builds.conf"
-		rm -f "${WIZARD_CONF_SNAPSHOT}"
-	fi
 	rm -rf "${WIZARD_FAKE_HOME:-}"
 }
 
@@ -40,43 +28,43 @@ teardown() {
 	[[ "${output:?}" =~ Unknown\ option ]]
 }
 
-@test 'W3: --noninteractive creates repo wsl-builds.conf from example when missing' {
-	rm -f "${TEST_ROOT}/wsl-builds.conf"
+@test 'W3: --noninteractive creates ~/.wsl-builds.conf from example when missing' {
+	rm -f "${HOME}/.wsl-builds.conf"
 	run ./configure.sh --noninteractive
 	[[ "${status:?}" -eq 0 ]]
-	[[ -f "${TEST_ROOT}/wsl-builds.conf" ]]
+	[[ -f "${HOME}/.wsl-builds.conf" ]]
 	[[ "${output:?}" =~ Created ]]
 	[[ "${output:?}" =~ example ]]
 }
 
-@test 'W4: --noninteractive when repo conf already exists is no-op' {
-	[[ -f "${TEST_ROOT}/wsl-builds.conf" ]]
+@test 'W4: --noninteractive when home conf already exists is no-op' {
+	cp -f "${TEST_ROOT}/wsl-builds.conf.example" "${HOME}/.wsl-builds.conf"
 	local sum_before
-	sum_before="$(sha256sum "${TEST_ROOT}/wsl-builds.conf")"
+	sum_before="$(sha256sum "${HOME}/.wsl-builds.conf")"
 	run ./configure.sh --noninteractive
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ already\ exists ]]
-	[[ "${sum_before}" == "$(sha256sum "${TEST_ROOT}/wsl-builds.conf")" ]]
+	[[ "${sum_before}" == "$(sha256sum "${HOME}/.wsl-builds.conf")" ]]
 }
 
 @test 'W5: non-TTY stdin auto-forces noninteractive (copy when missing)' {
-	rm -f "${TEST_ROOT}/wsl-builds.conf"
+	rm -f "${HOME}/.wsl-builds.conf"
 	run ./configure.sh </dev/null
 	[[ "${status:?}" -eq 0 ]]
-	[[ -f "${TEST_ROOT}/wsl-builds.conf" ]]
+	[[ -f "${HOME}/.wsl-builds.conf" ]]
 	[[ "${output:?}" =~ Created ]]
 }
 
 @test 'W6: --defaults alias matches --noninteractive' {
-	rm -f "${TEST_ROOT}/wsl-builds.conf"
+	rm -f "${HOME}/.wsl-builds.conf"
 	run ./configure.sh --defaults
 	[[ "${status:?}" -eq 0 ]]
-	[[ -f "${TEST_ROOT}/wsl-builds.conf" ]]
+	[[ -f "${HOME}/.wsl-builds.conf" ]]
 	[[ "${output:?}" =~ Created ]]
 }
 
 @test 'W7: no managed shell rc block after noninteractive when host default unavailable' {
-	rm -f "${TEST_ROOT}/wsl-builds.conf"
+	rm -f "${HOME}/.wsl-builds.conf"
 	run ./configure.sh --noninteractive
 	[[ "${status:?}" -eq 0 ]]
 	if [[ -f "${HOME}/.bashrc" ]]; then

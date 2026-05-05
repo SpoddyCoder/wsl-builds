@@ -1,5 +1,5 @@
 # WSL Builds
-# user-defined config at repo root only (harness lives at test/docker/wsl-builds.conf)
+# optional stray repo-root wsl-builds.conf (legacy); harness lives at test/docker/wsl-builds.conf
 /wsl-builds.conf
 
 # Cursor plans are generally short term things

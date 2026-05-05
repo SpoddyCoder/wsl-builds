@@ -26,7 +26,7 @@ if [ "$#" -gt 0 ]; then
 else
     # wsl-builds.conf.example is omitted from this list: the file is only a template (assignments).
     # wsl-builder.sh still points ShellCheck at that example path (see # shellcheck source= in wsl-builder.sh);
-    # The real config file wsl-builds.conf is gitignored and not used during lint.
+    # User wsl-builds.conf paths (~/.wsl-builds.conf or WSL_BUILDS_CONF) are not linted.
     shellcheck --shell=bash --external-sources --source-path=SCRIPTDIR -- \
         wsl-builder.sh \
         configure.sh \

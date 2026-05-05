@@ -9,7 +9,7 @@ setup() {
 	_BATS_FAKE_HOME="$(mktemp -d)"
 	export HOME="$_BATS_FAKE_HOME"
 	cd "$TEST_ROOT" || return 1
-	/bin/cp -f "${TEST_DIR}/wsl-builds.conf" "${TEST_ROOT}/wsl-builds.conf"
+	/bin/cp -f "${TEST_DIR}/wsl-builds.conf" "${HOME}/.wsl-builds.conf"
 }
 
 teardown() {
@@ -179,6 +179,49 @@ teardown() {
 	WSL_BUILDS_CONF="${BATS_TEST_TMPDIR}/wsl-builds-does-not-exist.conf" run ./wsl-builder.sh test-fixture noop-hyphen
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" == *'WSL_BUILDS_CONF is set but not readable:'* ]]
+}
+
+@test 'B29: without WSL_BUILDS_CONF builder sources ~/.wsl-builds.conf and prints path' {
+	run ./wsl-builder.sh test-fixture noop-hyphen
+	[[ "${status:?}" -eq 0 ]]
+	local expected="${HOME}/.wsl-builds.conf"
+	[[ "${output:?}" == *"Using: ${expected}"* ]]
+}
+
+@test 'B30: missing user config exits nonzero with configure hint' {
+	rm -f "${HOME}/.wsl-builds.conf"
+	run ./wsl-builder.sh test-fixture noop-hyphen
+	[[ "${status:?}" -ne 0 ]]
+	[[ "${output:?}" == *'WSL_BUILDS_CONF'* ]]
+	[[ "${output:?}" == *'~/.wsl-builds.conf'* ]]
+	[[ "${output:?}" == *'configure.sh'* ]]
+}
+
+@test 'B31: WSL_BUILDS_CONF takes precedence over poisonous ~/.wsl-builds.conf' {
+	local alt_conf="${BATS_TEST_TMPDIR}/alt-wsl-builds-precedence.conf"
+	cp "${TEST_DIR}/wsl-builds.conf" "${alt_conf}"
+	printf 'exit 1\n' >"${HOME}/.wsl-builds.conf"
+	WSL_BUILDS_CONF="${alt_conf}" run ./wsl-builder.sh test-fixture noop-hyphen
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" == *"Using: ${alt_conf}"* ]]
+	[[ "${output:?}" =~ installed! ]]
+}
+
+@test 'B32: empty WSL_BUILDS_CONF falls back to ~/.wsl-builds.conf' {
+	WSL_BUILDS_CONF="" run ./wsl-builder.sh test-fixture noop-hyphen
+	[[ "${status:?}" -eq 0 ]]
+	local expected="${HOME}/.wsl-builds.conf"
+	[[ "${output:?}" == *"Using: ${expected}"* ]]
+}
+
+@test 'B33: unreadable ~/.wsl-builds.conf exits nonzero with configure hint' {
+	rm -f "${HOME}/.wsl-builds.conf"
+	ln -s /wsl-builds-harness-nonexistent-conf-target "${HOME}/.wsl-builds.conf"
+	run ./wsl-builder.sh test-fixture noop-hyphen
+	[[ "${status:?}" -ne 0 ]]
+	[[ "${output:?}" == *'WSL_BUILDS_CONF'* ]]
+	[[ "${output:?}" == *'~/.wsl-builds.conf'* ]]
+	[[ "${output:?}" == *'configure.sh'* ]]
 }
 
 @test 'B27: EXTERNAL_BUILDS_ROOT symlinked stack runs install and prints external root' {

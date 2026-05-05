@@ -22,9 +22,9 @@ Run the configure wizard to create a `wsl-builds.conf` from the template...
 cd wsl-builds
 ./configure.sh
 ```
-* It looks for `%USERPROFILE%\.wsl-builds\wsl-builds.conf`, on the Windows host
-  * Convenient if you build lots of instances and want them all to be configured in the same way.
-  * Or uses `wsl-builds.conf` in the project repo.
+* **`./wsl-builder.sh`** loads config in this order: **`WSL_BUILDS_CONF`** (full path) if set, else **`~/.wsl-builds.conf`**.
+* On the Windows host, a shared file under **`%USERPROFILE%\.wsl-builds\wsl-builds.conf`** is useful across distros; choosing it in the wizard saves **`export WSL_BUILDS_CONF=…`** in your shell rc.
+* Otherwise the wizard creates **`~/.wsl-builds.conf`** on the WSL instance (from [wsl-builds.conf.example](wsl-builds.conf.example) in the repo).
 * The `wsl-builds.conf` file contains **optional** paths and settings
   * See the [wsl-builds.conf.example](wsl-builds.conf.example) for more info on each setting.
   * Optional **`EXTERNAL_BUILDS_ROOT`** (see example file) lets **`./wsl-builder.sh`** use a stack tree outside the repo instead of **`builds/<name>/`** here.

@@ -5,7 +5,8 @@ set -e
 TOOL_DIR=$(dirname "$0")
 # shellcheck source=src/print.sh
 source "${TOOL_DIR}"/src/print.sh
-# Prefer WSL_BUILDS_CONF (shared host file); else repo-root wsl-builds.conf. shellcheck source=wsl-builds.conf.example
+# WSL_BUILDS_CONF overrides; else ~/.wsl-builds.conf. shellcheck source=wsl-builds.conf.example
+WSL_BUILDS_USER_CONF="${HOME}/.wsl-builds.conf"
 if [ -n "${WSL_BUILDS_CONF:-}" ]; then
     if [ ! -r "${WSL_BUILDS_CONF}" ]; then
         printError "WSL_BUILDS_CONF is set but not readable: ${WSL_BUILDS_CONF}"
@@ -15,13 +16,13 @@ if [ -n "${WSL_BUILDS_CONF:-}" ]; then
     source "${WSL_BUILDS_CONF}"
     printInfo "Using: ${WSL_BUILDS_CONF}"
 else
-    if [ ! -r "${TOOL_DIR}/wsl-builds.conf" ]; then
-        printError "No wsl-builds.conf found. Run ./configure.sh"
+    if [ ! -r "${WSL_BUILDS_USER_CONF}" ]; then
+        printError "No wsl-builds.conf found (set WSL_BUILDS_CONF or create ~/.wsl-builds.conf). Run ./configure.sh"
         exit 1
     fi
     # shellcheck source=wsl-builds.conf.example
-    source "${TOOL_DIR}/wsl-builds.conf"
-    printInfo "Using: ${TOOL_DIR}/wsl-builds.conf"
+    source "${WSL_BUILDS_USER_CONF}"
+    printInfo "Using: ${WSL_BUILDS_USER_CONF}"
 fi
 resolvedExternalRoot="${EXTERNAL_BUILDS_ROOT:-}"
 while [[ "${resolvedExternalRoot}" == */ ]]; do

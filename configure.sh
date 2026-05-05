@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Interactive (or --noninteractive) setup for WSL_BUILDS_CONF and optional repo-root wsl-builds.conf.
+# Interactive (or --noninteractive) setup for WSL_BUILDS_CONF (Windows host) or ~/.wsl-builds.conf.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -17,7 +17,7 @@ showWizardUsage() {
 Usage: ./configure.sh [options]
 
 Configure a shared wsl-builds.conf on the Windows host (WSL_BUILDS_CONF in ~/.bashrc and/or ~/.zshrc),
-or create repo-root wsl-builds.conf from the example.
+or create ~/.wsl-builds.conf from the example in this repo.
 
 Options:
   --noninteractive, --defaults  Pick default host path if present, else copy example; no prompts
@@ -96,9 +96,9 @@ printReloadHint() {
     fi
 }
 
-printRepoConfShellHint() {
+printHomeConfShellHint() {
     if [ -n "${WSL_BUILDS_CONF:-}" ]; then
-        printWarning "WSL_BUILDS_CONF still set, run: unset WSL_BUILDS_CONF or start a new terminal"
+        printWarning "WSL_BUILDS_CONF still set — the builder uses it instead of ~/.wsl-builds.conf; unset WSL_BUILDS_CONF or start a new terminal"
     fi
 }
 
@@ -115,19 +115,19 @@ adoptHostConfPath() {
 
 copyExampleIfMissing() {
     local example="${REPO_ROOT}/wsl-builds.conf.example"
-    local dest="${REPO_ROOT}/wsl-builds.conf"
-    # Repo-local config is used when WSL_BUILDS_CONF is unset; drop a stale managed export.
+    local dest="${HOME}/.wsl-builds.conf"
+    # Home config is used when WSL_BUILDS_CONF is unset; drop a stale managed export.
     removeManagedShellRcRegion "${SHELL_RC_WIZARD_REGION_ID}"
     if [ -f "${dest}" ]; then
-        printInfo "Repo config already exists: ${dest}"
+        printInfo "Config already exists: ${dest}"
         printInfo "Edit with: nano ${dest}"
-        printRepoConfShellHint
+        printHomeConfShellHint
         return 0
     fi
     cp "${example}" "${dest}"
     printInfo "Created ${dest} from example"
     printInfo "Edit with: nano ${dest}"
-    printRepoConfShellHint
+    printHomeConfShellHint
 }
 
 runNonInteractive() {

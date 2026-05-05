@@ -12,16 +12,16 @@ Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolate
 ./test/run-tests.sh
 ```
 
-[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **wizard** behaviour for `./configure.sh`, and **commands** helpers under **`builds/system/`**. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own **`bats` process** (builder, then wizard, then commands) and re-copies harness **`wsl-builds.conf`** between them.
+[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **wizard** behaviour for `./configure.sh`, and **commands** helpers under **`builds/system/`**. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own **`bats` process** (builder, then wizard, then commands).
 
-* **Do not** run [`docker/run-bats.sh`](docker/run-bats.sh) on the host — it overwrites repo-root **`wsl-builds.conf`**.
+* Builder tests use an isolated **`$HOME`** and copy harness [`docker/wsl-builds.conf`](docker/wsl-builds.conf) to **`~/.wsl-builds.conf`**. Wizard tests use their own fake **`$HOME`** only.
 * **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.
 
 Before changing `./wsl-builder.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, `configure.sh`, or Bats tests, skim this doc and run **`./test/run-tests.sh`** when behaviour may regress.
 
 ## Bats catalog (`docker/builder-tests.bats`)
 
-Each row is one `@test`. The **`#`** column is the stable **B**… id (same order as TAP **`ok N …`** for **N** = **1–26** in this file). Tests use an isolated `$HOME` and harness `wsl-builds.conf`.
+Each row is one `@test`. The **`#`** column is the stable **B**… id (same order as TAP **`ok N …`** in this file). Builder tests use an isolated `$HOME` with harness **`~/.wsl-builds.conf`** (or **`WSL_BUILDS_CONF`** where noted).
 
 | # | Test | What it checks |
 | -: | ---- | ---------------- |
@@ -47,6 +47,13 @@ Each row is one `@test`. The **`#`** column is the stable **B**… id (same orde
 | B20 | `multiple installs reuse single OS header line in build.info` | Sequential `noop` then `touch-marker` → two component lines, one non-component line (OS header). |
 | B21 | `WSL_BUILDS_CONF set to readable file is sourced and path is printed` | `WSL_BUILDS_CONF` points at a copy of the harness file → build succeeds; output names that path. |
 | B22 | `WSL_BUILDS_CONF set but not readable exits nonzero` | Missing path → nonzero exit; output reports unreadable `WSL_BUILDS_CONF`. |
+| B29 | `without WSL_BUILDS_CONF builder sources ~/.wsl-builds.conf and prints path` | Default config path is `"Using: ${HOME}/.wsl-builds.conf"` in output. |
+| B30 | `missing user config exits nonzero with configure hint` | No `WSL_BUILDS_CONF`, no `~/.wsl-builds.conf` → error names both and `configure.sh`. |
+| B31 | `WSL_BUILDS_CONF takes precedence over poisonous ~/.wsl-builds.conf` | Home config contains `exit 1`; env points at harness copy → success; `Using:` is env path. |
+| B32 | `empty WSL_BUILDS_CONF falls back to ~/.wsl-builds.conf` | `WSL_BUILDS_CONF=""` → same as default; `Using:` is `"${HOME}/.wsl-builds.conf"`. |
+| B33 | `unreadable ~/.wsl-builds.conf exits nonzero with configure hint` | Dangling symlink at `~/.wsl-builds.conf` (`-r` false; avoids root reading mode `000`) → same error class as missing file. |
+| B27 | `EXTERNAL_BUILDS_ROOT symlinked stack runs install and prints external root` | External builds root via conf; symlinked `test-fixture`; success and banner. |
+| B28 | `EXTERNAL_BUILDS_ROOT missing directory exits nonzero` | Bad `EXTERNAL_BUILDS_ROOT` in conf → nonzero; error names missing directory. |
 | B23 | `getfile-harness exercises getFile cache hit download cleanupGetFiles and records success` | Runs harness component → success; stdout shows cache-hit and download paths (`wget` via short-lived localhost HTTP server); `~/.wsl-build.info` records `getfile-harness`. |
 | B24 | `file-edit-harness updates shell rc and /etc/wsl.conf` | Seeds dummy `/etc/wsl.conf`, runs harness component, asserts `ensureShellRcRegion` block in `~/.bashrc` and `ensureWslConfIniLine` under `[wsl-builds-test]`; restores `/etc/wsl.conf` after. |
 | B25 | `getfile-stale-harness stale cache default yes keeps seeded payload` | `WARN_IF_CACHED_FILE_OLDER_THAN=1` in harness conf; aged cache + `printf '\n'` → stale warning and “Using locally cached version”; payload matches seed; `WSL_BUILDS_GETFILE_STALE_EXPECT=cache`. |
@@ -69,14 +76,14 @@ Each row is one `@test`; labels **C**… are stable ids. Tests run with **`WSL_B
 
 ## Wizard catalog (`docker/conf-wizard-tests.bats`)
 
-Wizard tests snapshot repo-root **`wsl-builds.conf`** each test and restore it in `teardown`. [`run-bats.sh`](docker/run-bats.sh) runs this file **after [`builder-tests.bats`](docker/builder-tests.bats)** (and before [`commands-tests.bats`](docker/commands-tests.bats)); the harness **`wsl-builds.conf`** is re-copied before this process so each suite starts clean. Each row is one `@test`. TAP numbers for this file alone are **1–19** (see file order; labels **W**… are stable ids, not TAP order).
+Each test uses a fresh fake **`$HOME`**; [`run-bats.sh`](docker/run-bats.sh) runs this file **after [`builder-tests.bats`](docker/builder-tests.bats)** (and before [`commands-tests.bats`](docker/commands-tests.bats)). Each row is one `@test`. TAP numbers follow file order; labels **W**… are stable ids.
 
 | # | Test | What it checks |
 | -: | ---- | -------------- |
 | W1 | `--help` exits 0 and prints usage | Status 0; output contains `Usage:`. |
 | W2 | Unknown option fails | Nonzero; `Unknown option` in output. |
-| W3 | `--noninteractive` creates repo `wsl-builds.conf` from example | Linux-only env (no host default): file created; output mentions example. |
-| W4 | `--noninteractive` when repo conf exists is no-op | `already exists` message; file checksum unchanged. |
+| W3 | `--noninteractive` creates `~/.wsl-builds.conf` from example | Linux-only env (no host default): file created under fake `$HOME`; output mentions example. |
+| W4 | `--noninteractive` when home conf exists is no-op | `already exists` message; file checksum unchanged. |
 | W5 | Non-TTY stdin auto-forces noninteractive | `./configure.sh </dev/null` copies example when missing (same class as W3). |
 | W6 | `--defaults` alias | Same outcome as W3. |
 | W7 | No managed shell rc markers after noninteractive without host default | No legacy `(managed)` or `wsl-builds:wsl-builds-conf` in fake `$HOME` `~/.bashrc` / `~/.zshrc` if present. |
