@@ -4,6 +4,7 @@
 
 # Cursor plans are generally short term things
 .cursor/plans/*
+docs/*
 
 # Maintainer-local rename checklist — not part of the repo
 /wsl-builder-rename-plan.md
