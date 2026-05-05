@@ -8,7 +8,7 @@ alwaysApply: false
 
 When this is the **top-level** `README.md` (repo root, not a nested `builds/<build-dir>/README.md`):
 
-- Keep content aimed at **people using** the builds (install, `./wsl-builder.sh` usage, build list, tips).
-- Do **not** add maintainer wiring, dispatch/source-order details, or agent-only instructions here—use `CONTRIBUTING.md` for contributor docs and `.cursor/rules/` for compressed agent context.
-- Do **not** add meta lines that explain how the README or a table is structured or maintained (e.g. “one row per build”, “bold means components”, “descriptions follow when…”). Convey meaning with **headings and column headers** only; component styling in tables is a convention for **CONTRIBUTING.md** or agent rules, not user prose.
-- **Build List columns** — **Build** | **Packages, Frameworks, Tools & Extras** | **Additional Conf**. Before placing a component, **read its `install_<component>.sh`**. Put **all** components in the middle column; for scanability list **substantive installs / framework scaffolds** before **QoL, wrappers, DX-only layers, symlink fixes**. **Additional Conf** = same `component`: prefix as the middle column, then `wsl-builds.conf` keys (see `wsl-builds.conf.example`); empty cell if none. **Additional Conf** uses `<br/>` between lines; target **~30 visible characters per line** (approximate) and **do not split** single tokens (env names, component labels, `GIT_*`). Canonical prose: `CONTRIBUTING.md` § *Build List columns: middle vs Additional Conf*.
+- Aim at **people using** the builds (install, `./wsl-builder.sh`, build list, tips).
+- Do **not** add maintainer wiring, dispatch/source-order details, or agent-only instructions—those live in `.cursor/rules/`.
+- Do **not** add meta lines about how the README or table is structured (e.g. “one row per build”, “bold means components”). Use **headings and column headers** only for users; table conventions for agents are in [bash-component-patterns.mdc](bash-component-patterns.mdc) (**Repo root Build List**).
+- **Build List (root README only):** follow the checklist in [bash-component-patterns.mdc](bash-component-patterns.mdc) § **Repo root Build List**—columns, ordering (substantive before QoL), **Additional Conf** (`<br/>`, ~30-char lines, no token splits). For nested `builds/<name>/README.md`, ignore this Build List section.

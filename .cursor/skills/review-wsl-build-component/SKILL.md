@@ -9,22 +9,23 @@ Use this skill to review an existing component and report whether it should be u
 
 ## Workflow
 
-1. Identify the target build directory and component under `builds/<name>/`. Build directories contain `conf.sh` and `install.sh`; components usually live in `install_<component>.sh`. If the scope is `builds/test-fixture` (noop harness only; see [`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md)), treat as convention review only unless real install logic appeared—otherwise skip vendor/CVE deep-dives except as requested.
-2. Read the target build's `conf.sh`, `install.sh`, `install_<component>.sh`, and nearby README entries.
-3. Confirm the component token appears in `registerBuildMetadata`'s CSV in `conf.sh` and that `src/install-dispatch.sh` loads `install_<underscore_name>.sh` for that token (when **the builder** (`./wsl-builder.sh`) sources `install.sh`).
-4. Inspect current official install instructions for the component. Prefer vendor documentation over blogs, package mirrors, or stale examples.
-5. Run a security check anchored to today's date (use the date provided in the system context; confirm with `date -u +%F` if unsure). Focus on advisories from roughly the last 12 months that affect the version range the script installs:
+1. Read repo root [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) **in full** at the start (lint/test/CI and contributor expectations). Read repo root [`README.md`](../../../README.md) **in full** when the review scope or likely recommendations could touch the **Build List**, usage/overview sections, or other end-user-facing root README content; skip that read if the scope is strictly confined to internal install script behavior with no doc impact.
+2. Identify the target build directory and component under `builds/<name>/`. Build directories contain `conf.sh` and `install.sh`; components usually live in `install_<component>.sh`. If the scope is `builds/test-fixture` (noop harness only; see [`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md)), treat as convention review only unless real install logic appeared—otherwise skip vendor/CVE deep-dives except as requested.
+3. Read the target build's `conf.sh`, `install.sh`, `install_<component>.sh`, and nearby README entries.
+4. Confirm the component token appears in `registerBuildMetadata`'s CSV in `conf.sh` and that `src/install-dispatch.sh` loads `install_<underscore_name>.sh` for that token (when **the builder** (`./wsl-builder.sh`) sources `install.sh`).
+5. Inspect current official install instructions for the component. Prefer vendor documentation over blogs, package mirrors, or stale examples.
+6. Run a security check anchored to today's date (use the date provided in the system context; confirm with `date -u +%F` if unsure). Focus on advisories from roughly the last 12 months that affect the version range the script installs:
    - vendor advisory or security page for the component (e.g. `docs.docker.com/engine/security`, `nodejs.org/en/blog/vulnerability`)
    - Ubuntu Security Notices for the underlying package: `https://ubuntu.com/security/notices.json?package=<name>`
    - OSV.dev: `POST https://api.osv.dev/v1/query` with the package and ecosystem
    - CISA Known Exploited Vulnerabilities feed: `https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json`
-6. Compare the local script with current guidance, focusing on meaningful differences:
+7. Compare the local script with current guidance, focusing on meaningful differences:
    - package repositories, signing keys, keyring locations, and apt source formats
    - package names, version pins, install channels, and architecture handling
    - prerequisite packages and cleanup steps
    - WSL-specific requirements or warnings
    - deprecated commands such as `apt-key`
-7. Check repository conventions:
+8. Check repository conventions:
    - If the review proposes **rewording user-visible scripted output** (especially from `src/` or `./wsl-builder.sh`), `test/docker/*.bats` frequently matches `$output` via `[[ … =~ ]]`, `grep`, etc. Flag that `test/`, `builds/test-fixture/`, and Bats assertions should be updated **in the same implementation pass** (`./test/run-tests.sh` after substantive helper changes).
    - **Start on boot:** From the script and vendor docs, infer whether the install enables a **systemd** (or other) **start-on-boot** service. If it does and `install_<component>.sh` has no optional `promptYesNo` step to `systemctl disable --now` that unit (stop now + no boot), **ask the user** at the end of the review (after the summary) whether they want that UX added—point to `.cursor/rules/bash-component-patterns.mdc` (*Optional: disable start on boot*) and `builds/ai/install_ollama.sh` / `builds/devops/install_docker.sh`. Treat as a product/UX choice, not a severity finding unless the service is inappropriate for WSL.
    - **Component messaging:** first user status line is `printInfo "Installing …"`; the **last** user-facing status is `printInfo "<Name> installed"` (same noun, past tense, no "successfully", ellipsis, or trailing period)

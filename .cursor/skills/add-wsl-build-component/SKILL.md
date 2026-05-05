@@ -9,16 +9,17 @@ Use this skill when adding or changing a build component in this repository.
 
 ## Workflow
 
-1. Identify the target build directory under `builds/<name>/`. Valid build directories contain both `conf.sh` and `install.sh`, such as `builds/dev`, `builds/dev-js`, `builds/system`, or `builds/devops`. The `builds/test-fixture` directory is **testing-only** ([`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md); noop harness for CI/agents)—do **not** use it like a production stack unless explicitly asked.
-2. Read the target build's `conf.sh`, `install.sh`, and nearby `install_<component>.sh` files before editing.
-3. Add the component token to **the third argument (CSV)** of `registerBuildMetadata` in `conf.sh`.
-4. Add `install_<name>.sh`, mapping hyphens to underscores in the basename (examples: `docker-desktop` → `install_docker_desktop.sh`; `postgres-server` → `install_postgres_server.sh`).
-5. Leave `install.sh` as the thin `source install-dispatch.sh` stub unless you need build-specific behavior beyond `src/install-dispatch.sh`.
-6. Update the repo root `README.md` **Build List** if the component should appear there—add or edit table rows only. Headers are **Build** | **Packages, Frameworks, Tools & Extras** | **Additional Conf**. Read `install_<component>.sh` first; put the component in the **middle** column (list substantive installs before QoL/DX-only fixes when both exist in one build). Add or update **Additional Conf** when the component reads keys from `wsl-builds.conf` (see `wsl-builds.conf.example`), using `component`: before the keys like the middle column. In **Additional Conf**, use `<br/>` so each line stays about **30 characters** (visual width, approximate) without breaking words or env var names.
-   - Keep that file strictly **end-user** focused (install, `./wsl-builder.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc` and `CONTRIBUTING.md` § *Build List columns: middle vs Additional Conf* (canonical prose).
-7. **Optional** `wsl-builds.conf` keys (large downloads / durable caches the user may want on a host path): add **commented examples** to `wsl-builds.conf.example` and document usage in the build’s `README.md`. See `.cursor/rules/bash-component-patterns.mdc`.
-8. **Start on boot:** After you know what the component installs, check whether it enables a **systemd unit** (or equivalent) that **starts automatically on boot**. If yes, and the component script does not already offer an optional disable step, **ask the user** in chat whether to add the standard `promptYesNo` + `sudo systemctl disable --now <unit>` pattern (see `.cursor/rules/bash-component-patterns.mdc`, *Optional: disable start on boot*, and `builds/ai/install_ollama.sh`). Multi-unit stacks encode `disable --now` and ordering locally—do not introduce a generic `src/` helper without several identical callers. Only implement after they agree—do not assume every daemon should be disabled by default.
-9. Run Bash syntax checks for touched shell files.
+1. Read repo root [`README.md`](../../../README.md) and [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) **in full** (entire files) before editing so the Build List, tone, and contributor expectations stay aligned.
+2. Identify the target build directory under `builds/<name>/`. Valid build directories contain both `conf.sh` and `install.sh`, such as `builds/dev`, `builds/dev-js`, `builds/system`, or `builds/devops`. The `builds/test-fixture` directory is **testing-only** ([`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md); noop harness for CI/agents)—do **not** use it like a production stack unless explicitly asked.
+3. Read the target build's `conf.sh`, `install.sh`, and nearby `install_<component>.sh` files before editing.
+4. Add the component token to **the third argument (CSV)** of `registerBuildMetadata` in `conf.sh`.
+5. Add `install_<name>.sh`, mapping hyphens to underscores in the basename (examples: `docker-desktop` → `install_docker_desktop.sh`; `postgres-server` → `install_postgres_server.sh`).
+6. Leave `install.sh` as the thin `source install-dispatch.sh` stub unless you need build-specific behavior beyond `src/install-dispatch.sh`.
+7. Update the repo root `README.md` **Build List** if the component should appear there—add or edit table rows only. Headers are **Build** | **Packages, Frameworks, Tools & Extras** | **Additional Conf**. Read `install_<component>.sh` first; put the component in the **middle** column (list substantive installs before QoL/DX-only fixes when both exist in one build). Add or update **Additional Conf** when the component reads keys from `wsl-builds.conf` (see `wsl-builds.conf.example`), using `component`: before the keys like the middle column. In **Additional Conf**, use `<br/>` so each line stays about **30 characters** (visual width, approximate) without breaking words or env var names.
+   - Keep that file strictly **end-user** focused (install, `./wsl-builder.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc` and `.cursor/rules/bash-component-patterns.mdc` § **Repo root Build List**.
+8. **Optional** `wsl-builds.conf` keys (large downloads / durable caches the user may want on a host path): add **commented examples** to `wsl-builds.conf.example` and document usage in the build’s `README.md`. See `.cursor/rules/bash-component-patterns.mdc`.
+9. **Start on boot:** After you know what the component installs, check whether it enables a **systemd unit** (or equivalent) that **starts automatically on boot**. If yes, and the component script does not already offer an optional disable step, **ask the user** in chat whether to add the standard `promptYesNo` + `sudo systemctl disable --now <unit>` pattern (see `.cursor/rules/bash-component-patterns.mdc`, *Optional: disable start on boot*, and `builds/ai/install_ollama.sh`). Multi-unit stacks encode `disable --now` and ordering locally—do not introduce a generic `src/` helper without several identical callers. Only implement after they agree—do not assume every daemon should be disabled by default.
+10. Run Bash syntax checks for touched shell files.
 
 ## Dispatcher (`install.sh`)
 
@@ -36,7 +37,7 @@ Component iteration and `recordComponentSuccess` live in `src/install-dispatch.s
 
 ## Install Script Guidelines
 
-Full conventions: [`.cursor/rules/bash-component-patterns.mdc`](../../rules/bash-component-patterns.mdc) and **Component messaging** in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md).
+Full conventions: [`.cursor/rules/bash-component-patterns.mdc`](../../rules/bash-component-patterns.mdc) (messaging, apt, helpers, systemd opt-out, Build List).
 
 - Keep each component focused on one install/configuration task.
 - **Open** with one line: `printInfo "Installing <Name>"` (human-readable product name; use the same noun at the end).

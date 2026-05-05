@@ -9,14 +9,15 @@ Use this skill to scaffold a brand-new build directory with no components yet. C
 
 ## Workflow
 
-1. Confirm the new build directory name. Use lowercase with hyphens, matching the convention of existing dirs (`dev`, `dev-js`, `devops-aws`, `ai-resources`).
-2. Verify `builds/<build-dir>` does not already exist.
-3. Create `builds/<build-dir>/conf.sh` with the metadata call below (`registerBuildMetadata`).
-4. Create `builds/<build-dir>/install.sh` using only the `source` line below (no wrapper function call — dispatch runs inside `src/install-dispatch.sh`).
-5. Create `builds/<build-dir>/README.md` with the skeleton headings below.
-6. Add a row to the **Build List** table in the top-level `README.md` with a link to `builds/<build-dir>/` (match existing columns; see `.cursor/rules/readme-user-facing.mdc`; **Additional Conf** uses `<br/>` and ~**30**-char lines per `CONTRIBUTING.md`).
-7. Run `bash -n` on the new `conf.sh` and `install.sh`.
-8. Tell the user the dir is now framework-only and point them at `add-wsl-build-component` to add the first component.
+1. Read repo root [`README.md`](../../../README.md) and [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) **in full** (entire files) before scaffolding so the Build List row and contributor expectations match the rest of the repo.
+2. Confirm the new build directory name. Use lowercase with hyphens, matching the convention of existing dirs (`dev`, `dev-js`, `devops-aws`, `ai-resources`).
+3. Verify `builds/<build-dir>` does not already exist.
+4. Create `builds/<build-dir>/conf.sh` with the metadata call below (`registerBuildMetadata`).
+5. Create `builds/<build-dir>/install.sh` using only the `source` line below (no wrapper function call — dispatch runs inside `src/install-dispatch.sh`).
+6. Create `builds/<build-dir>/README.md` with the skeleton headings below.
+7. Add a row to the **Build List** table in the top-level `README.md` with a link to `builds/<build-dir>/` (match existing columns; see `.cursor/rules/readme-user-facing.mdc` and `.cursor/rules/bash-component-patterns.mdc` § **Repo root Build List**).
+8. Run `bash -n` on the new `conf.sh` and `install.sh`.
+9. Tell the user the dir is now framework-only and point them at `add-wsl-build-component` to add the first component.
 
 ## conf.sh template
 
