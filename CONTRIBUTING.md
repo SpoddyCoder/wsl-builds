@@ -40,6 +40,7 @@ Only two rules for PR submissions;
   * [add-wsl-build-dir](./.cursor/skills/add-wsl-build-dir/SKILL.md)
   * [add-wsl-build-component](./.cursor/skills/add-wsl-build-component/SKILL.md)
   * [review-wsl-build-component](./.cursor/skills/review-wsl-build-component/SKILL.md)
+  * [spitball-new-feature](./.cursor/skills/spitball-new-feature/SKILL.md)
 * In addition to adding the new builds / components, it should automatically take care of docs and tests etc.
 * If you want to understand the project architecture (it's pretty simple tbh), ask the AI agent for an overview.
   * Or review the [Cursor rules and skills files directly](./.cursor).
