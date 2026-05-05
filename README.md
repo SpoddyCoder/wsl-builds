@@ -27,15 +27,16 @@ cd wsl-builds
   * Or uses `wsl-builds.conf` in the project repo.
 * The `wsl-builds.conf` file contains **optional** paths and settings
   * See the [wsl-builds.conf.example](wsl-builds.conf.example) for more info on each setting.
+  * Optional **`EXTERNAL_BUILDS_ROOT`** (see example file) lets **`./wsl-builder.sh`** use a stack tree outside the repo instead of **`builds/<name>/`** here.
   * Tip: Caching things on the host can be uesful.
 * Non-interactive mode: `./configure.sh --noninteractive` or `./configure.sh --defaults`
 
 ## Building
-Each stack’s `conf.sh`, `install.sh`, and components live under **`builds/<name>/`**; pass only **`<name>`** (the basename) to `./wsl-builder.sh`.
+By default each stack’s `conf.sh`, `install.sh`, and components live under **`builds/<name>/`** in this repo (`EXTERNAL_BUILDS_ROOT` in **`wsl-builds.conf`** can point at another directory with the same layout). Pass only **`<name>`** (the basename) to **`./wsl-builder.sh`**.
 ```
 ./wsl-builder.sh <build-dir> <component>[,<component>...] [additionalargs]... [--force]
 ```
-* `build-dir` is the basename of a directory under `builds/` (see [Build List](#build-list) below).
+* `build-dir` is the basename of a stack directory (default **`builds/<name>/`** in this repo, or **`<name>/`** under **`EXTERNAL_BUILDS_ROOT`** when set — see [Build List](#build-list)).
 * `component[,<component>...]` comma separated list of build components (packages to install etc.), varies per build.
 * `additionalargs...` additional arguments required for some builds
 * `--force` by default components that are already installed will be skipped with warning messages. Use this flag to force reinstallation of already-installed components.

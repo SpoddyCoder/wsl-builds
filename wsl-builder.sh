@@ -23,6 +23,45 @@ else
     source "${TOOL_DIR}/wsl-builds.conf"
     printInfo "Using: ${TOOL_DIR}/wsl-builds.conf"
 fi
+resolvedExternalRoot="${EXTERNAL_BUILDS_ROOT:-}"
+while [[ "${resolvedExternalRoot}" == */ ]]; do
+    resolvedExternalRoot="${resolvedExternalRoot%/}"
+done
+usingExternalBuildsRoot=false
+if [ -n "${resolvedExternalRoot}" ]; then
+    usingExternalBuildsRoot=true
+    case "${resolvedExternalRoot}" in
+        ~ )
+            resolvedExternalRoot="${HOME}"
+            ;;
+        ~/* )
+            resolvedExternalRoot="${resolvedExternalRoot/#\~/${HOME}}"
+            ;;
+    esac
+    while [[ "${resolvedExternalRoot}" == */ ]]; do
+        resolvedExternalRoot="${resolvedExternalRoot%/}"
+    done
+    case "${resolvedExternalRoot}" in
+        '/'* )
+            BUILDS_ROOT="${resolvedExternalRoot}"
+            ;;
+        * )
+            printError "EXTERNAL_BUILDS_ROOT must be an absolute path or ~/… (relative paths are not supported)."
+            exit 1
+            ;;
+    esac
+else
+    BUILDS_ROOT="${TOOL_DIR}/builds"
+fi
+unset -v resolvedExternalRoot
+if [[ "${usingExternalBuildsRoot}" == true ]]; then
+    if [ ! -d "${BUILDS_ROOT}" ]; then
+        printError "EXTERNAL_BUILDS_ROOT is set but is not an existing directory: ${BUILDS_ROOT}"
+        exit 1
+    fi
+    printInfo "Using external builds root: ${BUILDS_ROOT}"
+fi
+unset -v usingExternalBuildsRoot
 # getFile (install-helpers.sh); optional override in wsl-builds.conf
 CACHE_DIR="${CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/wsl-builds}"
 # shellcheck source=src/arg-helpers.sh
@@ -46,7 +85,7 @@ if [ "$#" == "0" ]; then
     exit 1
 
 fi
-if [ ! -d "${TOOL_DIR}/builds/$1" ] || [ ! -f "${TOOL_DIR}/builds/$1/conf.sh" ]; then
+if [ ! -d "${BUILDS_ROOT}/$1" ] || [ ! -f "${BUILDS_ROOT}/$1/conf.sh" ]; then
 
     printError "Build directory '$1' not found"
     exit 1
@@ -54,7 +93,7 @@ if [ ! -d "${TOOL_DIR}/builds/$1" ] || [ ! -f "${TOOL_DIR}/builds/$1/conf.sh" ];
 fi
 
 # source the build conf
-BUILD_DIR="${TOOL_DIR}/builds/$1"
+BUILD_DIR="${BUILDS_ROOT}/$1"
 # shellcheck source=/dev/null # build-dir conf.sh chosen at runtime via $1
 source "${BUILD_DIR}"/conf.sh
 

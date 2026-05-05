@@ -26,7 +26,7 @@ showAvailableComponents() {
 showAvailableBuildDirs() {
     echo
     echo "Available build directories:"
-    for dir in "${TOOL_DIR}/builds"/*/; do
+    for dir in "${BUILDS_ROOT}"/*/; do
         if [ -d "$dir" ] && [ -f "$dir/conf.sh" ]; then
             echo "  $(basename "$dir")"
         fi

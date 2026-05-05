@@ -181,6 +181,31 @@ teardown() {
 	[[ "${output:?}" == *'WSL_BUILDS_CONF is set but not readable:'* ]]
 }
 
+@test 'B27: EXTERNAL_BUILDS_ROOT symlinked stack runs install and prints external root' {
+	local ext="${BATS_TEST_TMPDIR}/ext-builds-root"
+	mkdir -p "${ext}"
+	ln -s "${TEST_ROOT}/builds/test-fixture" "${ext}/test-fixture"
+	local alt_conf="${BATS_TEST_TMPDIR}/alt-wsl-builds-external-root.conf"
+	cp "${TEST_DIR}/wsl-builds.conf" "${alt_conf}"
+	printf '\nEXTERNAL_BUILDS_ROOT=%s\n' "${ext}" >>"${alt_conf}"
+	WSL_BUILDS_CONF="${alt_conf}" run ./wsl-builder.sh test-fixture noop-hyphen
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" == *"Using: ${alt_conf}"* ]]
+	[[ "${output:?}" == *"Using external builds root: ${ext}"* ]]
+	[[ "${output:?}" =~ Building\ test-fixture\ v1\.0\.0 ]]
+	[[ "${output:?}" =~ installed! ]]
+}
+
+@test 'B28: EXTERNAL_BUILDS_ROOT missing directory exits nonzero' {
+	local missing="${BATS_TEST_TMPDIR}/no-such-ext-builds-dir"
+	local alt_conf="${BATS_TEST_TMPDIR}/alt-wsl-builds-missing-external.conf"
+	cp "${TEST_DIR}/wsl-builds.conf" "${alt_conf}"
+	printf '\nEXTERNAL_BUILDS_ROOT=%s\n' "${missing}" >>"${alt_conf}"
+	WSL_BUILDS_CONF="${alt_conf}" run ./wsl-builder.sh test-fixture noop-hyphen
+	[[ "${status:?}" -ne 0 ]]
+	[[ "${output:?}" == *'EXTERNAL_BUILDS_ROOT is set but is not an existing directory:'* ]]
+}
+
 @test 'B23: getfile-harness exercises getFile cache hit download cleanupGetFiles and records success' {
 	run ./wsl-builder.sh test-fixture getfile-harness
 	[[ "${status:?}" -eq 0 ]]
