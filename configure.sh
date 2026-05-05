@@ -20,7 +20,7 @@ Configure a shared wsl-builds.conf on the Windows host (WSL_BUILDS_CONF in ~/.ba
 or create ~/.wsl-builds.conf from the example in this repo.
 
 Options:
-  --noninteractive, --defaults  Pick default host path if present, else copy example; no prompts
+  --noninteractive  If default Windows host wsl-builds.conf exists, adopt it; else copy example to ~/.wsl-builds.conf if missing; no prompts
   -h, --help                    Show this help
 EOF
 }
@@ -28,7 +28,7 @@ EOF
 parseWizardArgs() {
     while [ "$#" -gt 0 ]; do
         case "$1" in
-            --noninteractive | --defaults)
+            --noninteractive)
                 NONINTERACTIVE=true
                 shift
                 ;;

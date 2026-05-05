@@ -85,7 +85,7 @@ Each test uses a fresh fake **`$HOME`**; [`run-bats.sh`](docker/run-bats.sh) run
 | W3 | `--noninteractive` creates `~/.wsl-builds.conf` from example | Linux-only env (no host default): file created under fake `$HOME`; output mentions example. |
 | W4 | `--noninteractive` when home conf exists is no-op | `already exists` message; file checksum unchanged. |
 | W5 | Non-TTY stdin auto-forces noninteractive | `./configure.sh </dev/null` copies example when missing (same class as W3). |
-| W6 | `--defaults` alias | Same outcome as W3. |
+| W6 | `--defaults` rejected | `Unknown option` (alias removed); nonzero exit. |
 | W7 | No managed shell rc markers after noninteractive without host default | No legacy `(managed)` or `wsl-builds:wsl-builds-conf` in fake `$HOME` `~/.bashrc` / `~/.zshrc` if present. |
 | W8 | `removeManagedShellRcRegion` with no `~/.bashrc` | No-op; no error (sourced script). |
 | W9 | `removeManagedShellRcRegion` strips named region only | Outside lines survive; inner lines removed. |

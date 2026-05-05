@@ -55,12 +55,10 @@ teardown() {
 	[[ "${output:?}" =~ Created ]]
 }
 
-@test 'W6: --defaults alias matches --noninteractive' {
-	rm -f "${HOME}/.wsl-builds.conf"
+@test 'W6: --defaults is rejected (removed alias)' {
 	run ./configure.sh --defaults
-	[[ "${status:?}" -eq 0 ]]
-	[[ -f "${HOME}/.wsl-builds.conf" ]]
-	[[ "${output:?}" =~ Created ]]
+	[[ "${status:?}" -ne 0 ]]
+	[[ "${output:?}" =~ Unknown\ option ]]
 }
 
 @test 'W7: no managed shell rc block after noninteractive when host default unavailable' {

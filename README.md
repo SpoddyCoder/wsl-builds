@@ -29,7 +29,7 @@ cd wsl-builds
   * See the [wsl-builds.conf.example](wsl-builds.conf.example) for more info on each setting.
   * Optional **`EXTERNAL_BUILDS_ROOT`** (see example file) lets **`./wsl-builder.sh`** use a stack tree outside the repo instead of **`builds/<name>/`** here.
   * Tip: Caching things on the host can be uesful.
-* Non-interactive mode: `./configure.sh --noninteractive` or `./configure.sh --defaults`
+* **Non-interactive:** `./configure.sh --noninteractive` — no prompts; if the default Windows host `wsl-builds.conf` already exists it is adopted (`WSL_BUILDS_CONF` in shell rc), otherwise the wizard copies [wsl-builds.conf.example](wsl-builds.conf.example) to `~/.wsl-builds.conf` when that file is missing (same behavior when stdin is not a terminal, e.g. `./configure.sh </dev/null`).
 
 ## Building
 By default each stack’s `conf.sh`, `install.sh`, and components live under **`builds/<name>/`** in this repo (`EXTERNAL_BUILDS_ROOT` in **`wsl-builds.conf`** can point at another directory with the same layout). Pass only **`<name>`** (the basename) to **`./wsl-builder.sh`**.
