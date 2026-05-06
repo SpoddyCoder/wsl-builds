@@ -1,0 +1,1 @@
+{"component_reviewer_version":1,"review_result":0,"summary":"shellcheck CLI is available.","reasons":[],"checks":[{"id":"shellcheck_cli","outcome":"passed","detail":"Reported package/version line: 0.9.0"}],"evidence":{"shellcheck_reported_version":"0.9.0"},"build":"dev-bash","component":"shellcheck","review_completed":"2026-05-06T20:24:22Z"}
