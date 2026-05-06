@@ -6,12 +6,23 @@ installer_staleness_max_days: 90
 # Dpkg version on the maintainer machine when last_known_upstream was confirmed; leave empty to skip exact-match.
 last_known_upstream: ""
 upstream_tracking: >-
-  Debian/Ubuntu `shellcheck` package via apt (`apt install shellcheck`).
-  The effective revision follows distro packaging and security updates, not a tarball or API pinned in this repository.
+  Primary install path is Debian/Ubuntu apt package `shellcheck` (installed version comes from dpkg, not a
+  repo-pinned tarball). For measurement only, the audit also fetches the latest GitHub release tag for
+  `koalaman/shellcheck` from the public releases API; that tag is not what apt installs. Semver compare of the
+  CLI to that tag is off by default (`compare_cli_to_github_semver: false`) because distro packages usually lag
+  upstream releases.
 aggregation_notes: >-
-  Required check ids: shellcheck_cli, shellcheck_deb, installer_staleness, upstream_deb_exact.
-  Optional (non-blocking rollup): shellcheck_github_release fetches the latest GitHub tag (evidence only unless compare_cli_to_github_semver is true).
-  When compare_cli_to_github_semver is true, shellcheck_upstream_semver compares CLI-reported version to that tag; when false, that check is skipped (apt packages normally trail upstream releases).
-  Aggregation: reviewAggregateFromChecks in src/review/review-aggregation.sh. Measurement modules: all six v1 catalogue checks under src/review/audit-checks/ (see audit_shellcheck.sh).
+  Required check ids match requiredCheckIdsJson in audit_shellcheck.sh: shellcheck_cli, shellcheck_deb,
+  installer_staleness, upstream_deb_exact. Aggregation uses reviewAggregateFromChecks with an empty
+  custom_issue_policy (third argument). A required check may have outcome skipped without forcing
+  review_result 3; inconclusive on a required id does. shellcheck_github_release (catalogue http-json-upstream-version)
+  always runs for the GitHub latest tag but is not in the required set, so fetch/parse inconclusive there does
+  not force review_result 3. shellcheck_upstream_semver runs only when compare_cli_to_github_semver is true;
+  when false, the audit emits a skipped row for that id. Empty last_known_upstream makes upstream_deb_exact
+  skipped; set it to the dpkg version you mean to lock to if you want exact-match enforcement against
+  deb_installed_version. installer_staleness measures age of installer_validated (UTC date) vs
+  installer_staleness_max_days (see manifest scalars) and is skipped if installer_validated is empty. All six
+  v1 audit-check modules are composed in audit_shellcheck.sh under
+  src/review/audit-checks/.
 notes: >-
   Maintainer-owned manifest for v1 advisory review; machine-written output is written to review_shellcheck.result.json next to this file.
