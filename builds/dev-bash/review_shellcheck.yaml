@@ -3,7 +3,7 @@ upstream_tracking: >-
   Debian/Ubuntu `shellcheck` package via apt (`apt install shellcheck`).
   The effective revision follows distro packaging and security updates, not a tarball or API pinned in this repository.
 aggregation_notes: >-
-  Required check IDs and how they roll up into review_result are defined in audit_shellcheck.sh alongside measurement (checks/evidence).
-  Until the shared aggregation helper is used repo-wide, that script performs inlined aggregation consistent with docs/automated-builds-review-v1-spec.md.
+  Required check id shellcheck_cli; aggregation uses src/review/review-aggregation.sh (reviewAggregateFromChecks) per docs/automated-builds-review-v1-spec.md.
+  Measurement (checks/evidence) stays in audit_shellcheck.sh.
 notes: >-
   Maintainer-owned manifest for v1 advisory review; machine-written output is written to review_shellcheck.result.json next to this file.
