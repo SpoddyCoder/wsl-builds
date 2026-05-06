@@ -4,6 +4,6 @@ upstream_tracking: >-
   The effective revision follows distro packaging and security updates, not a tarball or API pinned in this repository.
 aggregation_notes: >-
   Required check id shellcheck_cli; aggregation uses src/review/review-aggregation.sh (reviewAggregateFromChecks) per docs/automated-builds-review-v1-spec.md.
-  Measurement (checks/evidence) stays in audit_shellcheck.sh.
+  Measurement is composed from src/review/audit-checks/cli-reported-version.sh via src/review/audit-check-helpers/review-measurement-bundle.sh in audit_shellcheck.sh.
 notes: >-
   Maintainer-owned manifest for v1 advisory review; machine-written output is written to review_shellcheck.result.json next to this file.
