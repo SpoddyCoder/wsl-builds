@@ -5,16 +5,48 @@
             "id": "shellcheck_cli",
             "outcome": "passed",
             "detail": "Reported package/version line: 0.9.0"
+        },
+        {
+            "id": "shellcheck_deb",
+            "outcome": "passed",
+            "detail": "Installed Debian package version: 0.9.0-1"
+        },
+        {
+            "id": "installer_staleness",
+            "outcome": "passed",
+            "detail": "installer_validated is within 90 days (0 days old)."
+        },
+        {
+            "id": "shellcheck_github_release",
+            "outcome": "passed",
+            "detail": "Fetched upstream value: v0.11.0"
+        },
+        {
+            "id": "upstream_deb_exact",
+            "outcome": "skipped",
+            "detail": "last_known_upstream is not set; exact match check skipped."
+        },
+        {
+            "id": "shellcheck_upstream_semver",
+            "outcome": "skipped",
+            "detail": "compare_cli_to_github_semver is not true in review_shellcheck.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
         }
     ],
     "evidence": {
         "cli_reported_version": "0.9.0",
-        "cli_command_name": "shellcheck"
+        "cli_command_name": "shellcheck",
+        "deb_package": "shellcheck",
+        "deb_installed_version": "0.9.0-1",
+        "installer_validated": "2026-05-06",
+        "installer_age_days": 0,
+        "installer_staleness_max_days": 90,
+        "upstream_url": "https://api.github.com/repos/koalaman/shellcheck/releases/latest",
+        "http_json_extracted": "v0.11.0"
     },
     "review_result": 0,
     "reasons": [],
     "summary": "All checks passed or carried only skipped/non-issue outcomes.",
     "build": "dev-bash",
     "component": "shellcheck",
-    "review_completed": "2026-05-06T21:51:40Z"
+    "review_completed": "2026-05-06T22:22:43Z"
 }

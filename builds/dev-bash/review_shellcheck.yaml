@@ -1,9 +1,17 @@
 component: shellcheck
+# When true, shellcheck_upstream_semver compares CLI version to GitHub latest (often fails on apt lag).
+compare_cli_to_github_semver: false
+installer_validated: 2026-05-06
+installer_staleness_max_days: 90
+# Dpkg version on the maintainer machine when last_known_upstream was confirmed; leave empty to skip exact-match.
+last_known_upstream: ""
 upstream_tracking: >-
   Debian/Ubuntu `shellcheck` package via apt (`apt install shellcheck`).
   The effective revision follows distro packaging and security updates, not a tarball or API pinned in this repository.
 aggregation_notes: >-
-  Required check id shellcheck_cli; aggregation uses src/review/review-aggregation.sh (reviewAggregateFromChecks) per docs/automated-builds-review-v1-spec.md.
-  Measurement is composed from src/review/audit-checks/cli-reported-version.sh via src/review/audit-check-helpers/review-measurement-bundle.sh in audit_shellcheck.sh.
+  Required check ids: shellcheck_cli, shellcheck_deb, installer_staleness, upstream_deb_exact.
+  Optional (non-blocking rollup): shellcheck_github_release fetches the latest GitHub tag (evidence only unless compare_cli_to_github_semver is true).
+  When compare_cli_to_github_semver is true, shellcheck_upstream_semver compares CLI-reported version to that tag; when false, that check is skipped (apt packages normally trail upstream releases).
+  Aggregation: reviewAggregateFromChecks in src/review/review-aggregation.sh. Measurement modules: all six v1 catalogue checks under src/review/audit-checks/ (see audit_shellcheck.sh).
 notes: >-
   Maintainer-owned manifest for v1 advisory review; machine-written output is written to review_shellcheck.result.json next to this file.
