@@ -22,11 +22,16 @@ canonicalCsvTokenToOnDiskSlug() {
     printf '%s\n' "${token//-/_}"
 }
 
-# Default builds directory under the repo (does not apply EXTERNAL_BUILDS_ROOT; callers that
-# mirror wsl-builder.sh must resolve BUILDS_ROOT the same way as the builder before using paths).
+# Default builds directory under the repo only (<repo>/builds). For runtime resolution including
+# EXTERNAL_BUILDS_ROOT, callers source src/builds-root.sh after user conf + src/print.sh (same as ./wsl-builder.sh).
 reviewDefaultBuildsDirUnderRepo() {
     local repoRoot="${1:?repository root required}"
     printf '%s/builds\n' "${repoRoot%/}"
+}
+
+# ISO 8601 UTC with seconds and trailing Z (v1 review_completed).
+reviewUtcTimestampIsoSecondsZ() {
+    date -u +%Y-%m-%dT%H:%M:%SZ
 }
 
 reviewPathForInstallScript() {

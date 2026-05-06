@@ -24,45 +24,9 @@ else
     source "${WSL_BUILDS_USER_CONF}"
     printInfo "Using: ${WSL_BUILDS_USER_CONF}"
 fi
-resolvedExternalRoot="${EXTERNAL_BUILDS_ROOT:-}"
-while [[ "${resolvedExternalRoot}" == */ ]]; do
-    resolvedExternalRoot="${resolvedExternalRoot%/}"
-done
-usingExternalBuildsRoot=false
-if [ -n "${resolvedExternalRoot}" ]; then
-    usingExternalBuildsRoot=true
-    case "${resolvedExternalRoot}" in
-        ~ )
-            resolvedExternalRoot="${HOME}"
-            ;;
-        ~/* )
-            resolvedExternalRoot="${resolvedExternalRoot/#\~/${HOME}}"
-            ;;
-    esac
-    while [[ "${resolvedExternalRoot}" == */ ]]; do
-        resolvedExternalRoot="${resolvedExternalRoot%/}"
-    done
-    case "${resolvedExternalRoot}" in
-        '/'* )
-            BUILDS_ROOT="${resolvedExternalRoot}"
-            ;;
-        * )
-            printError "EXTERNAL_BUILDS_ROOT must be an absolute path or ~/… (relative paths are not supported)."
-            exit 1
-            ;;
-    esac
-else
-    BUILDS_ROOT="${TOOL_DIR}/builds"
-fi
-unset -v resolvedExternalRoot
-if [[ "${usingExternalBuildsRoot}" == true ]]; then
-    if [ ! -d "${BUILDS_ROOT}" ]; then
-        printError "EXTERNAL_BUILDS_ROOT is set but is not an existing directory: ${BUILDS_ROOT}"
-        exit 1
-    fi
-    printInfo "Using external builds root: ${BUILDS_ROOT}"
-fi
-unset -v usingExternalBuildsRoot
+# shellcheck source=src/builds-root.sh
+source "${TOOL_DIR}"/src/builds-root.sh
+resolveBuildsRootFromRepoRoot "${TOOL_DIR}" || exit 1
 # getFile (install-helpers.sh); optional override in wsl-builds.conf
 CACHE_DIR="${CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/wsl-builds}"
 # shellcheck source=src/arg-helpers.sh

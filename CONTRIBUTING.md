@@ -20,6 +20,9 @@ Only two rules for PR submissions;
 * `./test/lint.sh path/to/script.sh` — lint specific files
 * Install ShellCheck `./wsl-builder.sh dev-bash shellcheck`
 
+### Automated builds review tooling
+* **`jq`** — required to run `src/review/component-review.sh` (parse/merge/validate review JSON). Ubuntu: `sudo apt install jq`.
+
 ### Testing
 * [Bats](https://bats-core.readthedocs.io/en/stable/) is used as a testing framework for the bash scripts.
 * Bats tests are run in an isolated Docker container for safety and consistency.

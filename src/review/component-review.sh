@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+# Component review (spec Phase 1): invoke audit_<component>.sh, merge runner fields, validate merged JSON.
+# Persistence of review_<token>.result.json is delivery phase 2 chunk 4.
+set -euo pipefail
+
+# shellcheck source=review-common.sh
+source "${BASH_SOURCE[0]%/*}/review-common.sh"
+
+reviewComponentReviewShowUsage() {
+    printf '%s\n' "Usage: ${REVIEW_SCRIPT_NAME:-component-review.sh} <build-directory-name> <canonical-component-token>" >&2
+    printf '%s\n' "Example: ./src/review/component-review.sh dev-js node" >&2
+}
+
+reviewComponentReviewFailMergedValidation() {
+    printError "Merged review JSON failed runner validation (see spec: Runner validation after audit (v1))"
+    if [ -n "${1:-}" ]; then
+        printError "${1}"
+    fi
+}
+
+# Validate merged JSON per spec § Runner validation after audit (v1) + required top-level fields.
+reviewComponentReviewValidateMergedJson() {
+    local merged="$1"
+    local jq_err
+    jq_err=$(mktemp)
+    trap 'rm -f "${jq_err}"' RETURN
+    if jq -e '
+        (type == "object") and
+        (.component_reviewer_version | type == "number") and (.component_reviewer_version == 1) and
+        (.build | type == "string") and ((.build | length) > 0) and
+        (.component | type == "string") and ((.component | length) > 0) and
+        (.review_completed | type == "string") and
+          (.review_completed | test("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$")) and
+        (.review_result | type == "number") and (.review_result >= 0 and .review_result <= 3) and
+          (.review_result == ((.review_result | floor))) and
+        (.reasons | type == "array") and
+          (.reasons | map(type == "string") | all)
+    ' <<<"${merged}" >/dev/null 2>"${jq_err}"; then
+        return 0
+    fi
+    reviewComponentReviewFailMergedValidation "$(cat "${jq_err}")"
+    return 1
+}
+
+REVIEW_SCRIPT_NAME=$(basename "${BASH_SOURCE[0]}")
+reviewInitRepoRootFromRunnerScript "${BASH_SOURCE[0]}"
+
+# shellcheck source=src/print.sh
+source "${REVIEW_REPO_ROOT}/src/print.sh"
+
+WSL_BUILDS_USER_CONF="${HOME}/.wsl-builds.conf"
+if [ -n "${WSL_BUILDS_CONF:-}" ]; then
+    if [ ! -r "${WSL_BUILDS_CONF}" ]; then
+        printError "WSL_BUILDS_CONF is set but is not readable: ${WSL_BUILDS_CONF}"
+        exit 1
+    fi
+    # shellcheck source=wsl-builds.conf.example
+    source "${WSL_BUILDS_CONF}"
+    printInfo "Using: ${WSL_BUILDS_CONF}"
+else
+    if [ ! -r "${WSL_BUILDS_USER_CONF}" ]; then
+        printError "No wsl-builds.conf found (set WSL_BUILDS_CONF or create ~/.wsl-builds.conf). Run ./configure.sh"
+        exit 1
+    fi
+    # shellcheck source=wsl-builds.conf.example
+    source "${WSL_BUILDS_USER_CONF}"
+    printInfo "Using: ${WSL_BUILDS_USER_CONF}"
+fi
+
+# shellcheck source=src/builds-root.sh
+source "${REVIEW_REPO_ROOT}/src/builds-root.sh"
+resolveBuildsRootFromRepoRoot "${REVIEW_REPO_ROOT}" || exit 1
+
+if ! command -v jq >/dev/null 2>&1; then
+    printError "jq is required for component-review.sh. Install jq and see CONTRIBUTING.md (Automated builds review tooling)."
+    exit 1
+fi
+
+if [ "${#}" -ne 2 ]; then
+    reviewComponentReviewShowUsage
+    exit 1
+fi
+
+build_dir_name="${1}"
+canonical_token="${2}"
+BUILD_DIR="${BUILDS_ROOT}/${build_dir_name}"
+
+if [ ! -d "${BUILD_DIR}" ] || [ ! -f "${BUILD_DIR}/conf.sh" ]; then
+    printError "Build directory '${build_dir_name}' not found under ${BUILDS_ROOT} (expected conf.sh)."
+    exit 1
+fi
+
+audit_script=$(reviewPathForAuditScript "${BUILD_DIR}" "${canonical_token}") || exit 1
+if [ ! -f "${audit_script}" ]; then
+    printError "No audit script for token '${canonical_token}': ${audit_script}"
+    exit 1
+fi
+
+audit_stdout=$(mktemp)
+audit_stderr=$(mktemp)
+trap 'rm -f "${audit_stdout}" "${audit_stderr}"' EXIT
+
+set +e
+bash "${audit_script}" >"${audit_stdout}" 2>"${audit_stderr}"
+audit_ec=${?}
+set -e
+
+if [ -s "${audit_stderr}" ]; then
+    cat "${audit_stderr}" >&2
+fi
+
+if [ "${audit_ec}" -ne 0 ]; then
+    printError "audit script exited ${audit_ec}: ${audit_script}"
+    exit 1
+fi
+
+exec {stdout_fd}<"${audit_stdout}"
+if ! read -r json_line <&"${stdout_fd}"; then
+    printError "audit stdout is empty (expected one JSON object line): ${audit_script}"
+    exit 1
+fi
+if read -r _extra_line <&"${stdout_fd}"; then
+    printError "audit stdout must be exactly one logical line (got extra output): ${audit_script}"
+    exit 1
+fi
+exec {stdout_fd}<&-
+
+if ! audit_json=$(jq -ec . <<<"${json_line}" 2>/dev/null); then
+    printError "audit stdout is not parseable as one JSON object: ${audit_script}"
+    exit 1
+fi
+
+review_completed_ts=$(reviewUtcTimestampIsoSecondsZ)
+merged_json=$(jq -cn \
+    --argjson audit "${audit_json}" \
+    --arg build "${build_dir_name}" \
+    --arg comp "${canonical_token}" \
+    --arg ts "${review_completed_ts}" \
+    '$audit | .build = $build | .component = $comp | .review_completed = $ts') \
+    || {
+        printError "failed to merge runner fields into audit JSON"
+        exit 1
+    }
+
+reviewComponentReviewValidateMergedJson "${merged_json}" || exit 1
+
+merged_summary=$(jq -r '.summary // empty' <<<"${merged_json}")
+if [ -n "${merged_summary}" ]; then
+    printInfo "${merged_summary}"
+fi
+
+exit 0
