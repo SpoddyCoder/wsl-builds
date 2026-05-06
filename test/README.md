@@ -65,10 +65,11 @@ Each row is one `@test`. The `#` column is the stable **R**… id (same order as
 
 | # | Test | What it checks |
 | -: | ---- | ---------------- |
-| R1 | `component-review accepts audit JSON merged with runner fields` | Valid minimal audit JSON → exit 0; `summary` echoed in output. |
+| R1 | `component-review accepts audit JSON merged with runner fields` | Valid minimal audit JSON → exit 0; `summary` echoed; `review_<token>.result.json` written with merged fields (`build`, `component`, `review_completed`, …). |
 | R2 | `merged JSON missing required reasons array fails validation` | Audit omits `reasons` → nonzero; merged validation error message. |
 | R3 | `merged JSON with review_result out of range fails validation` | `review_result` 4 → nonzero; merged validation error message. |
 | R4 | `validation failure does not create or overwrite review_<token>.result.json` | Pre-seeded `review_<token>.result.json` unchanged when validation fails after merge. |
+| R5 | `successful run overwrites an existing review_<token>.result.json` | Pre-existing placeholder JSON replaced after successful validation. |
 
 ## Commands catalog (`docker/commands-tests.bats`)
 

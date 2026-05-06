@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Component review (spec Phase 1): invoke audit_<component>.sh, merge runner fields, validate merged JSON.
-# Persistence of review_<token>.result.json is delivery phase 2 chunk 4.
+# Component review (spec Phase 1): invoke audit_<component>.sh, merge runner fields, validate merged JSON,
+# persist validated merged JSON to review_<canonical-token>.result.json.
 set -euo pipefail
 
 # shellcheck source=review-common.sh
@@ -115,6 +115,19 @@ merged_json=$(jq -cn \
     }
 
 reviewValidateMergedResultJson "${merged_json}" || exit 1
+
+result_path=$(reviewPathForReviewResult "${BUILD_DIR}" "${canonical_token}") || exit 1
+result_tmp="${result_path}.tmp.$$"
+if ! printf '%s\n' "${merged_json}" >"${result_tmp}"; then
+    rm -f "${result_tmp}"
+    printError "failed to write temporary review result: ${result_path}"
+    exit 1
+fi
+if ! mv -f "${result_tmp}" "${result_path}"; then
+    rm -f "${result_tmp}"
+    printError "failed to persist review result: ${result_path}"
+    exit 1
+fi
 
 merged_summary=$(jq -r '.summary // empty' <<<"${merged_json}")
 if [ -n "${merged_summary}" ]; then

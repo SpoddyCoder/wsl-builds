@@ -26,9 +26,16 @@ set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"review_result":0,"reasons":[],"summary":"Harness OK"}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/audit_review_stub.sh"
-	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
+	_bld="$(basename "${REVIEW_BUILD_DIR}")"
+	run ./src/review/component-review.sh "${_bld}" review-stub
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Harness\ OK ]]
+	_result="${REVIEW_BUILD_DIR}/review_review-stub.result.json"
+	[[ -f "${_result}" ]]
+	[[ "$(jq -r '.build' "${_result}")" == "${_bld}" ]]
+	[[ "$(jq -r '.component' "${_result}")" == 'review-stub' ]]
+	[[ "$(jq -r '.summary' "${_result}")" == 'Harness OK' ]]
+	[[ "$(jq -r '.review_completed | endswith("Z")' "${_result}")" == 'true' ]]
 }
 
 @test 'R2: merged JSON missing required reasons array fails validation' {
@@ -66,4 +73,21 @@ EOS
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "$(cat "${REVIEW_BUILD_DIR}/review_review-stub.result.json")" == "$(printf '%s\n' '{"stale_marker":true}')" ]]
+}
+
+@test 'R5: successful run overwrites an existing review_<token>.result.json' {
+	printf '%s\n' '{"stale_marker":true}' >"${REVIEW_BUILD_DIR}/review_review-stub.result.json"
+	cat >"${REVIEW_BUILD_DIR}/audit_review_stub.sh" <<'EOS'
+#!/usr/bin/env bash
+set -euo pipefail
+printf '%s\n' '{"component_reviewer_version":1,"review_result":0,"reasons":[],"summary":"Replaced"}'
+EOS
+	chmod +x "${REVIEW_BUILD_DIR}/audit_review_stub.sh"
+	_bld="$(basename "${REVIEW_BUILD_DIR}")"
+	run ./src/review/component-review.sh "${_bld}" review-stub
+	[[ "${status:?}" -eq 0 ]]
+	_result="${REVIEW_BUILD_DIR}/review_review-stub.result.json"
+	[[ "$(jq -r 'has("stale_marker")' "${_result}")" == 'false' ]]
+	[[ "$(jq -r '.summary' "${_result}")" == 'Replaced' ]]
+	[[ "$(jq -r '.build' "${_result}")" == "${_bld}" ]]
 }
