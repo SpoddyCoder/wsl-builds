@@ -13,7 +13,7 @@ RUN sed -i \
     /etc/apt/sources.list.d/ubuntu.sources
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends bats bash ca-certificates coreutils python3 sudo wget \
+    && apt-get install -y --no-install-recommends bats bash ca-certificates coreutils jq python3 sudo wget \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /repo

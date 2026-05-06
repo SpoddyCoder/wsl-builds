@@ -12,9 +12,9 @@ Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolate
 ./test/run-tests.sh
 ```
 
-[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **wizard** behaviour for `./configure.sh`, and **commands** helpers under `builds/system/`. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own `bats` process (builder, then wizard, then commands).
+[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **automated builds review** runners, **wizard** behaviour for `./configure.sh`, and **commands** helpers under `builds/system/`. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own `bats` process (builder, review, wizard, then commands).
 
-* Builder tests use an isolated `$HOME` and copy harness [`docker/wsl-builds.conf`](docker/wsl-builds.conf) to `~/.wsl-builds.conf`. Wizard tests use their own fake `$HOME` only.
+* Builder and review tests use an isolated `$HOME` and copy harness [`docker/wsl-builds.conf`](docker/wsl-builds.conf) to `~/.wsl-builds.conf`. Wizard tests use their own fake `$HOME` only.
 * **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.
 
 Before changing `./wsl-builder.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, `configure.sh`, or Bats tests, skim this doc and run `./test/run-tests.sh` when behaviour may regress.
@@ -59,6 +59,17 @@ Each row is one `@test`. The `#` column is the stable **B**… id (same order as
 | B25 | `getfile-stale-harness stale cache default yes keeps seeded payload` | `WARN_IF_CACHED_FILE_OLDER_THAN=1` in harness conf; aged cache + `printf '\n'` → stale warning and “Using locally cached version”; payload matches seed; `WSL_BUILDS_GETFILE_STALE_EXPECT=cache`. |
 | B26 | `getfile-stale-harness stale cache n refreshes from fixture URL` | Same aged cache; `printf 'n\n'` → “Downloading fresh copy”; payload matches HTTP fixture; `WSL_BUILDS_GETFILE_STALE_EXPECT=refresh`. |
 
+## Review catalog (`docker/review-tests.bats`)
+
+Each row is one `@test`. The `#` column is the stable **R**… id (same order as TAP `ok N …` in this file). Tests use an ephemeral directory under `builds/` with `conf.sh` and a stub `audit_<slug>.sh`; harness `~/.wsl-builds.conf` is installed like builder tests.
+
+| # | Test | What it checks |
+| -: | ---- | ---------------- |
+| R1 | `component-review accepts audit JSON merged with runner fields` | Valid minimal audit JSON → exit 0; `summary` echoed in output. |
+| R2 | `merged JSON missing required reasons array fails validation` | Audit omits `reasons` → nonzero; merged validation error message. |
+| R3 | `merged JSON with review_result out of range fails validation` | `review_result` 4 → nonzero; merged validation error message. |
+| R4 | `validation failure does not create or overwrite review_<token>.result.json` | Pre-seeded `review_<token>.result.json` unchanged when validation fails after merge. |
+
 ## Commands catalog (`docker/commands-tests.bats`)
 
 Each row is one `@test`; labels **C**… are stable ids. Tests run with `WSL_BUILDS_COMMAND_TEST_ROOT` so scripts read/write seeded files under `$CMD_ROOT/etc/...` (no host `/etc` changes).
@@ -76,7 +87,7 @@ Each row is one `@test`; labels **C**… are stable ids. Tests run with `WSL_BUI
 
 ## Wizard catalog (`docker/conf-wizard-tests.bats`)
 
-Each test uses a fresh fake `$HOME`; [`run-bats.sh`](docker/run-bats.sh) runs this file **after [`builder-tests.bats`](docker/builder-tests.bats)** (and before [`commands-tests.bats`](docker/commands-tests.bats)). Each row is one `@test`. TAP numbers follow file order; labels **W**… are stable ids.
+Each test uses a fresh fake `$HOME`; [`run-bats.sh`](docker/run-bats.sh) runs this file **after [`review-tests.bats`](docker/review-tests.bats)** (and before [`commands-tests.bats`](docker/commands-tests.bats)). Each row is one `@test`. TAP numbers follow file order; labels **W**… are stable ids.
 
 | # | Test | What it checks |
 | -: | ---- | -------------- |

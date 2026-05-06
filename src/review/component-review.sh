@@ -11,37 +11,6 @@ reviewComponentReviewShowUsage() {
     printf '%s\n' "Example: ./src/review/component-review.sh dev-js node" >&2
 }
 
-reviewComponentReviewFailMergedValidation() {
-    printError "Merged review JSON failed runner validation (see spec: Runner validation after audit (v1))"
-    if [ -n "${1:-}" ]; then
-        printError "${1}"
-    fi
-}
-
-# Validate merged JSON per spec § Runner validation after audit (v1) + required top-level fields.
-reviewComponentReviewValidateMergedJson() {
-    local merged="$1"
-    local jq_err
-    jq_err=$(mktemp)
-    trap 'rm -f "${jq_err}"' RETURN
-    if jq -e '
-        (type == "object") and
-        (.component_reviewer_version | type == "number") and (.component_reviewer_version == 1) and
-        (.build | type == "string") and ((.build | length) > 0) and
-        (.component | type == "string") and ((.component | length) > 0) and
-        (.review_completed | type == "string") and
-          (.review_completed | test("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$")) and
-        (.review_result | type == "number") and (.review_result >= 0 and .review_result <= 3) and
-          (.review_result == ((.review_result | floor))) and
-        (.reasons | type == "array") and
-          (.reasons | map(type == "string") | all)
-    ' <<<"${merged}" >/dev/null 2>"${jq_err}"; then
-        return 0
-    fi
-    reviewComponentReviewFailMergedValidation "$(cat "${jq_err}")"
-    return 1
-}
-
 REVIEW_SCRIPT_NAME=$(basename "${BASH_SOURCE[0]}")
 reviewInitRepoRootFromRunnerScript "${BASH_SOURCE[0]}"
 
@@ -75,6 +44,9 @@ if ! command -v jq >/dev/null 2>&1; then
     printError "jq is required for component-review.sh. Install jq and see CONTRIBUTING.md (Automated builds review tooling)."
     exit 1
 fi
+
+# shellcheck source=review-merged-validation.sh
+source "${BASH_SOURCE[0]%/*}/review-merged-validation.sh"
 
 if [ "${#}" -ne 2 ]; then
     reviewComponentReviewShowUsage
@@ -142,7 +114,7 @@ merged_json=$(jq -cn \
         exit 1
     }
 
-reviewComponentReviewValidateMergedJson "${merged_json}" || exit 1
+reviewValidateMergedResultJson "${merged_json}" || exit 1
 
 merged_summary=$(jq -r '.summary // empty' <<<"${merged_json}")
 if [ -n "${merged_summary}" ]; then
