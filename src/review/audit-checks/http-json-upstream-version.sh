@@ -34,11 +34,11 @@ source "${_helper_dir}/review-http-fetch.sh"
 
 if ! body=$(reviewHttpGetWithRetry "${url}" "${max_time}"); then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg u "${url}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "inconclusive",
                  detail: ("HTTP fetch failed or gave non-success status for " + $u + ".")
              },
@@ -56,11 +56,11 @@ fi
 
 if [ -z "${extracted}" ] || [ "${extracted}" = "null" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg u "${url}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "inconclusive",
                  detail: "jq filter produced no usable string from HTTP JSON response."
              },
@@ -70,12 +70,12 @@ if [ -z "${extracted}" ] || [ "${extracted}" = "null" ]; then
 fi
 
 jq -cn \
-    --arg id "${check_id}" \
+    --arg audit_check_id "${check_id}" \
     --arg u "${url}" \
     --arg val "${extracted}" \
     '{
          check: {
-             id: $id,
+             audit_check_id: $audit_check_id,
              outcome: "passed",
              detail: ("Fetched upstream value: " + $val)
          },

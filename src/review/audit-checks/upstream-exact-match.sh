@@ -38,10 +38,10 @@ observed=$(trim "${observed}")
 
 if [ -z "${expected}" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "skipped",
                  detail: "last_known_upstream is not set; exact match check skipped."
              },
@@ -52,11 +52,11 @@ fi
 
 if [ -z "${observed}" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg exp "${expected}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "inconclusive",
                  detail: "Observed upstream/version is empty; cannot compare to last_known_upstream."
              },
@@ -67,11 +67,11 @@ fi
 
 if [ "${expected}" = "${observed}" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg exp "${expected}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "passed",
                  detail: "Observed value matches last_known_upstream."
              },
@@ -82,12 +82,12 @@ if [ "${expected}" = "${observed}" ]; then
          }'
 else
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg exp "${expected}" \
         --arg obs "${observed}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "issue",
                  finding_kind: "upstream_drift",
                  detail: ("Observed \"" + $obs + "\" does not match last_known_upstream \"" + $exp + "\".")

@@ -40,10 +40,10 @@ reference=$(normalizeVersion "$3")
 
 if [ -z "${observed}" ] || [ -z "${reference}" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "inconclusive",
                  detail: "Missing observed or reference semver string after normalization."
              },
@@ -54,11 +54,11 @@ fi
 
 if [ "${observed}" = "${reference}" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg o "${observed}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "passed",
                  detail: "Observed version matches reference."
              },
@@ -73,12 +73,12 @@ fi
 first=$(printf '%s\n%s\n' "${observed}" "${reference}" | sort -V | head -n1)
 if [ "${first}" = "${observed}" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg o "${observed}" \
         --arg r "${reference}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "issue",
                  finding_kind: "upstream_drift",
                  detail: ("Observed version " + $o + " is behind reference " + $r + ".")
@@ -90,12 +90,12 @@ if [ "${first}" = "${observed}" ]; then
          }'
 else
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg o "${observed}" \
         --arg r "${reference}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "passed",
                  detail: ("Observed version " + $o + " is at or ahead of reference " + $r + ".")
              },

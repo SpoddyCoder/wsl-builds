@@ -30,11 +30,11 @@ fi
 
 if ! command -v dpkg-query >/dev/null 2>&1; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg pkg "${deb_package}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "inconclusive",
                  detail: "dpkg-query is not available; not a Debian/apt environment."
              },
@@ -45,11 +45,11 @@ fi
 
 if ! dpkg-query -W -f='${Status}\n' "${deb_package}" 2>/dev/null | grep -q 'install ok installed'; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg pkg "${deb_package}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "inconclusive",
                  detail: ("Debian package \"" + $pkg + "\" is not installed (dpkg).")
              },
@@ -64,12 +64,12 @@ if [ -z "${deb_ver}" ]; then
 fi
 
 jq -cn \
-    --arg id "${check_id}" \
+    --arg audit_check_id "${check_id}" \
     --arg pkg "${deb_package}" \
     --arg ver "${deb_ver}" \
     '{
          check: {
-             id: $id,
+             audit_check_id: $audit_check_id,
              outcome: "passed",
              detail: ("Installed Debian package version: " + $ver)
          },

@@ -7,7 +7,7 @@
 # Usage:
 #   cli-reported-version.sh <check_id> <cli_command> [sed_extract_script]
 #
-# - check_id: stable id for the checks[] row (e.g. shellcheck_cli).
+# - check_id: stable audit_check_id for the checks[] row (e.g. catalogue stem cli-reported-version, or stem_suffix if the module runs twice).
 # - cli_command: name or path tested with command -v and invoked as <cli_command> --version.
 # - sed_extract_script: optional argument to sed -n (default strips leading "version:" lines like shellcheck).
 #
@@ -35,11 +35,11 @@ readonly sed_extract_script="${3:-s/^version:[[:space:]]*//p}"
 
 if ! command -v -- "${cli_command}" >/dev/null 2>&1; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg cli "${cli_command}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "inconclusive",
                  detail: ($cli + " is not installed or not on PATH; install the component that provides this tool first.")
              },
@@ -59,12 +59,12 @@ if [ -z "${reported}" ]; then
 fi
 
 jq -cn \
-    --arg id "${check_id}" \
+    --arg audit_check_id "${check_id}" \
     --arg ver "${reported}" \
     --arg cli "${cli_command}" \
     '{
          check: {
-             id: $id,
+             audit_check_id: $audit_check_id,
              outcome: "passed",
              detail: ("Reported package/version line: " + $ver)
          },

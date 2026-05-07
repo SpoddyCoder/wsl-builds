@@ -28,10 +28,10 @@ readonly max_days_raw="$3"
 
 if [ -z "${validated_raw}" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "skipped",
                  detail: "installer_validated is not set in the maintainer manifest; staleness check skipped."
              },
@@ -49,11 +49,11 @@ readonly max_days="${max_days_raw}"
 validated_sec=$(date -u -d "${validated_raw}" +%s 2>/dev/null || true)
 if [ -z "${validated_sec}" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --arg d "${validated_raw}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "inconclusive",
                  detail: ("installer_validated is not parseable as a date: " + $d)
              },
@@ -67,13 +67,13 @@ age_days=$(( (now_sec - validated_sec) / 86400 ))
 
 if [ "${age_days}" -gt "${max_days}" ]; then
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --argjson age "${age_days}" \
         --argjson max "${max_days}" \
         --arg d "${validated_raw}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "issue",
                  finding_kind: "staleness",
                  detail: ("installer_validated (" + $d + ") is " + ($age | tostring) + " days old; exceeds limit " + ($max | tostring) + " days.")
@@ -86,13 +86,13 @@ if [ "${age_days}" -gt "${max_days}" ]; then
          }'
 else
     jq -cn \
-        --arg id "${check_id}" \
+        --arg audit_check_id "${check_id}" \
         --argjson age "${age_days}" \
         --argjson max "${max_days}" \
         --arg d "${validated_raw}" \
         '{
              check: {
-                 id: $id,
+                 audit_check_id: $audit_check_id,
                  outcome: "passed",
                  detail: ("installer_validated is within " + ($max | tostring) + " days (" + ($age | tostring) + " days old).")
              },

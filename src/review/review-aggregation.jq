@@ -10,8 +10,8 @@ def label_v1($code):
     "Checks did not complete successfully (runner error, upstream unreachable, unsupported case, unknown)."
   end;
 
-def routes_by_id:
-  ($policy.routes_by_check_id // {});
+def policy_routes_by_audit_check_id:
+  ($policy.routes_by_audit_check_id // {});
 
 def is_issue(c):
   (c.outcome == "issue");
@@ -21,7 +21,7 @@ def route_slot(c):
   if (is_issue(c) | not) then "not_issue"
   else
     (c.finding_kind // "") as $fk
-    | (routes_by_id)[c.id] as $pr
+    | (policy_routes_by_audit_check_id)[c.audit_check_id] as $pr
     | if $fk == "security" then "security"
       elif $fk == "staleness" or $fk == "upstream_drift" then "freshness"
       elif $fk == "custom" or $fk == "" then
@@ -40,11 +40,11 @@ def route_slot(c):
   end;
 
 def missing_required:
-  [ $requiredIds[] | select(. as $rid | ($checks | map(select(.id == $rid)) | length) == 0) ];
+  [ $requiredIds[] | select(. as $rid | ($checks | map(select(.audit_check_id == $rid)) | length) == 0) ];
 
 def inconclusive_required:
   [ $requiredIds[] | select(. as $rid |
-      ($checks | map(select(.id == $rid and .outcome == "inconclusive")) | length) > 0) ];
+      ($checks | map(select(.audit_check_id == $rid and .outcome == "inconclusive")) | length) > 0) ];
 
 def any_unrouted:
   any($checks[]; route_slot(.) == "unrouted");
@@ -59,20 +59,20 @@ def reasons_for_incomplete_missing:
   [ missing_required[] | "Required check id \"" + . + "\" has no row in checks." ];
 
 def reasons_for_incomplete_inconclusive:
-  [ $requiredIds[] as $rid | $checks[] | select(.id == $rid and .outcome == "inconclusive")
-    | "Required check \"" + .id + "\" is inconclusive: " + (.detail // "") ];
+  [ $requiredIds[] as $rid | $checks[] | select(.audit_check_id == $rid and .outcome == "inconclusive")
+    | "Required check \"" + .audit_check_id + "\" is inconclusive: " + (.detail // "") ];
 
 def reasons_unrouted:
   [ $checks[] | select(is_issue(.) and route_slot(.) == "unrouted")
-    | "Issue check \"" + .id + "\" has no top-level classification (set finding_kind or routes_by_check_id)." ];
+    | "Issue check \"" + .audit_check_id + "\" has no top-level classification (set finding_kind or routes_by_audit_check_id)." ];
 
 def reasons_security:
   [ $checks[] | select(is_issue(.) and route_slot(.) == "security")
-    | "Security-class issue: " + .id + " — " + (.detail // "") ];
+    | "Security-class issue: " + .audit_check_id + " — " + (.detail // "") ];
 
 def reasons_freshness:
   [ $checks[] | select(is_issue(.) and route_slot(.) == "freshness")
-    | "Staleness or drift issue: " + .id + " — " + (.detail // "") ];
+    | "Staleness or drift issue: " + .audit_check_id + " — " + (.detail // "") ];
 
 def concerns_false:
   { "security": false, "freshness": false };

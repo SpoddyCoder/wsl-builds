@@ -9,9 +9,9 @@ _reviewAggJqPath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/review-aggregati
 # Emit one JSON object on stdout: review_result, review_result_label, review_concerns, reasons, summary.
 # Inputs:
 #   $1 — checks: JSON array of normalized check objects (see Audit item outcomes (normalized)).
-#   $2 — required_check_ids: JSON array of strings (check id values required for a complete story).
-#   $3 — optional custom_issue_policy: JSON object, default {}. Optional key routes_by_check_id
-#        maps check id to "security", "freshness", or "none" for issue rows not classified by
+#   $2 — required_check_ids: JSON array of strings (audit_check_id values required for a complete story).
+#   $3 — optional custom_issue_policy: JSON object, default {}. Optional key routes_by_audit_check_id
+#        maps audit_check_id to "security", "freshness", or "none" for issue rows not classified by
 #        finding_kind alone (custom or missing). "none" excludes the row from concern flags.
 #
 # Precedence: 2 if the story is incomplete (required missing/inconclusive or unrouted issue); else 1

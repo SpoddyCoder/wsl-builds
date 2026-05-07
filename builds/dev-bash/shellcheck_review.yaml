@@ -1,5 +1,5 @@
 component: shellcheck
-# When true, shellcheck_upstream_semver compares CLI version to GitHub latest (often fails on apt lag).
+# When true, upstream-semver-drift (check id upstream-semver-drift) compares CLI version to GitHub latest (often fails on apt lag).
 compare_cli_to_github_semver: false
 installer_validated: 2026-05-06
 installer_staleness_max_days: 90
