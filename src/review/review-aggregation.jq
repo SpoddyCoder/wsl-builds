@@ -1,5 +1,15 @@
 # Aggregation helper program (spec: Aggregation helper (shared, v1), Aggregating to review_result).
 # Expects --argjson checks, --argjson requiredIds, --argjson policy (-n null input).
+# Emits review_result_label per docs/automated-builds-review-v1-spec.md (Semantic outcomes).
+
+def label_v1($code):
+  if $code == 0 then "Checks ran; no issues found."
+  elif $code == 1 then "Checks ran; critical security or other major issue found."
+  elif $code == 2 then "Checks ran; very out of date."
+  elif $code == 3 then "Checks did not complete successfully (runner error, upstream unreachable, unsupported case, unknown)."
+  else
+    "Checks did not complete successfully (runner error, upstream unreachable, unsupported case, unknown)."
+  end;
 
 def routes_by_id:
   ($policy.routes_by_check_id // {});
@@ -52,6 +62,7 @@ if ((missing_required | length) > 0) or ((inconclusive_required | length) > 0) t
   (reasons_for_three_missing + reasons_for_three_inconclusive) as $rs |
   {
     review_result: 3,
+    review_result_label: label_v1(3),
     reasons: $rs,
     summary: "Review incomplete: required check(s) missing or inconclusive."
   }
@@ -59,6 +70,7 @@ elif any_slot("none") then
   reasons_unclassified as $ru |
   {
     review_result: 3,
+    review_result_label: label_v1(3),
     reasons: $ru,
     summary: "Review incomplete: one or more issue checks lack top-level classification."
   }
@@ -66,6 +78,7 @@ elif any_slot("one") then
   reasons_security as $rs |
   {
     review_result: 1,
+    review_result_label: label_v1(1),
     reasons: $rs,
     summary: "Security-class issue(s) detected."
   }
@@ -73,12 +86,14 @@ elif any_slot("two") then
   reasons_drift as $rs |
   {
     review_result: 2,
+    review_result_label: label_v1(2),
     reasons: $rs,
     summary: "Staleness or upstream drift issue(s) detected."
   }
 else
   {
     review_result: 0,
+    review_result_label: label_v1(0),
     reasons: [],
     summary: "All checks passed or carried only skipped/non-issue outcomes."
   }

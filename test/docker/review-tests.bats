@@ -23,7 +23,7 @@ teardown() {
 	cat >"${REVIEW_BUILD_DIR}/audit_review_stub.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"review_result":0,"reasons":[],"summary":"Harness OK"}'
+printf '%s\n' '{"component_reviewer_version":1,"review_result":0,"review_result_label":"Checks ran; no issues found.","reasons":[],"summary":"Harness OK"}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/audit_review_stub.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"
@@ -80,7 +80,7 @@ EOS
 	cat >"${REVIEW_BUILD_DIR}/audit_review_stub.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"review_result":0,"reasons":[],"summary":"Replaced"}'
+printf '%s\n' '{"component_reviewer_version":1,"review_result":0,"review_result_label":"Checks ran; no issues found.","reasons":[],"summary":"Replaced"}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/audit_review_stub.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"

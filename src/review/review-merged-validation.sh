@@ -25,6 +25,13 @@ reviewValidateMergedResultJson() {
           (.review_completed | test("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$")) and
         (.review_result | type == "number") and (.review_result >= 0 and .review_result <= 3) and
           (.review_result == ((.review_result | floor))) and
+        (.review_result_label | type == "string") and
+          (
+            (.review_result == 0 and .review_result_label == "Checks ran; no issues found.") or
+            (.review_result == 1 and .review_result_label == "Checks ran; critical security or other major issue found.") or
+            (.review_result == 2 and .review_result_label == "Checks ran; very out of date.") or
+            (.review_result == 3 and .review_result_label == "Checks did not complete successfully (runner error, upstream unreachable, unsupported case, unknown).")
+          ) and
         (.reasons | type == "array") and
           (.reasons | map(type == "string") | all)
     ' <<<"${merged}" >/dev/null 2>"${jq_err}"; then

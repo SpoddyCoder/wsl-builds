@@ -44,6 +44,7 @@
         "http_json_extracted": "v0.11.0"
     },
     "review_result": 0,
+    "review_result_label": "Checks ran; no issues found.",
     "reasons": [],
     "summary": "All checks passed or carried only skipped/non-issue outcomes.",
     "build": "dev-bash",

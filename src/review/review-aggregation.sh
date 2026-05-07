@@ -6,7 +6,7 @@
 
 _reviewAggJqPath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/review-aggregation.jq"
 
-# Emit one JSON object on stdout: { "review_result", "reasons", "summary" }.
+# Emit one JSON object on stdout: { "review_result", "review_result_label", "reasons", "summary" }.
 # Inputs:
 #   $1 — checks: JSON array of normalized check objects (see Audit item outcomes (normalized)).
 #   $2 — required_check_ids: JSON array of strings (check id values required for a complete story).
