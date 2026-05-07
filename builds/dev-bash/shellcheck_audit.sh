@@ -20,7 +20,7 @@ source "${_repo_root}/src/review/audit-check-helpers/review-measurement-bundle.s
 # shellcheck source=/dev/null
 source "${_repo_root}/src/review/audit-check-helpers/review-manifest-scalar.sh"
 
-readonly _manifest="${_script_dir}/review_shellcheck.yaml"
+readonly _manifest="${_script_dir}/shellcheck_review.yaml"
 
 readonly requiredCheckIdsJson='["shellcheck_cli","shellcheck_deb","installer_staleness","upstream_deb_exact"]'
 readonly _emptyMeasurementBundle='{"checks":[],"evidence":{}}'
@@ -33,7 +33,7 @@ readonly _semverModule="${_repo_root}/src/review/audit-checks/upstream-semver-dr
 readonly _github_latest_url='https://api.github.com/repos/koalaman/shellcheck/releases/latest'
 
 if ! command -v jq >/dev/null 2>&1; then
-    printf '%s\n' "audit_shellcheck.sh: jq is required to emit JSON; see CONTRIBUTING.md (Automated builds review tooling)." >&2
+    printf '%s\n' "shellcheck_audit.sh: jq is required to emit JSON; see CONTRIBUTING.md (Automated builds review tooling)." >&2
     exit 1
 fi
 
@@ -70,26 +70,26 @@ mergeEnvelopeLine() {
 }
 
 mergeEnvelopeLine "$(bash "${_cliCheckModule}" shellcheck_cli shellcheck)" || {
-    printf '%s\n' 'audit_shellcheck.sh: cli-reported-version.sh failed' >&2
+    printf '%s\n' 'shellcheck_audit.sh: cli-reported-version.sh failed' >&2
     exit 1
 }
 mergeEnvelopeLine "$(bash "${_debCheckModule}" shellcheck_deb shellcheck)" || {
-    printf '%s\n' 'audit_shellcheck.sh: deb-installed-version.sh failed' >&2
+    printf '%s\n' 'shellcheck_audit.sh: deb-installed-version.sh failed' >&2
     exit 1
 }
 mergeEnvelopeLine "$(bash "${_stalenessCheckModule}" installer_staleness "${installer_validated}" "${installer_staleness_max_days}")" || {
-    printf '%s\n' 'audit_shellcheck.sh: installer-validated-staleness.sh failed' >&2
+    printf '%s\n' 'shellcheck_audit.sh: installer-validated-staleness.sh failed' >&2
     exit 1
 }
 
 mergeEnvelopeLine "$(bash "${_httpJsonModule}" shellcheck_github_release "${_github_latest_url}" '.tag_name')" || {
-    printf '%s\n' 'audit_shellcheck.sh: http-json-upstream-version.sh failed' >&2
+    printf '%s\n' 'shellcheck_audit.sh: http-json-upstream-version.sh failed' >&2
     exit 1
 }
 
 deb_ver=$(printf '%s\n' "${merged}" | jq -r '.evidence.deb_installed_version // empty')
 mergeEnvelopeLine "$(bash "${_upstreamExactModule}" upstream_deb_exact "${last_known_upstream}" "${deb_ver}")" || {
-    printf '%s\n' 'audit_shellcheck.sh: upstream-exact-match.sh failed' >&2
+    printf '%s\n' 'shellcheck_audit.sh: upstream-exact-match.sh failed' >&2
     exit 1
 }
 
@@ -98,7 +98,7 @@ gh_tag=$(printf '%s\n' "${merged}" | jq -r '.evidence.http_json_extracted // emp
 compare_cli_to_github_semver=$(reviewManifestScalar "${_manifest}" compare_cli_to_github_semver)
 if [ "${compare_cli_to_github_semver}" = "true" ]; then
     mergeEnvelopeLine "$(bash "${_semverModule}" shellcheck_upstream_semver "${cli_ver}" "${gh_tag}")" || {
-        printf '%s\n' 'audit_shellcheck.sh: upstream-semver-drift.sh failed' >&2
+        printf '%s\n' 'shellcheck_audit.sh: upstream-semver-drift.sh failed' >&2
         exit 1
     }
 else
@@ -107,7 +107,7 @@ else
              check: {
                  id: "shellcheck_upstream_semver",
                  outcome: "skipped",
-                 detail: "compare_cli_to_github_semver is not true in review_shellcheck.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
+                 detail: "compare_cli_to_github_semver is not true in shellcheck_review.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
              },
              evidence: {}
          }')"

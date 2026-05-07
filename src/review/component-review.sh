@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Component review (spec Phase 1): invoke audit_<component>.sh, merge runner fields, validate merged JSON,
-# persist validated merged JSON to review_<canonical-token>.result.json.
+# Component review (spec Phase 1): invoke <slug>_audit.sh, merge runner fields, validate merged JSON,
+# persist validated merged JSON to <slug>_review.result.json.
 set -euo pipefail
 
 # shellcheck source=review-common.sh

@@ -14,7 +14,7 @@
         {
             "id": "installer_staleness",
             "outcome": "passed",
-            "detail": "installer_validated is within 90 days (0 days old)."
+            "detail": "installer_validated is within 90 days (1 days old)."
         },
         {
             "id": "shellcheck_github_release",
@@ -29,7 +29,7 @@
         {
             "id": "shellcheck_upstream_semver",
             "outcome": "skipped",
-            "detail": "compare_cli_to_github_semver is not true in review_shellcheck.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
+            "detail": "compare_cli_to_github_semver is not true in shellcheck_review.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
         }
     ],
     "evidence": {
@@ -38,7 +38,7 @@
         "deb_package": "shellcheck",
         "deb_installed_version": "0.9.0-1",
         "installer_validated": "2026-05-06",
-        "installer_age_days": 0,
+        "installer_age_days": 1,
         "installer_staleness_max_days": 90,
         "upstream_url": "https://api.github.com/repos/koalaman/shellcheck/releases/latest",
         "http_json_extracted": "v0.11.0"
@@ -49,5 +49,5 @@
     "summary": "All checks passed or carried only skipped/non-issue outcomes.",
     "build": "dev-bash",
     "component": "shellcheck",
-    "review_completed": "2026-05-06T22:22:43Z"
+    "review_completed": "2026-05-07T17:35:56Z"
 }

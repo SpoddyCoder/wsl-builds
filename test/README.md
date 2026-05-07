@@ -61,15 +61,15 @@ Each row is one `@test`. The `#` column is the stable **B**… id (same order as
 
 ## Review catalog (`docker/review-tests.bats`)
 
-Each row is one `@test`. The `#` column is the stable **R**… id (same order as TAP `ok N …` in this file). Tests use an ephemeral directory under `builds/` with `conf.sh` and a stub `audit_<slug>.sh`; harness `~/.wsl-builds.conf` is installed like builder tests.
+Each row is one `@test`. The `#` column is the stable **R**… id (same order as TAP `ok N …` in this file). Tests use an ephemeral directory under `builds/` with `conf.sh` and a stub **`<slug>_audit.sh`** (e.g. `review_stub_audit.sh` for token `review-stub`); harness `~/.wsl-builds.conf` is installed like builder tests.
 
 | # | Test | What it checks |
 | -: | ---- | ---------------- |
-| R1 | `component-review accepts audit JSON merged with runner fields` | Valid minimal audit JSON (including **`review_result`** / **`review_result_label`** pair per spec) → exit 0; `summary` echoed; `review_<token>.result.json` written with merged fields (`build`, `component`, `review_completed`, …). |
+| R1 | `component-review accepts audit JSON merged with runner fields` | Valid minimal audit JSON (including **`review_result`** / **`review_result_label`** pair per spec) → exit 0; `summary` echoed; **`<slug>_review.result.json`** written with merged fields (`build`, `component`, `review_completed`, …). |
 | R2 | `merged JSON missing required reasons array fails validation` | Audit omits `reasons` → nonzero; merged validation error message. |
 | R3 | `merged JSON with review_result out of range fails validation` | `review_result` 4 → nonzero; merged validation error message. |
-| R4 | `validation failure does not create or overwrite review_<token>.result.json` | Pre-seeded `review_<token>.result.json` unchanged when validation fails after merge. |
-| R5 | `successful run overwrites an existing review_<token>.result.json` | Pre-existing placeholder JSON replaced after successful validation. |
+| R4 | `validation failure does not create or overwrite <slug>_review.result.json` | Pre-seeded **`<slug>_review.result.json`** unchanged when validation fails after merge. |
+| R5 | `successful run overwrites an existing <slug>_review.result.json` | Pre-existing placeholder JSON replaced after successful validation. |
 
 ## Commands catalog (`docker/commands-tests.bats`)
 

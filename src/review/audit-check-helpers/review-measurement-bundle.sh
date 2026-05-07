@@ -2,9 +2,9 @@
 # Measurement helpers for composing audit-check module envelopes into checks[] / evidence (v1).
 #
 # Spec: Audit helper library (shared measurement); helpers must not set review_result,
-# reasons, or summary — judgment stays in audit_<component>.sh via reviewAggregateFromChecks.
+# reasons, or summary — judgment stays in <slug>_audit.sh via reviewAggregateFromChecks.
 #
-# Source from audit_<component>.sh or from audit-checks modules. Requires jq on PATH (same as
+# Source from <slug>_audit.sh or from audit-checks modules. Requires jq on PATH (same as
 # component-review / aggregation); do not install tools here.
 
 # Convert one logical-line stdout envelope from an audit-checks/*.sh module into a compact JSON

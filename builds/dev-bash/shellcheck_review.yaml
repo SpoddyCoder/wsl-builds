@@ -12,7 +12,7 @@ upstream_tracking: >-
   CLI to that tag is off by default (`compare_cli_to_github_semver: false`) because distro packages usually lag
   upstream releases.
 aggregation_notes: >-
-  Required check ids match requiredCheckIdsJson in audit_shellcheck.sh: shellcheck_cli, shellcheck_deb,
+  Required check ids match requiredCheckIdsJson in shellcheck_audit.sh: shellcheck_cli, shellcheck_deb,
   installer_staleness, upstream_deb_exact. Aggregation uses reviewAggregateFromChecks with an empty
   custom_issue_policy (third argument). A required check may have outcome skipped without forcing
   review_result 3; inconclusive on a required id does. shellcheck_github_release (catalogue http-json-upstream-version)
@@ -22,7 +22,7 @@ aggregation_notes: >-
   skipped; set it to the dpkg version you mean to lock to if you want exact-match enforcement against
   deb_installed_version. installer_staleness measures age of installer_validated (UTC date) vs
   installer_staleness_max_days (see manifest scalars) and is skipped if installer_validated is empty. All six
-  v1 audit-check modules are composed in audit_shellcheck.sh under
+  v1 audit-check modules are composed in shellcheck_audit.sh under
   src/review/audit-checks/.
 notes: >-
-  Maintainer-owned manifest for v1 advisory review; machine-written output is written to review_shellcheck.result.json next to this file.
+  Maintainer-owned manifest for v1 advisory review; machine-written output is written to shellcheck_review.result.json next to this file.
