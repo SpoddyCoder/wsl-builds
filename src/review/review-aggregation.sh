@@ -1,22 +1,21 @@
 # Shared aggregation helper (spec: Aggregation helper (shared, v1), Aggregating to review_result,
 # Required ordering (v1)). Consumes the checks array and explicit policy; outputs review_result,
-# reasons, and summary. Caller supplies jq; do not install tools here.
+# review_result_label, review_concerns, reasons, and summary. Caller supplies jq; do not install tools here.
 #
 # jq program: review-aggregation.jq (same directory).
 
 _reviewAggJqPath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/review-aggregation.jq"
 
-# Emit one JSON object on stdout: { "review_result", "review_result_label", "reasons", "summary" }.
+# Emit one JSON object on stdout: review_result, review_result_label, review_concerns, reasons, summary.
 # Inputs:
 #   $1 — checks: JSON array of normalized check objects (see Audit item outcomes (normalized)).
 #   $2 — required_check_ids: JSON array of strings (check id values required for a complete story).
-#   $3 — optional custom_issue_policy: JSON object, default {}. Optional key routes_by_check_id:
-#        object mapping check id to "1", "2", or "none" — applies to issue rows whose finding_kind
-#        is custom or unknown (and to issue rows with no finding_kind, treated as custom).
+#   $3 — optional custom_issue_policy: JSON object, default {}. Optional key routes_by_check_id
+#        maps check id to "security", "freshness", or "none" for issue rows not classified by
+#        finding_kind alone (custom or missing). "none" excludes the row from concern flags.
 #
-# Precedence: 3 if any required check is missing, inconclusive, or any issue is unclassified for
-# top-level rollup; then 1 (security-class issues or policy route "1"); then 2 (staleness /
-# upstream_drift or route "2"); else 0.
+# Precedence: 2 if the story is incomplete (required missing/inconclusive or unrouted issue); else 1
+# if any security- or freshness-bucket issue (review_concerns flags set independently); else 0.
 reviewAggregateFromChecks() {
     local checks_json="${1:?checks JSON array required}"
     local required_ids_json="${2:?required_check_ids JSON array required}"

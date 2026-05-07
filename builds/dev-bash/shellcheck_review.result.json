@@ -45,9 +45,13 @@
     },
     "review_result": 0,
     "review_result_label": "Checks ran; no issues found.",
+    "review_concerns": {
+        "security": false,
+        "freshness": false
+    },
     "reasons": [],
     "summary": "All checks passed or carried only skipped/non-issue outcomes.",
     "build": "dev-bash",
     "component": "shellcheck",
-    "review_completed": "2026-05-07T17:35:56Z"
+    "review_completed": "2026-05-07T20:02:53Z"
 }
