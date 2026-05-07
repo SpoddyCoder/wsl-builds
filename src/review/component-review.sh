@@ -118,7 +118,7 @@ validateMergedResultJson "${merged_json}" || exit 1
 
 result_path=$(pathForReviewResultJson "${BUILD_DIR}" "${canonical_token}") || exit 1
 result_tmp="${result_path}.tmp.$$"
-if ! printf '%s\n' "${merged_json}" >"${result_tmp}"; then
+if ! jq . <<<"${merged_json}" >"${result_tmp}"; then
     rm -f "${result_tmp}"
     printError "failed to write temporary review result: ${result_path}"
     exit 1
