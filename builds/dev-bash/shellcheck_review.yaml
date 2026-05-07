@@ -13,7 +13,7 @@ upstream_tracking: >-
   upstream releases.
 aggregation_notes: >-
   Required check ids match requiredCheckIdsJson in shellcheck_audit.sh: shellcheck_cli, shellcheck_deb,
-  installer_staleness, upstream_deb_exact. Aggregation uses reviewAggregateFromChecks with an empty
+  installer_staleness, upstream_deb_exact. Aggregation uses emitRollupFromChecks with an empty
   custom_issue_policy (third argument). A required check may have outcome skipped without forcing
   review_result 2; inconclusive on a required id does. shellcheck_github_release (catalogue http-json-upstream-version)
   always runs for the GitHub latest tag but is not in the required set, so fetch/parse inconclusive there does

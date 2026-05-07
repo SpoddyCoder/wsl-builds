@@ -1,4 +1,4 @@
-# Aggregation helper program (spec: Aggregation helper (shared, v1), Aggregating to review_result).
+# Aggregation helper program (checks-rollup.jq; spec: Aggregation helper (shared, v1), Aggregating to review_result).
 # Expects --argjson checks, --argjson requiredIds, --argjson policy (-n null input).
 # Emits review_result, review_result_label, review_concerns, reasons, summary per spec.
 

@@ -16,9 +16,9 @@ Use it to spot **stale validation**, **upstream drift**, **version / package sig
 | ----- | -------- | ---- |
 | Component review runner | `src/review/component-review.sh` | Invoke `<slug>_audit.sh`, merge runner fields, validate JSON, write `<slug>_review.result.json` on success. |
 | Build review runner (planned) | `src/review/build-review.sh` | Walk `VALID_INSTALL_COMPONENTS` in CSV order; soft-skip when `<slug>_audit.sh` is missing. |
-| Shared path / token helpers | `src/review/review-common.sh` | Resolve repo root, map CSV token → `<slug>` (hyphens → underscores), paths to install / audit / manifest / result files. |
-| Merged JSON validation | `src/review/review-merged-validation.sh` | Enforce required top-level fields, `review_result` / `review_result_label` pairing, and **`review_concerns`** invariants after merge. |
-| Aggregation | `src/review/review-aggregation.sh`, `src/review/review-aggregation.jq` | Turn `checks` + policy into **`review_result`**, **`review_concerns`**, **`reasons`**, **`summary`**. |
+| Shared path / token helpers | `src/review/runner-common.sh` | Resolve repo root, map CSV token → `<slug>` (hyphens → underscores), paths to install / audit / manifest / result files. |
+| Merged JSON validation | `src/review/merged-result-validation.sh` | Enforce required top-level fields, `review_result` / `review_result_label` pairing, and **`review_concerns`** invariants after merge. |
+| Aggregation | `src/review/checks-rollup.sh`, `src/review/checks-rollup.jq` | Turn `checks` + policy into **`review_result`**, **`review_concerns`**, **`reasons`**, **`summary`**. |
 | Reusable measurement modules | `src/review/audit-checks/*.sh` | One stdout line per run: JSON envelope with `check` + `evidence` (CLI version, deb version, HTTP JSON upstream, semver drift, staleness, etc.). |
 | Shared helpers | `src/review/audit-check-helpers/*.sh` | Bundling measurements, manifest scalars, HTTP fetch with retries—**no** required stdout contract as a whole. |
 | Per-component audit | `builds/<build>/<slug>_audit.sh` | Composes checks + one aggregation step; reads `<slug>_review.yaml` when the component needs manifest fields (`component-review.sh` does not parse YAML). |
@@ -33,7 +33,7 @@ A **human-owned** file beside `install_<slug>.sh`: `<slug>_review.yaml`, where `
 - Update `installer_validated` when you have **verified** the install path still matches reality (and adjust any thresholds your audit uses).
 - Set `last_known_upstream` when you want **exact-match** (or related) checks to mean something concrete; leave empty if that check should **skip**.
 - Use `upstream_tracking`, `aggregation_notes`, and `notes` so the next maintainer understands **how upstream is tracked**, **which checks are required**, and **what would change the rollup**.
-- Add **component-specific** single-line scalars only when `<slug>_audit.sh` reads them (see pilot `shellcheck_review.yaml`). Prefer simple `key: value` rows: helpers like `reviewManifestScalar` do not parse folded YAML blocks for machine fields.
+- Add **component-specific** single-line scalars only when `<slug>_audit.sh` reads them (see pilot `shellcheck_review.yaml`). Prefer simple `key: value` rows: helpers like `readManifestScalarLine` do not parse folded YAML blocks for machine fields.
 
 Full field list and types: [Maintainer manifest (v1 minimal shape)](../docs/automated-builds-review-v1-spec.md#maintainer-manifest-v1-minimal-shape).
 

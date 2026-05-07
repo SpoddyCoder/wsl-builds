@@ -4,9 +4,9 @@
 # Measurement: all six v1 catalogue modules under src/review/audit-checks/ (signal-first):
 #   cli-reported-version, deb-installed-version, installer-validated-staleness,
 #   http-json-upstream-version, upstream-exact-match, upstream-semver-drift.
-# checks[].audit_check_id values are the module basename (.sh stripped) via reviewAuditCheckIdFromModulePath;
+# checks[].audit_check_id values are the module basename (.sh stripped) via auditCheckIdFromModulePath;
 # pass a second suffix argument to that helper only when one module runs twice in the same audit.
-# Folded via review-measurement-bundle.sh; aggregation via reviewAggregateFromChecks.
+# Folded via measurement-bundle.sh; aggregation via emitRollupFromChecks.
 #
 # Stdout: one JSON object line (spec: Runner validation after audit v1). Stderr: diagnostics only.
 # Does not install packages. Requires jq; HTTP check requires curl (see CONTRIBUTING.md).
@@ -16,13 +16,13 @@ set -euo pipefail
 _script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 _repo_root="$(cd "${_script_dir}/../.." && pwd)"
 # shellcheck source=/dev/null
-source "${_repo_root}/src/review/review-aggregation.sh"
+source "${_repo_root}/src/review/checks-rollup.sh"
 # shellcheck source=/dev/null
-source "${_repo_root}/src/review/audit-check-helpers/review-measurement-bundle.sh"
+source "${_repo_root}/src/review/audit-check-helpers/measurement-bundle.sh"
 # shellcheck source=/dev/null
-source "${_repo_root}/src/review/audit-check-helpers/review-manifest-scalar.sh"
+source "${_repo_root}/src/review/audit-check-helpers/read-manifest-scalar.sh"
 # shellcheck source=/dev/null
-source "${_repo_root}/src/review/audit-check-helpers/review-audit-check-id.sh"
+source "${_repo_root}/src/review/audit-check-helpers/get-audit-check-id.sh"
 
 readonly _manifest="${_script_dir}/shellcheck_review.yaml"
 
@@ -36,12 +36,12 @@ readonly _upstreamExactModule="${_repo_root}/src/review/audit-checks/upstream-ex
 readonly _semverModule="${_repo_root}/src/review/audit-checks/upstream-semver-drift.sh"
 readonly _github_latest_url='https://api.github.com/repos/koalaman/shellcheck/releases/latest'
 
-_idCli=$(reviewAuditCheckIdFromModulePath "${_cliCheckModule}") || exit 1
-_idDeb=$(reviewAuditCheckIdFromModulePath "${_debCheckModule}") || exit 1
-_idStaleness=$(reviewAuditCheckIdFromModulePath "${_stalenessCheckModule}") || exit 1
-_idHttp=$(reviewAuditCheckIdFromModulePath "${_httpJsonModule}") || exit 1
-_idExact=$(reviewAuditCheckIdFromModulePath "${_upstreamExactModule}") || exit 1
-_idSemver=$(reviewAuditCheckIdFromModulePath "${_semverModule}") || exit 1
+_idCli=$(auditCheckIdFromModulePath "${_cliCheckModule}") || exit 1
+_idDeb=$(auditCheckIdFromModulePath "${_debCheckModule}") || exit 1
+_idStaleness=$(auditCheckIdFromModulePath "${_stalenessCheckModule}") || exit 1
+_idHttp=$(auditCheckIdFromModulePath "${_httpJsonModule}") || exit 1
+_idExact=$(auditCheckIdFromModulePath "${_upstreamExactModule}") || exit 1
+_idSemver=$(auditCheckIdFromModulePath "${_semverModule}") || exit 1
 readonly _idCli _idDeb _idStaleness _idHttp _idExact _idSemver
 
 if ! command -v jq >/dev/null 2>&1; then
@@ -53,7 +53,7 @@ emitFinalJson() {
     local checks_json="$1"
     local evidence_json="$2"
     local agg_json
-    agg_json=$(reviewAggregateFromChecks "${checks_json}" "${requiredCheckIdsJson}" '') || return 1
+    agg_json=$(emitRollupFromChecks "${checks_json}" "${requiredCheckIdsJson}" '') || return 1
     jq -cn \
         --argjson checks "${checks_json}" \
         --argjson evidence "${evidence_json}" \
@@ -65,9 +65,9 @@ emitFinalJson() {
         } + $agg'
 }
 
-installer_validated=$(reviewManifestScalar "${_manifest}" installer_validated)
-installer_staleness_max_days=$(reviewManifestScalar "${_manifest}" installer_staleness_max_days)
-last_known_upstream=$(reviewManifestScalar "${_manifest}" last_known_upstream)
+installer_validated=$(readManifestScalarLine "${_manifest}" installer_validated)
+installer_staleness_max_days=$(readManifestScalarLine "${_manifest}" installer_staleness_max_days)
+last_known_upstream=$(readManifestScalarLine "${_manifest}" last_known_upstream)
 if [ -z "${installer_staleness_max_days}" ]; then
     installer_staleness_max_days='90'
 fi
@@ -77,8 +77,8 @@ merged="${_emptyMeasurementBundle}"
 mergeEnvelopeLine() {
     local envelope_line="$1"
     local bundle
-    bundle=$(reviewMeasurementBundleFromCheckEnvelopeLine "${envelope_line}") || return 1
-    merged=$(reviewMergeMeasurementBundles "${merged}" "${bundle}") || return 1
+    bundle=$(measurementBundleFromCheckEnvelopeLine "${envelope_line}") || return 1
+    merged=$(mergeMeasurementBundles "${merged}" "${bundle}") || return 1
 }
 
 mergeEnvelopeLine "$(bash "${_cliCheckModule}" "${_idCli}" shellcheck)" || {
@@ -107,7 +107,7 @@ mergeEnvelopeLine "$(bash "${_upstreamExactModule}" "${_idExact}" "${last_known_
 
 cli_ver=$(printf '%s\n' "${merged}" | jq -r '.evidence.cli_reported_version // empty')
 gh_tag=$(printf '%s\n' "${merged}" | jq -r '.evidence.http_json_extracted // empty')
-compare_cli_to_github_semver=$(reviewManifestScalar "${_manifest}" compare_cli_to_github_semver)
+compare_cli_to_github_semver=$(readManifestScalarLine "${_manifest}" compare_cli_to_github_semver)
 if [ "${compare_cli_to_github_semver}" = "true" ]; then
     mergeEnvelopeLine "$(bash "${_semverModule}" "${_idSemver}" "${cli_ver}" "${gh_tag}")" || {
         printf '%s\n' 'shellcheck_audit.sh: upstream-semver-drift.sh failed' >&2

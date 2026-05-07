@@ -5,7 +5,7 @@
 
 # Args: path_to_yaml key
 # Prints trimmed value to stdout; empty string if missing or blank after trim.
-reviewManifestScalar() {
+readManifestScalarLine() {
     local file="${1:?manifest path required}"
     local key="${2:?key required}"
     local line

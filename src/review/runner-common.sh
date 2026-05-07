@@ -6,10 +6,10 @@
 # src/review/). Sets and exports REVIEW_REPO_ROOT for child processes.
 #
 # Usage (from src/review/component-review.sh after this file is sourced):
-#   # shellcheck source=review-common.sh
-#   source "${BASH_SOURCE[0]%/*}/review-common.sh"
-#   reviewInitRepoRootFromRunnerScript "${BASH_SOURCE[0]}"
-reviewInitRepoRootFromRunnerScript() {
+#   # shellcheck source=runner-common.sh
+#   source "${BASH_SOURCE[0]%/*}/runner-common.sh"
+#   exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
+exportRepoRootFromRunnerPath() {
     local runnerPath="${1:?runner script path required}"
     REVIEW_REPO_ROOT="$(cd "$(dirname "${runnerPath}")/../.." && pwd)" || return 1
     export REVIEW_REPO_ROOT
@@ -24,17 +24,17 @@ canonicalCsvTokenToOnDiskSlug() {
 
 # Default builds directory under the repo only (<repo>/builds). For runtime resolution including
 # EXTERNAL_BUILDS_ROOT, callers source src/builds-root.sh after user conf + src/print.sh (same as ./wsl-builder.sh).
-reviewDefaultBuildsDirUnderRepo() {
+defaultBuildsDirUnderRepo() {
     local repoRoot="${1:?repository root required}"
     printf '%s/builds\n' "${repoRoot%/}"
 }
 
 # ISO 8601 UTC with seconds and trailing Z (v1 review_completed).
-reviewUtcTimestampIsoSecondsZ() {
+utcIso8601TimestampZ() {
     date -u +%Y-%m-%dT%H:%M:%SZ
 }
 
-reviewPathForInstallScript() {
+pathForInstallScript() {
     local buildDir="${1:?build directory path required}"
     local token="${2:?canonical CSV token required}"
     local slug
@@ -42,7 +42,7 @@ reviewPathForInstallScript() {
     printf '%s/install_%s.sh\n' "${buildDir%/}" "${slug}"
 }
 
-reviewPathForAuditScript() {
+pathForAuditScript() {
     local buildDir="${1:?build directory path required}"
     local token="${2:?canonical CSV token required}"
     local slug
@@ -51,7 +51,7 @@ reviewPathForAuditScript() {
 }
 
 # Maintainer manifest and persisted JSON use the same slug as install/audit basenames (not hyphenated CSV in filenames).
-reviewPathForReviewManifest() {
+pathForMaintainerYaml() {
     local buildDir="${1:?build directory path required}"
     local token="${2:?canonical CSV token required}"
     local slug
@@ -59,7 +59,7 @@ reviewPathForReviewManifest() {
     printf '%s/%s_review.yaml\n' "${buildDir%/}" "${slug}"
 }
 
-reviewPathForReviewResult() {
+pathForReviewResultJson() {
     local buildDir="${1:?build directory path required}"
     local token="${2:?canonical CSV token required}"
     local slug

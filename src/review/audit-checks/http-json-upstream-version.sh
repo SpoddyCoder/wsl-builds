@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Reusable audit check: timed HTTP GET and jq extract (catalogue: http-json-upstream-version.sh).
-# Uses review-http-fetch.sh (retries/timeouts per Network and flake policy v1).
+# Uses audit-check-helpers/http-get-with-retry.sh (retries/timeouts per Network and flake policy v1).
 #
 # Spec: Audit-check module output (v1).
 # Usage: http-json-upstream-version.sh <check_id> <url> <jq_filter> [max_time_seconds]
@@ -30,9 +30,9 @@ readonly max_time="${4:-30}"
 
 _helper_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../audit-check-helpers" && pwd)"
 # shellcheck source=/dev/null
-source "${_helper_dir}/review-http-fetch.sh"
+source "${_helper_dir}/http-get-with-retry.sh"
 
-if ! body=$(reviewHttpGetWithRetry "${url}" "${max_time}"); then
+if ! body=$(httpGetWithRetry "${url}" "${max_time}"); then
     jq -cn \
         --arg audit_check_id "${check_id}" \
         --arg u "${url}" \

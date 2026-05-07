@@ -2,9 +2,9 @@
 # Required ordering (v1)). Consumes the checks array and explicit policy; outputs review_result,
 # review_result_label, review_concerns, reasons, and summary. Caller supplies jq; do not install tools here.
 #
-# jq program: review-aggregation.jq (same directory).
+# jq program: checks-rollup.jq (same directory).
 
-_reviewAggJqPath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/review-aggregation.jq"
+_rollupJqPath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/checks-rollup.jq"
 
 # Emit one JSON object on stdout: review_result, review_result_label, review_concerns, reasons, summary.
 # Inputs:
@@ -16,24 +16,24 @@ _reviewAggJqPath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/review-aggregati
 #
 # Precedence: 2 if the story is incomplete (required missing/inconclusive or unrouted issue); else 1
 # if any security- or freshness-bucket issue (review_concerns flags set independently); else 0.
-reviewAggregateFromChecks() {
+emitRollupFromChecks() {
     local checks_json="${1:?checks JSON array required}"
     local required_ids_json="${2:?required_check_ids JSON array required}"
     local custom_policy_json="$3"
     if [ -z "${custom_policy_json}" ]; then
         custom_policy_json='{}'
     fi
-    if [[ ! -f "${_reviewAggJqPath}" ]]; then
-        printf '%s\n' "reviewAggregateFromChecks: missing jq program at ${_reviewAggJqPath}" >&2
+    if [[ ! -f "${_rollupJqPath}" ]]; then
+        printf '%s\n' "emitRollupFromChecks: missing jq program at ${_rollupJqPath}" >&2
         return 1
     fi
     if ! command -v jq >/dev/null 2>&1; then
-        printf '%s\n' 'reviewAggregateFromChecks: jq is required; see CONTRIBUTING.md (Automated builds review tooling).' >&2
+        printf '%s\n' 'emitRollupFromChecks: jq is required; see CONTRIBUTING.md (Automated builds review tooling).' >&2
         return 1
     fi
     jq -cn \
         --argjson checks "${checks_json}" \
         --argjson requiredIds "${required_ids_json}" \
         --argjson policy "${custom_policy_json}" \
-        -f "${_reviewAggJqPath}"
+        -f "${_rollupJqPath}"
 }

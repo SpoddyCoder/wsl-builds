@@ -73,7 +73,7 @@ Each row is one `@test`. The `#` column is the stable **R**… id (same order as
 | R3b | `legacy review_result 3 fails validation` | Four-outcome **`review_result` 3** rejected under 0–2 contract. |
 | R4 | `validation failure does not create or overwrite <slug>_review.result.json` | Pre-seeded **`<slug>_review.result.json`** unchanged when validation fails after merge. |
 | R5 | `successful run overwrites an existing <slug>_review.result.json` | Pre-existing placeholder JSON replaced after successful validation. |
-| R6 | `reviewAggregateFromChecks sets both concern flags when issues span buckets` | Aggregation emits **`review_concerns`** with **security** and **freshness** when **`checks`** carry both classes of **`issue`**. |
+| R6 | `emitRollupFromChecks sets both concern flags when issues span buckets` | Aggregation emits **`review_concerns`** with **security** and **freshness** when **`checks`** carry both classes of **`issue`**. |
 | R7 | `routes_by_audit_check_id none excludes issue from concern rollup` | Policy **`none`** suppresses concern flags without forcing incomplete. |
 
 ## Commands catalog (`docker/commands-tests.bats`)

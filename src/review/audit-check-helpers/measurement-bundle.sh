@@ -2,7 +2,7 @@
 # Measurement helpers for composing audit-check module envelopes into checks[] / evidence (v1).
 #
 # Spec: Audit helper library (shared measurement); helpers must not set review_result,
-# reasons, or summary — judgment stays in <slug>_audit.sh via reviewAggregateFromChecks.
+# reasons, or summary — judgment stays in <slug>_audit.sh via emitRollupFromChecks.
 #
 # Source from <slug>_audit.sh or from audit-checks modules. Requires jq on PATH (same as
 # component-review / aggregation); do not install tools here.
@@ -16,10 +16,10 @@
 #
 # Stdout: one compact JSON object. Stderr: jq diagnostics on parse/validation failure.
 # Returns non-zero when jq fails.
-reviewMeasurementBundleFromCheckEnvelopeLine() {
-    local envelope_line="${1:?reviewMeasurementBundleFromCheckEnvelopeLine: envelope line required}"
+measurementBundleFromCheckEnvelopeLine() {
+    local envelope_line="${1:?measurementBundleFromCheckEnvelopeLine: envelope line required}"
     if ! command -v jq >/dev/null 2>&1; then
-        printf '%s\n' 'reviewMeasurementBundleFromCheckEnvelopeLine: jq is required; see CONTRIBUTING.md (Automated builds review tooling).' >&2
+        printf '%s\n' 'measurementBundleFromCheckEnvelopeLine: jq is required; see CONTRIBUTING.md (Automated builds review tooling).' >&2
         return 1
     fi
     printf '%s\n' "${envelope_line}" | jq -ce '
@@ -35,12 +35,12 @@ reviewMeasurementBundleFromCheckEnvelopeLine() {
 #   $1 — first bundle JSON: { "checks": [...], "evidence": {...} }
 #   $2 — second bundle JSON (same shape).
 #
-# Identity: reviewMergeMeasurementBundles '{"checks":[],"evidence":{}}' '<any bundle>' === <any bundle>.
-reviewMergeMeasurementBundles() {
-    local bundle_a="${1:?reviewMergeMeasurementBundles: first bundle required}"
-    local bundle_b="${2:?reviewMergeMeasurementBundles: second bundle required}"
+# Identity: mergeMeasurementBundles '{"checks":[],"evidence":{}}' '<any bundle>' === <any bundle>.
+mergeMeasurementBundles() {
+    local bundle_a="${1:?mergeMeasurementBundles: first bundle required}"
+    local bundle_b="${2:?mergeMeasurementBundles: second bundle required}"
     if ! command -v jq >/dev/null 2>&1; then
-        printf '%s\n' 'reviewMergeMeasurementBundles: jq is required; see CONTRIBUTING.md (Automated builds review tooling).' >&2
+        printf '%s\n' 'mergeMeasurementBundles: jq is required; see CONTRIBUTING.md (Automated builds review tooling).' >&2
         return 1
     fi
     jq -cn \

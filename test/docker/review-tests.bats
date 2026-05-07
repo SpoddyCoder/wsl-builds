@@ -105,11 +105,11 @@ EOS
 	[[ "$(jq -r '.build' "${_result}")" == "${_bld}" ]]
 }
 
-@test 'R6: reviewAggregateFromChecks sets both concern flags when issues span buckets' {
+@test 'R6: emitRollupFromChecks sets both concern flags when issues span buckets' {
 	# shellcheck source=/dev/null
-	source "${TEST_ROOT}/src/review/review-aggregation.sh"
+	source "${TEST_ROOT}/src/review/checks-rollup.sh"
 	_checks='[{"audit_check_id":"a","outcome":"issue","finding_kind":"security","detail":"s"},{"audit_check_id":"b","outcome":"issue","finding_kind":"staleness","detail":"f"}]'
-	_out="$(reviewAggregateFromChecks "${_checks}" '[]' '')"
+	_out="$(emitRollupFromChecks "${_checks}" '[]' '')"
 	[[ "$(jq -r '.review_result' <<<"${_out}")" == '1' ]]
 	[[ "$(jq -r '.review_concerns.security' <<<"${_out}")" == 'true' ]]
 	[[ "$(jq -r '.review_concerns.freshness' <<<"${_out}")" == 'true' ]]
@@ -117,10 +117,10 @@ EOS
 
 @test 'R7: routes_by_audit_check_id none excludes issue from concern rollup' {
 	# shellcheck source=/dev/null
-	source "${TEST_ROOT}/src/review/review-aggregation.sh"
+	source "${TEST_ROOT}/src/review/checks-rollup.sh"
 	_checks='[{"audit_check_id":"x","outcome":"issue","finding_kind":"custom","detail":"d"}]'
 	_policy='{"routes_by_audit_check_id":{"x":"none"}}'
-	_out="$(reviewAggregateFromChecks "${_checks}" '[]' "${_policy}")"
+	_out="$(emitRollupFromChecks "${_checks}" '[]' "${_policy}")"
 	[[ "$(jq -r '.review_result' <<<"${_out}")" == '0' ]]
 	[[ "$(jq -r '.review_concerns.security' <<<"${_out}")" == 'false' ]]
 }

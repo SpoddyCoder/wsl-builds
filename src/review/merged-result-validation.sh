@@ -2,7 +2,7 @@
 # Review result JSON (v1) required top-level fields, Runner-owned additions).
 # Caller must source src/print.sh (printError) before sourcing this file.
 
-reviewPrintMergedValidationFailure() {
+printMergedValidationFailure() {
     printError "Merged review JSON failed runner validation (see spec: Runner validation after audit (v1))"
     if [ -n "${1:-}" ]; then
         printError "${1}"
@@ -11,7 +11,7 @@ reviewPrintMergedValidationFailure() {
 
 # Validate merged JSON (audit stdout + runner fields) per spec required top-level fields
 # and review_result 0–2 integer. Prints errors via printError on failure.
-reviewValidateMergedResultJson() {
+validateMergedResultJson() {
     local merged="$1"
     local jq_err
     jq_err=$(mktemp)
@@ -44,6 +44,6 @@ reviewValidateMergedResultJson() {
     ' <<<"${merged}" >/dev/null 2>"${jq_err}"; then
         return 0
     fi
-    reviewPrintMergedValidationFailure "$(cat "${jq_err}")"
+    printMergedValidationFailure "$(cat "${jq_err}")"
     return 1
 }

@@ -3,16 +3,16 @@
 # persist validated merged JSON to <slug>_review.result.json.
 set -euo pipefail
 
-# shellcheck source=review-common.sh
-source "${BASH_SOURCE[0]%/*}/review-common.sh"
+# shellcheck source=runner-common.sh
+source "${BASH_SOURCE[0]%/*}/runner-common.sh"
 
-reviewComponentReviewShowUsage() {
-    printf '%s\n' "Usage: ${REVIEW_SCRIPT_NAME:-component-review.sh} <build-directory-name> <canonical-component-token>" >&2
+printComponentReviewUsage() {
+    printf '%s\n' "Usage: ${RUNNER_BASENAME:-component-review.sh} <build-directory-name> <canonical-component-token>" >&2
     printf '%s\n' "Example: ./src/review/component-review.sh dev-js node" >&2
 }
 
-REVIEW_SCRIPT_NAME=$(basename "${BASH_SOURCE[0]}")
-reviewInitRepoRootFromRunnerScript "${BASH_SOURCE[0]}"
+RUNNER_BASENAME=$(basename "${BASH_SOURCE[0]}")
+exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
 
 # shellcheck source=src/print.sh
 source "${REVIEW_REPO_ROOT}/src/print.sh"
@@ -45,11 +45,11 @@ if ! command -v jq >/dev/null 2>&1; then
     exit 1
 fi
 
-# shellcheck source=review-merged-validation.sh
-source "${BASH_SOURCE[0]%/*}/review-merged-validation.sh"
+# shellcheck source=merged-result-validation.sh
+source "${BASH_SOURCE[0]%/*}/merged-result-validation.sh"
 
 if [ "${#}" -ne 2 ]; then
-    reviewComponentReviewShowUsage
+    printComponentReviewUsage
     exit 1
 fi
 
@@ -62,7 +62,7 @@ if [ ! -d "${BUILD_DIR}" ] || [ ! -f "${BUILD_DIR}/conf.sh" ]; then
     exit 1
 fi
 
-audit_script=$(reviewPathForAuditScript "${BUILD_DIR}" "${canonical_token}") || exit 1
+audit_script=$(pathForAuditScript "${BUILD_DIR}" "${canonical_token}") || exit 1
 if [ ! -f "${audit_script}" ]; then
     printError "No audit script for token '${canonical_token}': ${audit_script}"
     exit 1
@@ -102,7 +102,7 @@ if ! audit_json=$(jq -ec . <<<"${json_line}" 2>/dev/null); then
     exit 1
 fi
 
-review_completed_ts=$(reviewUtcTimestampIsoSecondsZ)
+review_completed_ts=$(utcIso8601TimestampZ)
 merged_json=$(jq -cn \
     --argjson audit "${audit_json}" \
     --arg build "${build_dir_name}" \
@@ -114,9 +114,9 @@ merged_json=$(jq -cn \
         exit 1
     }
 
-reviewValidateMergedResultJson "${merged_json}" || exit 1
+validateMergedResultJson "${merged_json}" || exit 1
 
-result_path=$(reviewPathForReviewResult "${BUILD_DIR}" "${canonical_token}") || exit 1
+result_path=$(pathForReviewResultJson "${BUILD_DIR}" "${canonical_token}") || exit 1
 result_tmp="${result_path}.tmp.$$"
 if ! printf '%s\n' "${merged_json}" >"${result_tmp}"; then
     rm -f "${result_tmp}"

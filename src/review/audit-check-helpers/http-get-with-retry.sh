@@ -2,7 +2,7 @@
 # shellcheck shell=bash
 # Timed HTTP GET with retry budget for transient failures.
 # Spec: Network and flake policy (v1); concrete numbers are also summarized there under
-# "Shared helper behaviour (v1, reviewHttpGetWithRetry)".
+# "Shared helper behaviour (v1, httpGetWithRetry)".
 #
 # Behaviour: up to 3 attempts; backoff 1s before attempt 2, +1s each further wait; retry only on
 # HTTP 5xx or curl "000" (no status: timeout, reset, connection failure); never retry 4xx.
@@ -11,7 +11,7 @@
 # Args: url [max_time_seconds]
 # On success: response body on stdout, exit 0.
 # On failure: stderr message, exit 1 (after retries exhausted for transient errors).
-reviewHttpGetWithRetry() {
+httpGetWithRetry() {
     local fetch_url="${1:?url required}"
     local fetch_max_time="${2:-30}"
     local attempts=3
@@ -36,11 +36,11 @@ reviewHttpGetWithRetry() {
                 continue
             fi
         fi
-        printf '%s\n' "reviewHttpGetWithRetry: HTTP ${code} for ${fetch_url} (attempt ${n}/${attempts})" >&2
+        printf '%s\n' "httpGetWithRetry: HTTP ${code} for ${fetch_url} (attempt ${n}/${attempts})" >&2
         rm -f "${tmp}"
         return 1
     done
-    printf '%s\n' "reviewHttpGetWithRetry: failed ${fetch_url}" >&2
+    printf '%s\n' "httpGetWithRetry: failed ${fetch_url}" >&2
     rm -f "${tmp}"
     return 1
 }
