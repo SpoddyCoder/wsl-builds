@@ -61,6 +61,8 @@ Each row is one `@test`. The `#` column is the stable **B**… id (same order as
 
 ## Review catalog (`docker/review-tests.bats`)
 
+Maintainer-oriented overview of the **automated** review (runners, manifests, layout): [`review/README.md`](../review/README.md).
+
 Each row is one `@test`. The `#` column is the stable **R**… id (same order as TAP `ok N …` in this file). Tests use an ephemeral directory under `builds/` with `conf.sh` and a stub **`<slug>_audit.sh`** (e.g. `review_stub_audit.sh` for token `review-stub`); harness `~/.wsl-builds.conf` is installed like builder tests.
 
 | # | Test | What it checks |

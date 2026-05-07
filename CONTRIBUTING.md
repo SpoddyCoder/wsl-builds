@@ -31,8 +31,9 @@ Only two rules for PR submissions;
 * Lint + Bats tests are run on every push and PR.
 * See: [`.github/workflows`](.github/workflows)
 
-### Automated builds review tooling
+### Automated Component Reviews
 * Requirements: `jq,curl` (`./wsl-builder.sh dev essentials`)
+* [Docs](review/README.md).
 
 ---
 
