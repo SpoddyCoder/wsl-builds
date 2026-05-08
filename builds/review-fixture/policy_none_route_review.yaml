@@ -1,0 +1,8 @@
+component: policy-none-route
+upstream_tracking: review-fixture scenario only (no real upstream)
+aggregation_notes: >-
+  Deterministic offline scenario; one custom-kind issue routed to "none" via
+  custom_issue_policy.routes_by_audit_check_id. Expected runner-derived concerns: all false
+  (excluded from security/freshness without forcing incomplete).
+notes: >-
+  Automated review testing only — see builds/review-fixture/README.md.

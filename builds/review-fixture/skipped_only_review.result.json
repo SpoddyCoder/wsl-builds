@@ -1,0 +1,19 @@
+{
+  "component_reviewer_version": 1,
+  "checks": [
+    {
+      "audit_check_id": "opt",
+      "outcome": "skipped",
+      "detail": "Not applicable for this fixture."
+    }
+  ],
+  "build": "review-fixture",
+  "component": "skipped-only",
+  "review_completed": "2026-05-08T14:23:35Z",
+  "concerns": {
+    "security": false,
+    "freshness": false,
+    "skipped": true,
+    "incomplete": false
+  }
+}

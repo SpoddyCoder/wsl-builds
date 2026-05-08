@@ -1,0 +1,8 @@
+component: incomplete-required
+upstream_tracking: review-fixture scenario only (no real upstream)
+aggregation_notes: >-
+  Deterministic offline scenario; required ids "req-a" and "req-b" — req-a is inconclusive,
+  req-b is missing from the checks array. Expected runner-derived concerns: incomplete=true,
+  others false.
+notes: >-
+  Automated review testing only — see builds/review-fixture/README.md.

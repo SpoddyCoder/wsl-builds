@@ -12,7 +12,7 @@ Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolate
 ./test/run-tests.sh
 ```
 
-[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **automated builds review** runners, **wizard** behaviour for `./configure.sh`, and **commands** helpers under `builds/system/`. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own `bats` process (builder, review, wizard, then commands).
+[`bats-core`](https://github.com/bats-core/bats-core) tests in [`docker/*.bats`](docker/) cover **build-fixture** regressions, **automated builds review** runners, **review-fixture** scenarios, **wizard** behaviour for `./configure.sh`, and **commands** helpers under `builds/system/`. The image **copies the repo at build time** (no host bind mount). [`docker/run-bats.sh`](docker/run-bats.sh) runs each suite file in its own `bats` process (builder, review, review-fixture, wizard, then commands).
 
 * Builder and review tests use an isolated `$HOME` and copy harness [`docker/wsl-builds.conf`](docker/wsl-builds.conf) to `~/.wsl-builds.conf`. Wizard tests use their own fake `$HOME` only.
 * **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.
@@ -77,6 +77,24 @@ Each row is one `@test`. The `#` column is the stable **R**… id (same order as
 | R6 | `emitConcernsFromChecks sets security and freshness when issues span buckets` | Derivation sets **`concerns.security`** and **`concerns.freshness`** true when **`checks`** carry routed **`issue`** rows in both buckets. |
 | R7 | `routes_by_audit_check_id none excludes issue from security/freshness flags` | **`custom_issue_policy`** **`none`** route excludes **`issue`** row from **`security`**/**`freshness`** without **`incomplete`**. |
 
+## Review-fixture catalog (`docker/review-fixture-tests.bats`)
+
+Scenario-based end-to-end coverage that drives `./src/review/component-review.sh` against the deterministic offline fixture build [`builds/review-fixture/`](../builds/review-fixture/). Each token has a hand-written `<slug>_audit.sh` (no jq, no network) so the runner contract (envelope validation, `concerns` derivation, persisted artefact shape, no-overwrite-on-failure) is exercised reliably. RF tests run after the existing **R**… runner contract guards in [`docker/run-bats.sh`](docker/run-bats.sh) and use the same isolated `$HOME` + harness `~/.wsl-builds.conf` setup as the Review catalog.
+
+Each row is one `@test`. The `#` column is the stable **RF**… id (same order as TAP `ok N …` in this file).
+
+| # | Test | What it checks |
+| -: | ---- | ---------------- |
+| RF1 | `happy-path persists facts-only result with all concerns false` | All required checks pass; `concerns` all `false`; persisted artefact omits `required_check_ids` and `custom_issue_policy`. |
+| RF2 | `incomplete-required forces concerns.incomplete=true` | One required `audit_check_id` inconclusive, another missing → `concerns.incomplete=true`. |
+| RF3 | `issue-routed sets concerns.security and concerns.freshness` | Routed `security` + `staleness` `issue` rows → both `security` and `freshness` concerns true. |
+| RF4 | `policy-none-route excludes custom issue from security/freshness without forcing incomplete` | `custom_issue_policy.routes_by_audit_check_id` `"none"` excludes the `custom` issue cleanly. |
+| RF5 | `skipped-only sets concerns.skipped=true and other concerns false` | One `skipped` row, no required ids → `concerns.skipped=true` only. |
+| RF6 | `validation-fail audit stdout fails validation and writes no result.json` | Forbidden top-level `summary` on audit stdout → runner exits non-zero; `validation_fail_review.result.json` is not created. |
+| RF7 | `review-debug.sh --help prints usage and exits 0` | Maintainer harness emits usage with `Usage: review-debug.sh` + `scenario` mode line. |
+| RF8 | `review-debug.sh scenario happy-path --show-concerns succeeds and prints concerns keys` | End-to-end scenario run via the harness includes `Derived concerns` and all four `concerns` keys. |
+| RF9 | `review-debug.sh scenario validation-fail exits non-zero with diagnostic` | Harness propagates audit measurement validation failure with the same diagnostic string. |
+
 ## Commands catalog (`docker/commands-tests.bats`)
 
 Each row is one `@test`; labels **C**… are stable ids. Tests run with `WSL_BUILDS_COMMAND_TEST_ROOT` so scripts read/write seeded files under `$CMD_ROOT/etc/...` (no host `/etc` changes).
@@ -94,7 +112,7 @@ Each row is one `@test`; labels **C**… are stable ids. Tests run with `WSL_BUI
 
 ## Wizard catalog (`docker/conf-wizard-tests.bats`)
 
-Each test uses a fresh fake `$HOME`; [`run-bats.sh`](docker/run-bats.sh) runs this file **after [`review-tests.bats`](docker/review-tests.bats)** (and before [`commands-tests.bats`](docker/commands-tests.bats)). Each row is one `@test`. TAP numbers follow file order; labels **W**… are stable ids.
+Each test uses a fresh fake `$HOME`; [`run-bats.sh`](docker/run-bats.sh) runs this file **after [`review-fixture-tests.bats`](docker/review-fixture-tests.bats)** (and before [`commands-tests.bats`](docker/commands-tests.bats)). Each row is one `@test`. TAP numbers follow file order; labels **W**… are stable ids.
 
 | # | Test | What it checks |
 | -: | ---- | -------------- |

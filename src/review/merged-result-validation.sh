@@ -16,11 +16,13 @@ printAuditMeasurementFailure() {
 }
 
 # Validate audit stdout (before merge): measurement-only envelope; must not carry verdict/policy-view fields or concerns.
+# Note: explicit jq_err cleanup is preferred over `trap RETURN` because RETURN traps fire for *every*
+# subsequent function return after they are set, leaking the local jq_err out of scope when this
+# validator is called from inside another function (e.g. review-debug.sh modes).
 validateAuditMeasurementJson() {
     local audit="$1"
     local jq_err
     jq_err=$(mktemp)
-    trap 'rm -f "${jq_err}"' RETURN
     # shellcheck disable=SC2016
     if jq -e '
         (type == "object") and
@@ -36,9 +38,11 @@ validateAuditMeasurementJson() {
         (has("build") | not) and (has("component") | not) and (has("review_completed") | not) and
         (has("evidence") | not)
     ' <<<"${audit}" >/dev/null 2>"${jq_err}"; then
+        rm -f "${jq_err}"
         return 0
     fi
     printAuditMeasurementFailure "$(cat "${jq_err}")"
+    rm -f "${jq_err}"
     return 1
 }
 
@@ -47,7 +51,6 @@ validateMergedResultJson() {
     local merged="$1"
     local jq_err
     jq_err=$(mktemp)
-    trap 'rm -f "${jq_err}"' RETURN
     # shellcheck disable=SC2016
     if jq -e '
         (type == "object") and
@@ -70,8 +73,10 @@ validateMergedResultJson() {
         (has("reasons") | not) and (has("summary") | not) and
         (has("evidence") | not)
     ' <<<"${merged}" >/dev/null 2>"${jq_err}"; then
+        rm -f "${jq_err}"
         return 0
     fi
     printMergedValidationFailure "$(cat "${jq_err}")"
+    rm -f "${jq_err}"
     return 1
 }

@@ -1,0 +1,8 @@
+component: issue-routed
+upstream_tracking: review-fixture scenario only (no real upstream)
+aggregation_notes: >-
+  Deterministic offline scenario; one issue with finding_kind=security and one with
+  finding_kind=staleness, both required. Expected runner-derived concerns: security=true,
+  freshness=true.
+notes: >-
+  Automated review testing only — see builds/review-fixture/README.md.
