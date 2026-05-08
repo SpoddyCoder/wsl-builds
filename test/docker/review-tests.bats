@@ -19,60 +19,60 @@ teardown() {
 	rm -rf "${_BATS_FAKE_HOME:-}"
 }
 
-@test 'R1: component-review accepts audit JSON merged with runner fields' {
+@test 'R1: component-review accepts measurement JSON merged with runner fields' {
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"review_result":0,"review_result_label":"Checks ran; no issues found.","review_concerns":{"security":false,"freshness":false},"reasons":[],"summary":"Harness OK"}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[],"evidence":{},"required_check_ids":[]}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"
 	run ./src/review/component-review.sh "${_bld}" review-stub
 	[[ "${status:?}" -eq 0 ]]
-	[[ "${output:?}" =~ Harness\ OK ]]
+	[[ "${output:?}" =~ Wrote ]]
 	_result="${REVIEW_BUILD_DIR}/review_stub_review.result.json"
 	[[ -f "${_result}" ]]
 	[[ "$(jq -r '.build' "${_result}")" == "${_bld}" ]]
 	[[ "$(jq -r '.component' "${_result}")" == 'review-stub' ]]
-	[[ "$(jq -r '.summary' "${_result}")" == 'Harness OK' ]]
+	[[ "$(jq -r '.concerns.skipped' "${_result}")" == 'false' ]]
 	[[ "$(jq -r '.review_completed | endswith("Z")' "${_result}")" == 'true' ]]
-	[[ "$(jq -r '.review_concerns.security' "${_result}")" == 'false' ]]
+	[[ "$(jq -r 'has("required_check_ids")' "${_result}")" == 'false' ]]
 }
 
-@test 'R2: merged JSON missing required reasons array fails validation' {
+@test 'R2: audit stdout carrying policy-view fields fails validation' {
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"review_result":0,"summary":"missing reasons"}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[],"evidence":{},"required_check_ids":[],"summary":"nope"}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
-	[[ "${output:?}" =~ Merged\ review\ JSON\ failed\ runner\ validation ]]
+	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
 
-@test 'R3: merged JSON with review_result out of range fails validation' {
+@test 'R3: audit stdout with forbidden verdict-style field fails validation' {
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"review_result":4,"review_result_label":"Checks ran; no issues found.","review_concerns":{"security":false,"freshness":false},"reasons":[]}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[{"audit_check_id":"x","outcome":"passed","detail":"ok"}],"evidence":{},"required_check_ids":["x"],"review_result":1}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
-	[[ "${output:?}" =~ Merged\ review\ JSON\ failed\ runner\ validation ]]
+	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
 
-@test 'R3b: legacy review_result 3 fails validation' {
+@test 'R3b: audit stdout missing checks array fails validation' {
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"review_result":3,"review_result_label":"Checks did not complete successfully (runner error, upstream unreachable, unsupported case, unknown).","review_concerns":{"security":false,"freshness":false},"reasons":[]}'
+printf '%s\n' '{"component_reviewer_version":1,"evidence":{},"required_check_ids":[]}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
-	[[ "${output:?}" =~ Merged\ review\ JSON\ failed\ runner\ validation ]]
+	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
 
 @test 'R4: validation failure does not create or overwrite <slug>_review.result.json' {
@@ -80,7 +80,7 @@ EOS
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"review_result":99,"reasons":[]}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[],"evidence":{},"review_result":0}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
@@ -93,7 +93,7 @@ EOS
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"review_result":0,"review_result_label":"Checks ran; no issues found.","review_concerns":{"security":false,"freshness":false},"reasons":[],"summary":"Replaced"}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[],"evidence":{},"required_check_ids":[]}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"
@@ -101,26 +101,28 @@ EOS
 	[[ "${status:?}" -eq 0 ]]
 	_result="${REVIEW_BUILD_DIR}/review_stub_review.result.json"
 	[[ "$(jq -r 'has("stale_marker")' "${_result}")" == 'false' ]]
-	[[ "$(jq -r '.summary' "${_result}")" == 'Replaced' ]]
+	[[ "$(jq -r '.concerns.skipped' "${_result}")" == 'false' ]]
 	[[ "$(jq -r '.build' "${_result}")" == "${_bld}" ]]
 }
 
-@test 'R6: emitRollupFromChecks sets both concern flags when issues span buckets' {
+@test 'R6: emitConcernsFromChecks sets security and freshness when issues span buckets' {
 	# shellcheck source=/dev/null
 	source "${TEST_ROOT}/src/review/checks-rollup.sh"
 	_checks='[{"audit_check_id":"a","outcome":"issue","finding_kind":"security","detail":"s"},{"audit_check_id":"b","outcome":"issue","finding_kind":"staleness","detail":"f"}]'
-	_out="$(emitRollupFromChecks "${_checks}" '[]' '')"
-	[[ "$(jq -r '.review_result' <<<"${_out}")" == '1' ]]
-	[[ "$(jq -r '.review_concerns.security' <<<"${_out}")" == 'true' ]]
-	[[ "$(jq -r '.review_concerns.freshness' <<<"${_out}")" == 'true' ]]
+	_out="$(emitConcernsFromChecks "${_checks}" '[]' '')"
+	[[ "$(jq -r '.security' <<<"${_out}")" == 'true' ]]
+	[[ "$(jq -r '.freshness' <<<"${_out}")" == 'true' ]]
+	[[ "$(jq -r '.skipped' <<<"${_out}")" == 'false' ]]
+	[[ "$(jq -r '.incomplete' <<<"${_out}")" == 'false' ]]
 }
 
-@test 'R7: routes_by_audit_check_id none excludes issue from concern rollup' {
+@test 'R7: routes_by_audit_check_id none excludes issue from security/freshness flags' {
 	# shellcheck source=/dev/null
 	source "${TEST_ROOT}/src/review/checks-rollup.sh"
 	_checks='[{"audit_check_id":"x","outcome":"issue","finding_kind":"custom","detail":"d"}]'
 	_policy='{"routes_by_audit_check_id":{"x":"none"}}'
-	_out="$(emitRollupFromChecks "${_checks}" '[]' "${_policy}")"
-	[[ "$(jq -r '.review_result' <<<"${_out}")" == '0' ]]
-	[[ "$(jq -r '.review_concerns.security' <<<"${_out}")" == 'false' ]]
+	_out="$(emitConcernsFromChecks "${_checks}" '[]' "${_policy}")"
+	[[ "$(jq -r '.security' <<<"${_out}")" == 'false' ]]
+	[[ "$(jq -r '.freshness' <<<"${_out}")" == 'false' ]]
+	[[ "$(jq -r '.incomplete' <<<"${_out}")" == 'false' ]]
 }

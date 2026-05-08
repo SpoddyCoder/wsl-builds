@@ -6,17 +6,15 @@
 #   http-json-upstream-version, upstream-exact-match, upstream-semver-drift.
 # checks[].audit_check_id values are the module basename (.sh stripped) via auditCheckIdFromModulePath;
 # pass a second suffix argument to that helper only when one module runs twice in the same audit.
-# Folded via measurement-bundle.sh; aggregation via emitRollupFromChecks.
+# Folded via measurement-bundle.sh. Concerns policy views are computed by component-review.sh.
 #
-# Stdout: one JSON object line (spec: Runner validation after audit v1). Stderr: diagnostics only.
+# Stdout: one JSON object line (measurement envelope for component-review.sh). Stderr: diagnostics only.
 # Does not install packages. Requires jq; HTTP check requires curl (see CONTRIBUTING.md).
 
 set -euo pipefail
 
 _script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 _repo_root="$(cd "${_script_dir}/../.." && pwd)"
-# shellcheck source=/dev/null
-source "${_repo_root}/src/review/checks-rollup.sh"
 # shellcheck source=/dev/null
 source "${_repo_root}/src/review/audit-check-helpers/measurement-bundle.sh"
 # shellcheck source=/dev/null
@@ -49,20 +47,14 @@ if ! command -v jq >/dev/null 2>&1; then
     exit 1
 fi
 
-emitFinalJson() {
+emitMeasurementJson() {
     local checks_json="$1"
     local evidence_json="$2"
-    local agg_json
-    agg_json=$(emitRollupFromChecks "${checks_json}" "${requiredCheckIdsJson}" '') || return 1
     jq -cn \
         --argjson checks "${checks_json}" \
         --argjson evidence "${evidence_json}" \
-        --argjson agg "${agg_json}" \
-        '{
-            component_reviewer_version: 1,
-            checks: $checks,
-            evidence: $evidence
-        } + $agg'
+        --argjson rq "${requiredCheckIdsJson}" \
+        '{ component_reviewer_version: 1, checks: $checks, evidence: $evidence, required_check_ids: $rq }'
 }
 
 installer_validated=$(readManifestScalarLine "${_manifest}" installer_validated)
@@ -128,5 +120,5 @@ fi
 
 checks_json=$(printf '%s\n' "${merged}" | jq -c '.checks')
 evidence_json=$(printf '%s\n' "${merged}" | jq -c '.evidence')
-emitFinalJson "${checks_json}" "${evidence_json}"
+emitMeasurementJson "${checks_json}" "${evidence_json}"
 exit 0

@@ -47,6 +47,8 @@ fi
 
 # shellcheck source=merged-result-validation.sh
 source "${BASH_SOURCE[0]%/*}/merged-result-validation.sh"
+# shellcheck source=checks-rollup.sh
+source "${BASH_SOURCE[0]%/*}/checks-rollup.sh"
 
 if [ "${#}" -ne 2 ]; then
     printComponentReviewUsage
@@ -102,13 +104,21 @@ if ! audit_json=$(jq -ec . <<<"${json_line}" 2>/dev/null); then
     exit 1
 fi
 
+validateAuditMeasurementJson "${audit_json}" || exit 1
+
+checks_for_concerns=$(jq -ec '.checks' <<<"${audit_json}") || exit 1
+required_ids_for_concerns=$(jq -ec '.required_check_ids' <<<"${audit_json}") || exit 1
+policy_for_concerns=$(jq -ec '.custom_issue_policy // {}' <<<"${audit_json}") || exit 1
+concerns_json=$(emitConcernsFromChecks "${checks_for_concerns}" "${required_ids_for_concerns}" "${policy_for_concerns}") || exit 1
+
 review_completed_ts=$(utcIso8601TimestampZ)
 merged_json=$(jq -cn \
-    --argjson audit "${audit_json}" \
+    --argjson audit "$(jq -ec 'del(.required_check_ids, .custom_issue_policy)' <<<"${audit_json}")" \
     --arg build "${build_dir_name}" \
     --arg comp "${canonical_token}" \
     --arg ts "${review_completed_ts}" \
-    '$audit | .build = $build | .component = $comp | .review_completed = $ts') \
+    --argjson concerns "${concerns_json}" \
+    '$audit | .build = $build | .component = $comp | .review_completed = $ts | .concerns = $concerns') \
     || {
         printError "failed to merge runner fields into audit JSON"
         exit 1
@@ -129,9 +139,6 @@ if ! mv -f "${result_tmp}" "${result_path}"; then
     exit 1
 fi
 
-merged_summary=$(jq -r '.summary // empty' <<<"${merged_json}")
-if [ -n "${merged_summary}" ]; then
-    printInfo "${merged_summary}"
-fi
+printInfo "Wrote ${result_path}"
 
 exit 0
