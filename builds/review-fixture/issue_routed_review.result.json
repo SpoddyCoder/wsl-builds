@@ -2,14 +2,14 @@
   "component_reviewer_version": 1,
   "checks": [
     {
-      "audit_check_id": "sec",
+      "audit_check_id": "deb-installed-version",
       "outcome": "issue",
       "finding_kind": "security",
       "severity": "high",
       "detail": "Routed security issue."
     },
     {
-      "audit_check_id": "fresh",
+      "audit_check_id": "installer-validated-staleness",
       "outcome": "issue",
       "finding_kind": "staleness",
       "detail": "Routed freshness issue."
@@ -17,7 +17,7 @@
   ],
   "build": "review-fixture",
   "component": "issue-routed",
-  "review_completed": "2026-05-08T14:23:35Z",
+  "review_completed": "2026-05-08T19:31:45Z",
   "concerns": {
     "security": true,
     "freshness": true,

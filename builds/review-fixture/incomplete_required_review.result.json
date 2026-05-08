@@ -2,7 +2,7 @@
   "component_reviewer_version": 1,
   "checks": [
     {
-      "audit_check_id": "req-a",
+      "audit_check_id": "deb-installed-version",
       "outcome": "inconclusive",
       "detail": "Could not determine; required row inconclusive."
     }

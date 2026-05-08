@@ -2,7 +2,7 @@
   "component_reviewer_version": 1,
   "checks": [
     {
-      "audit_check_id": "happy-check",
+      "audit_check_id": "cli-reported-version",
       "outcome": "passed",
       "detail": "All required checks pass."
     }

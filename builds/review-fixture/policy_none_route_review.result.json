@@ -2,7 +2,7 @@
   "component_reviewer_version": 1,
   "checks": [
     {
-      "audit_check_id": "opaque",
+      "audit_check_id": "upstream-exact-match",
       "outcome": "issue",
       "finding_kind": "custom",
       "detail": "Custom issue routed to none."

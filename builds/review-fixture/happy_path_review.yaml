@@ -1,7 +1,7 @@
 component: happy-path
 upstream_tracking: review-fixture scenario only (no real upstream)
 aggregation_notes: >-
-  Deterministic offline scenario; required check id "happy-check" passes. Expected runner-derived
+  Deterministic offline scenario; required check id "cli-reported-version" passes. Expected runner-derived
   concerns are all false.
 notes: >-
   Automated review testing only — see builds/review-fixture/README.md.

@@ -2,7 +2,7 @@
   "component_reviewer_version": 1,
   "checks": [
     {
-      "audit_check_id": "opt",
+      "audit_check_id": "upstream-semver-drift",
       "outcome": "skipped",
       "detail": "Not applicable for this fixture."
     }
