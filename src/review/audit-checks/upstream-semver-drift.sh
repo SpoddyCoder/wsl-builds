@@ -42,12 +42,9 @@ if [ -z "${observed}" ] || [ -z "${reference}" ]; then
     jq -cn \
         --arg audit_check_id "${check_id}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "inconclusive",
-                 detail: "Missing observed or reference semver string after normalization."
-             },
-             evidence: {}
+             audit_check_id: $audit_check_id,
+             outcome: "inconclusive",
+             detail: "Missing observed or reference semver string after normalization."
          }'
     exit 0
 fi
@@ -57,11 +54,9 @@ if [ "${observed}" = "${reference}" ]; then
         --arg audit_check_id "${check_id}" \
         --arg o "${observed}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "passed",
-                 detail: "Observed version matches reference."
-             },
+             audit_check_id: $audit_check_id,
+             outcome: "passed",
+             detail: "Observed version matches reference.",
              evidence: {
                  observed_semver: $o,
                  reference_semver: $o
@@ -77,12 +72,10 @@ if [ "${first}" = "${observed}" ]; then
         --arg o "${observed}" \
         --arg r "${reference}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "issue",
-                 finding_kind: "upstream_drift",
-                 detail: ("Observed version " + $o + " is behind reference " + $r + ".")
-             },
+             audit_check_id: $audit_check_id,
+             outcome: "issue",
+             finding_kind: "upstream_drift",
+             detail: ("Observed version " + $o + " is behind reference " + $r + "."),
              evidence: {
                  observed_semver: $o,
                  reference_semver: $r
@@ -94,11 +87,9 @@ else
         --arg o "${observed}" \
         --arg r "${reference}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "passed",
-                 detail: ("Observed version " + $o + " is at or ahead of reference " + $r + ".")
-             },
+             audit_check_id: $audit_check_id,
+             outcome: "passed",
+             detail: ("Observed version " + $o + " is at or ahead of reference " + $r + "."),
              evidence: {
                  observed_semver: $o,
                  reference_semver: $r

@@ -18,9 +18,9 @@ Use the component output to spot **security-class issues**, **staleness/upstream
 | Shared path / token helpers | `src/review/runner-common.sh` | Resolve repo root, map CSV token → `<slug>` (hyphens → underscores), paths to install / audit / manifest / result files. |
 | Merged JSON validation | `src/review/merged-result-validation.sh` | Enforce audit measurement envelope; enforce persisted **`concerns`** shape and forbid verdict-only fields after merge. |
 | Concerns derivation | `src/review/checks-rollup.sh`, `src/review/checks-rollup.jq` (`emitConcernsFromChecks`) | From **`checks`** + policy inputs → **`concerns`** object (runner only). |
-| Reusable measurement modules | `src/review/audit-checks/*.sh` | One stdout line per run: JSON envelope with `check` + `evidence`. |
+| Reusable measurement modules | `src/review/audit-checks/*.sh` | One stdout line per run: single check JSON object with optional nested `evidence`. |
 | Shared helpers | `src/review/audit-check-helpers/*.sh` | Bundling measurements, manifest scalars, HTTP fetch — **no** required stdout contract as a whole. |
-| Per-component audit | `builds/<build>/<slug>_audit.sh` | Measurement only (`checks`, `evidence`, `required_check_ids`, optional **`custom_issue_policy`**); reads `<slug>_review.yaml` when needed (`component-review.sh` does not parse YAML). |
+| Per-component audit | `builds/<build>/<slug>_audit.sh` | Measurement only (`checks` with optional nested per-check `evidence`, `required_check_ids`, optional **`custom_issue_policy`**); reads `<slug>_review.yaml` when needed (`component-review.sh` does not parse YAML). |
 
 ## `<slug>_review.yaml` (maintainer manifest)
 

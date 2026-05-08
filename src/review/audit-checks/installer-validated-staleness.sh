@@ -30,12 +30,9 @@ if [ -z "${validated_raw}" ]; then
     jq -cn \
         --arg audit_check_id "${check_id}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "skipped",
-                 detail: "installer_validated is not set in the maintainer manifest; staleness check skipped."
-             },
-             evidence: {}
+             audit_check_id: $audit_check_id,
+             outcome: "skipped",
+             detail: "installer_validated is not set in the maintainer manifest; staleness check skipped."
          }'
     exit 0
 fi
@@ -52,11 +49,9 @@ if [ -z "${validated_sec}" ]; then
         --arg audit_check_id "${check_id}" \
         --arg d "${validated_raw}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "inconclusive",
-                 detail: ("installer_validated is not parseable as a date: " + $d)
-             },
+             audit_check_id: $audit_check_id,
+             outcome: "inconclusive",
+             detail: ("installer_validated is not parseable as a date: " + $d),
              evidence: { installer_validated_raw: $d }
          }'
     exit 0
@@ -72,12 +67,10 @@ if [ "${age_days}" -gt "${max_days}" ]; then
         --argjson max "${max_days}" \
         --arg d "${validated_raw}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "issue",
-                 finding_kind: "staleness",
-                 detail: ("installer_validated (" + $d + ") is " + ($age | tostring) + " days old; exceeds limit " + ($max | tostring) + " days.")
-             },
+             audit_check_id: $audit_check_id,
+             outcome: "issue",
+             finding_kind: "staleness",
+             detail: ("installer_validated (" + $d + ") is " + ($age | tostring) + " days old; exceeds limit " + ($max | tostring) + " days."),
              evidence: {
                  installer_validated: $d,
                  installer_age_days: $age,
@@ -91,11 +84,9 @@ else
         --argjson max "${max_days}" \
         --arg d "${validated_raw}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "passed",
-                 detail: ("installer_validated is within " + ($max | tostring) + " days (" + ($age | tostring) + " days old).")
-             },
+             audit_check_id: $audit_check_id,
+             outcome: "passed",
+             detail: ("installer_validated is within " + ($max | tostring) + " days (" + ($age | tostring) + " days old)."),
              evidence: {
                  installer_validated: $d,
                  installer_age_days: $age,

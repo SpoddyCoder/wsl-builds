@@ -4,22 +4,39 @@
     {
       "audit_check_id": "cli-reported-version",
       "outcome": "passed",
-      "detail": "Reported package/version line: 0.9.0"
+      "detail": "Reported package/version line: 0.9.0",
+      "evidence": {
+        "cli_reported_version": "0.9.0",
+        "cli_command_name": "shellcheck"
+      }
     },
     {
       "audit_check_id": "deb-installed-version",
       "outcome": "passed",
-      "detail": "Installed Debian package version: 0.9.0-1"
+      "detail": "Installed Debian package version: 0.9.0-1",
+      "evidence": {
+        "deb_package": "shellcheck",
+        "deb_installed_version": "0.9.0-1"
+      }
     },
     {
       "audit_check_id": "installer-validated-staleness",
       "outcome": "passed",
-      "detail": "installer_validated is within 90 days (2 days old)."
+      "detail": "installer_validated is within 90 days (2 days old).",
+      "evidence": {
+        "installer_validated": "2026-05-06",
+        "installer_age_days": 2,
+        "installer_staleness_max_days": 90
+      }
     },
     {
       "audit_check_id": "http-json-upstream-version",
       "outcome": "passed",
-      "detail": "Fetched upstream value: v0.11.0"
+      "detail": "Fetched upstream value: v0.11.0",
+      "evidence": {
+        "upstream_url": "https://api.github.com/repos/koalaman/shellcheck/releases/latest",
+        "http_json_extracted": "v0.11.0"
+      }
     },
     {
       "audit_check_id": "upstream-exact-match",
@@ -32,20 +49,9 @@
       "detail": "compare_cli_to_github_semver is not true in shellcheck_review.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
     }
   ],
-  "evidence": {
-    "cli_reported_version": "0.9.0",
-    "cli_command_name": "shellcheck",
-    "deb_package": "shellcheck",
-    "deb_installed_version": "0.9.0-1",
-    "installer_validated": "2026-05-06",
-    "installer_age_days": 2,
-    "installer_staleness_max_days": 90,
-    "upstream_url": "https://api.github.com/repos/koalaman/shellcheck/releases/latest",
-    "http_json_extracted": "v0.11.0"
-  },
   "build": "dev-bash",
   "component": "shellcheck",
-  "review_completed": "2026-05-08T01:06:52Z",
+  "review_completed": "2026-05-08T13:29:25Z",
   "concerns": {
     "security": false,
     "freshness": false,

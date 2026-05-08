@@ -37,11 +37,9 @@ if ! body=$(httpGetWithRetry "${url}" "${max_time}"); then
         --arg audit_check_id "${check_id}" \
         --arg u "${url}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "inconclusive",
-                 detail: ("HTTP fetch failed or gave non-success status for " + $u + ".")
-             },
+             audit_check_id: $audit_check_id,
+             outcome: "inconclusive",
+             detail: ("HTTP fetch failed or gave non-success status for " + $u + "."),
              evidence: { upstream_url: $u }
          }'
     exit 0
@@ -59,11 +57,9 @@ if [ -z "${extracted}" ] || [ "${extracted}" = "null" ]; then
         --arg audit_check_id "${check_id}" \
         --arg u "${url}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "inconclusive",
-                 detail: "jq filter produced no usable string from HTTP JSON response."
-             },
+             audit_check_id: $audit_check_id,
+             outcome: "inconclusive",
+             detail: "jq filter produced no usable string from HTTP JSON response.",
              evidence: { upstream_url: $u }
          }'
     exit 0
@@ -74,11 +70,9 @@ jq -cn \
     --arg u "${url}" \
     --arg val "${extracted}" \
     '{
-         check: {
-             audit_check_id: $audit_check_id,
-             outcome: "passed",
-             detail: ("Fetched upstream value: " + $val)
-         },
+         audit_check_id: $audit_check_id,
+         outcome: "passed",
+         detail: ("Fetched upstream value: " + $val),
          evidence: {
              upstream_url: $u,
              http_json_extracted: $val

@@ -23,7 +23,7 @@ teardown() {
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"checks":[],"evidence":{},"required_check_ids":[]}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[]}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"
@@ -43,7 +43,7 @@ EOS
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"checks":[],"evidence":{},"required_check_ids":[],"summary":"nope"}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[],"summary":"nope"}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
@@ -55,7 +55,7 @@ EOS
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"checks":[{"audit_check_id":"x","outcome":"passed","detail":"ok"}],"evidence":{},"required_check_ids":["x"],"review_result":1}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[{"audit_check_id":"x","outcome":"passed","detail":"ok"}],"required_check_ids":["x"],"review_result":1}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
@@ -67,7 +67,7 @@ EOS
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"evidence":{},"required_check_ids":[]}'
+printf '%s\n' '{"component_reviewer_version":1,"required_check_ids":[]}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
@@ -80,7 +80,7 @@ EOS
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"checks":[],"evidence":{},"review_result":0}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[],"review_result":0}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
@@ -93,7 +93,7 @@ EOS
 	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
-printf '%s\n' '{"component_reviewer_version":1,"checks":[],"evidence":{},"required_check_ids":[]}'
+printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[]}'
 EOS
 	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"
@@ -102,7 +102,20 @@ EOS
 	_result="${REVIEW_BUILD_DIR}/review_stub_review.result.json"
 	[[ "$(jq -r 'has("stale_marker")' "${_result}")" == 'false' ]]
 	[[ "$(jq -r '.concerns.skipped' "${_result}")" == 'false' ]]
+	[[ "$(jq -r 'has("evidence")' "${_result}")" == 'false' ]]
 	[[ "$(jq -r '.build' "${_result}")" == "${_bld}" ]]
+}
+
+@test 'R5b: top-level evidence on audit stdout fails validation' {
+	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
+#!/usr/bin/env bash
+set -euo pipefail
+printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[],"evidence":{}}'
+EOS
+	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
+	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
+	[[ "${status:?}" -ne 0 ]]
+	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
 
 @test 'R6: emitConcernsFromChecks sets security and freshness when issues span buckets' {

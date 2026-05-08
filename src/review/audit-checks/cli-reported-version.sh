@@ -38,12 +38,9 @@ if ! command -v -- "${cli_command}" >/dev/null 2>&1; then
         --arg audit_check_id "${check_id}" \
         --arg cli "${cli_command}" \
         '{
-             check: {
-                 audit_check_id: $audit_check_id,
-                 outcome: "inconclusive",
-                 detail: ($cli + " is not installed or not on PATH; install the component that provides this tool first.")
-             },
-             evidence: {}
+             audit_check_id: $audit_check_id,
+             outcome: "inconclusive",
+             detail: ($cli + " is not installed or not on PATH; install the component that provides this tool first.")
          }'
     exit 0
 fi
@@ -63,11 +60,9 @@ jq -cn \
     --arg ver "${reported}" \
     --arg cli "${cli_command}" \
     '{
-         check: {
-             audit_check_id: $audit_check_id,
-             outcome: "passed",
-             detail: ("Reported package/version line: " + $ver)
-         },
+         audit_check_id: $audit_check_id,
+         outcome: "passed",
+         detail: ("Reported package/version line: " + $ver),
          evidence: {
              cli_reported_version: $ver,
              cli_command_name: $cli
