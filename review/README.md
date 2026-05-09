@@ -37,6 +37,10 @@ Use the component output to spot **security-class issues**, **staleness/upstream
 | Shared helpers | `src/review/audit-check-helpers/*.sh` | Bundling measurements, manifest scalars, HTTP fetch — **no** required stdout contract as a whole. |
 | Per-component audit | `builds/<build>/<slug>/audit.sh` | Measurement only (`checks` with optional nested per-check `evidence`, `required_check_ids`, optional **`custom_issue_policy`**); reads `<slug>/audit.manifest.yaml` when needed (`component-review.sh` does not parse YAML). |
 
+### Per-component `audit.sh` (repo root and catalogue paths)
+
+Set `REPO_ROOT` to the git root of this repository and `export` it before sourcing `src/review/audit-check-helpers/`. For composition, prefer `audit-flow.sh` (`auditFlowInit`, `auditFlowRunModuleStem`, `auditFlowAppendSkippedFromModuleStem`, and related helpers) so catalogue modules resolve through `auditCheckModulePath` (unknown stems fail fast with a clear stderr message).
+
 ## `<slug>/audit.manifest.yaml` (maintainer manifest)
 
 A **maintainer-edited, machine-readable** YAML file under `builds/<build>/<slug>/audit.manifest.yaml`, where `<slug>` matches the install basename (hyphens in the CSV token become underscores, same as `install_<slug>.sh`). Keep it concise and scalar-oriented for values **`audit.sh`** reads directly. **`review.result.json`** is **runner-written** (last merged run); do not hand-edit that file.

@@ -26,12 +26,14 @@ RUNNER_BASENAME="$(basename "${BASH_SOURCE[0]}")"
 exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
 
 # shellcheck source=src/print.sh
-source "${REVIEW_REPO_ROOT}/src/print.sh"
+source "${REPO_ROOT}/src/print.sh"
 
 # shellcheck source=merged-result-validation.sh
 source "${BASH_SOURCE[0]%/*}/merged-result-validation.sh"
 # shellcheck source=checks-rollup.sh
 source "${BASH_SOURCE[0]%/*}/checks-rollup.sh"
+# shellcheck source=audit-check-helpers/audit-check-module-path.sh
+source "${BASH_SOURCE[0]%/*}/audit-check-helpers/audit-check-module-path.sh"
 # shellcheck source=audit-check-helpers/get-audit-check-id.sh
 source "${BASH_SOURCE[0]%/*}/audit-check-helpers/get-audit-check-id.sh"
 
@@ -108,9 +110,9 @@ resolveAuditScriptOrExit() {
 
 resolveBuildDirOrExit() {
     local build_name="$1"
-    local repo_builds="${REVIEW_REPO_ROOT}/builds/${build_name}"
+    local repo_builds="${REPO_ROOT}/builds/${build_name}"
     if [ ! -d "${repo_builds}" ] || [ ! -f "${repo_builds}/conf.sh" ]; then
-        printError "Build directory '${build_name}' not found under ${REVIEW_REPO_ROOT}/builds (expected conf.sh)."
+        printError "Build directory '${build_name}' not found under ${REPO_ROOT}/builds (expected conf.sh)."
         exit 1
     fi
     printf '%s' "${repo_builds}"
@@ -150,11 +152,8 @@ runCheckMode() {
         printDebugUsage
         exit 1
     fi
-    local module_path="${REVIEW_REPO_ROOT}/src/review/audit-checks/${module_name}.sh"
-    if [ ! -f "${module_path}" ]; then
-        printError "run-check: module not found at ${module_path}"
-        exit 1
-    fi
+    local module_path
+    module_path=$(auditCheckModulePath "${module_name}") || exit 1
     local derived_check_id
     derived_check_id=$(auditCheckIdFromModulePath "${module_path}") || exit 1
     local -a argv=("${derived_check_id}")
@@ -288,7 +287,7 @@ runComponentMode() {
     build_dir=$(resolveBuildDirOrExit "${build_name}")
     printInfo "Running component-review for ${build_name}/${token}"
     set +e
-    "${REVIEW_REPO_ROOT}/src/review/component-review.sh" "${build_name}" "${token}" >&2
+    "${REPO_ROOT}/src/review/component-review.sh" "${build_name}" "${token}" >&2
     local runner_ec=$?
     set -e
     if [ "${runner_ec}" -ne 0 ]; then

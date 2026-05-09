@@ -5,14 +5,26 @@
 # Expected runner-derived concerns: { skipped: true, others: false }.
 set -euo pipefail
 
-_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-_repo_root="$(cd "${_script_dir}/../../.." && pwd)"
-# shellcheck source=/dev/null
-source "${_repo_root}/src/review/audit-check-helpers/get-audit-check-id.sh"
+########################################################
+# Source Helpers
+#
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+export REPO_ROOT
 
-readonly _semverModule="${_repo_root}/src/review/audit-checks/upstream-semver-drift.sh"
-_idSemver=$(auditCheckIdFromModulePath "${_semverModule}") || exit 1
+# shellcheck source=/dev/null
+source "${REPO_ROOT}/src/review/audit-check-helpers/audit-check-module-path.sh"
+# shellcheck source=/dev/null
+source "${REPO_ROOT}/src/review/audit-check-helpers/get-audit-check-id.sh"
+
+########################################################
+# Resolve Required Check IDs
+#
+_idSemver=$(auditCheckIdFromModulePath "$(auditCheckModulePath upstream-semver-drift)") || exit 1
 readonly _idSemver
 
+########################################################
+# Emit Measurement JSON
+#
 printf '{"component_reviewer_version":1,"checks":[{"audit_check_id":"%s","outcome":"skipped","detail":"Not applicable for this fixture."}],"required_check_ids":[]}\n' \
     "${_idSemver}"

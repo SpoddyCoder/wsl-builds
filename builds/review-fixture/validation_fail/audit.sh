@@ -7,4 +7,7 @@
 # file exists for this scenario.
 set -euo pipefail
 
+########################################################
+# Emit Invalid Measurement JSON (intentional)
+#
 printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[],"summary":"forbidden on audit stdout"}'

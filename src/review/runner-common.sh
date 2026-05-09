@@ -3,7 +3,7 @@
 # Spec: "Component enumeration (v1): dispatch-aligned", "Paths and filenames (v1)".
 
 # Resolve repository root from a review runner script path (a *.sh file directly under
-# src/review/). Sets and exports REVIEW_REPO_ROOT for child processes.
+# src/review/). Sets and exports REPO_ROOT for child processes.
 #
 # Usage (from src/review/component-review.sh after this file is sourced):
 #   # shellcheck source=runner-common.sh
@@ -11,8 +11,8 @@
 #   exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
 exportRepoRootFromRunnerPath() {
     local runnerPath="${1:?runner script path required}"
-    REVIEW_REPO_ROOT="$(cd "$(dirname "${runnerPath}")/../.." && pwd)" || return 1
-    export REVIEW_REPO_ROOT
+    REPO_ROOT="$(cd "$(dirname "${runnerPath}")/../.." && pwd)" || return 1
+    export REPO_ROOT
 }
 
 # On-disk slug: same mapping as install_<slug>.sh in src/install-dispatch.sh (CSV hyphens → underscores).

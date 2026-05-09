@@ -15,7 +15,7 @@ RUNNER_BASENAME=$(basename "${BASH_SOURCE[0]}")
 exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
 
 # shellcheck source=src/print.sh
-source "${REVIEW_REPO_ROOT}/src/print.sh"
+source "${REPO_ROOT}/src/print.sh"
 
 WSL_BUILDS_USER_CONF="${HOME}/.wsl-builds.conf"
 if [ -n "${WSL_BUILDS_CONF:-}" ]; then
@@ -37,8 +37,8 @@ else
 fi
 
 # shellcheck source=src/builds-root.sh
-source "${REVIEW_REPO_ROOT}/src/builds-root.sh"
-resolveBuildsRootFromRepoRoot "${REVIEW_REPO_ROOT}" || exit 1
+source "${REPO_ROOT}/src/builds-root.sh"
+resolveBuildsRootFromRepoRoot "${REPO_ROOT}" || exit 1
 
 if ! command -v jq >/dev/null 2>&1; then
     printError "jq is required for component-review.sh. Install jq and see CONTRIBUTING.md (Automated builds review tooling)."

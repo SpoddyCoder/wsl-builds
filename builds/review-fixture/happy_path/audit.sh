@@ -7,14 +7,26 @@
 # No jq and no network; derive check id with the shared helper for parity with real audits.
 set -euo pipefail
 
-_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-_repo_root="$(cd "${_script_dir}/../../.." && pwd)"
-# shellcheck source=/dev/null
-source "${_repo_root}/src/review/audit-check-helpers/get-audit-check-id.sh"
+########################################################
+# Source Helpers
+#
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+export REPO_ROOT
 
-readonly _cliCheckModule="${_repo_root}/src/review/audit-checks/cli-reported-version.sh"
-_idCli=$(auditCheckIdFromModulePath "${_cliCheckModule}") || exit 1
+# shellcheck source=/dev/null
+source "${REPO_ROOT}/src/review/audit-check-helpers/audit-check-module-path.sh"
+# shellcheck source=/dev/null
+source "${REPO_ROOT}/src/review/audit-check-helpers/get-audit-check-id.sh"
+
+########################################################
+# Resolve Required Check IDs
+#
+_idCli=$(auditCheckIdFromModulePath "$(auditCheckModulePath cli-reported-version)") || exit 1
 readonly _idCli
 
+########################################################
+# Emit Measurement JSON
+#
 printf '{"component_reviewer_version":1,"checks":[{"audit_check_id":"%s","outcome":"passed","detail":"All required checks pass."}],"required_check_ids":["%s"]}\n' \
     "${_idCli}" "${_idCli}"

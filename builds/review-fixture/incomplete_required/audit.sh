@@ -5,16 +5,26 @@
 # (also forces incomplete). Expected runner-derived concerns: { incomplete: true, others: false }.
 set -euo pipefail
 
-_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-_repo_root="$(cd "${_script_dir}/../../.." && pwd)"
-# shellcheck source=/dev/null
-source "${_repo_root}/src/review/audit-check-helpers/get-audit-check-id.sh"
+########################################################
+# Source Helpers
+#
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 
-readonly _debCheckModule="${_repo_root}/src/review/audit-checks/deb-installed-version.sh"
-readonly _stalenessCheckModule="${_repo_root}/src/review/audit-checks/installer-validated-staleness.sh"
-_idDeb=$(auditCheckIdFromModulePath "${_debCheckModule}") || exit 1
-_idStaleness=$(auditCheckIdFromModulePath "${_stalenessCheckModule}") || exit 1
+# shellcheck source=/dev/null
+source "${REPO_ROOT}/src/review/audit-check-helpers/audit-check-module-path.sh"
+# shellcheck source=/dev/null
+source "${REPO_ROOT}/src/review/audit-check-helpers/get-audit-check-id.sh"
+
+########################################################
+# Resolve Required Check IDs
+#
+_idDeb=$(auditCheckIdFromModulePath "$(auditCheckModulePath deb-installed-version)") || exit 1
+_idStaleness=$(auditCheckIdFromModulePath "$(auditCheckModulePath installer-validated-staleness)") || exit 1
 readonly _idDeb _idStaleness
 
+########################################################
+# Emit Measurement JSON
+#
 printf '{"component_reviewer_version":1,"checks":[{"audit_check_id":"%s","outcome":"inconclusive","detail":"Could not determine; required row inconclusive."}],"required_check_ids":["%s","%s"]}\n' \
     "${_idDeb}" "${_idDeb}" "${_idStaleness}"
