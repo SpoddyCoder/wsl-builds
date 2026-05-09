@@ -13,7 +13,7 @@ source "${BASH_SOURCE[0]%/*}/audit-check-helpers/audit-check-module-path.sh"
 # shellcheck source=audit-check-helpers/get-audit-check-id.sh
 source "${BASH_SOURCE[0]%/*}/audit-check-helpers/get-audit-check-id.sh"
 
-readonly DEFAULT_FIXTURE_BUILD='review-fixture'
+readonly DEFAULT_FIXTURE_BUILD='fixture-review'
 
 printDebugUsage() {
     cat >&2 <<USAGE
@@ -36,8 +36,8 @@ Legacy aliases (deprecated): check, audit, component, scenario.
 
 Examples:
   ${RUNNER_BASENAME} run-check  --module cli-reported-version --args 'shellcheck'
-  ${RUNNER_BASENAME} run-audit  --build review-fixture --component happy-path --pretty
-  ${RUNNER_BASENAME} run-review --build review-fixture --component happy-path --pretty
+  ${RUNNER_BASENAME} run-audit  --build fixture-review --component happy-path --pretty
+  ${RUNNER_BASENAME} run-review --build fixture-review --component happy-path --pretty
   ${RUNNER_BASENAME} run-e2e    --component issue-routed --show-concerns --pretty
 USAGE
 }

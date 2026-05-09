@@ -28,7 +28,12 @@ showAvailableBuildDirs() {
     echo "Available build directories:"
     for dir in "${BUILDS_ROOT}"/*/; do
         if [ -d "$dir" ] && [ -f "$dir/conf.sh" ]; then
-            echo "  $(basename "$dir")"
+            local base
+            base="$(basename "$dir")"
+            if [[ "${base}" == fixture-* ]] && [ -z "${WSL_BUILDS_LIST_FIXTURE_BUILDS:-}" ]; then
+                continue
+            fi
+            echo "  ${base}"
         fi
     done | sort
     echo

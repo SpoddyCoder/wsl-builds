@@ -1,0 +1,20 @@
+{
+  "component_reviewer_version": 1,
+  "checks": [
+    {
+      "audit_check_id": "upstream-exact-match",
+      "outcome": "issue",
+      "finding_kind": "custom",
+      "detail": "Custom issue routed to none."
+    }
+  ],
+  "build": "fixture-review",
+  "component": "policy-none-route",
+  "review_completed": "2026-05-09T11:24:33Z",
+  "concerns": {
+    "security": false,
+    "freshness": false,
+    "skipped": false,
+    "incomplete": false
+  }
+}

@@ -5,7 +5,7 @@
 #   run-check  — invoke one src/review/audit-checks/<name>.sh module directly
 #   run-audit  — run one builds/<build>/<slug>/audit.sh (validates measurement envelope)
 #   run-review — run ./review/component-review.sh against one build + token
-#   run-e2e    — convenience wrapper: run-audit then run-review (default --build review-fixture)
+#   run-e2e    — convenience wrapper: run-audit then run-review (default --build fixture-review)
 #
 # Output options:
 #   default    — concise summary on stderr; raw JSON on stdout where applicable
@@ -14,7 +14,7 @@
 #   --show-concerns — also derive and print the runner-owned concerns object (run-audit / run-e2e)
 #
 # Spec refs: docs/automated-builds-review-v1-spec.md
-# Fixture: builds/review-fixture/ (single source for Bats + this harness)
+# Fixture: builds/fixture-review/ (single source for Bats + this harness)
 #
 # Does not install dependencies; requires jq + bash on PATH (same as component-review.sh).
 set -euo pipefail

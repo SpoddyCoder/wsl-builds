@@ -1,0 +1,2 @@
+component: policy-none-route
+upstream_tracking: fixture-review scenario only (no real upstream)

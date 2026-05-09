@@ -1,0 +1,19 @@
+{
+  "component_reviewer_version": 1,
+  "checks": [
+    {
+      "audit_check_id": "upstream-semver-drift",
+      "outcome": "skipped",
+      "detail": "Not applicable for this fixture."
+    }
+  ],
+  "build": "fixture-review",
+  "component": "skipped-only",
+  "review_completed": "2026-05-09T11:24:33Z",
+  "concerns": {
+    "security": false,
+    "freshness": false,
+    "skipped": true,
+    "incomplete": false
+  }
+}

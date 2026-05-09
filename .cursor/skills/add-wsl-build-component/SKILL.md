@@ -10,7 +10,7 @@ Use this skill when adding or changing a build component in this repository.
 ## Workflow
 
 1. Read repo root [`README.md`](../../../README.md) and [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) **in full** (entire files) before editing so the Build List, tone, and contributor expectations stay aligned.
-2. Identify the target build directory under `builds/<name>/`. Valid build directories contain both `conf.sh` and `install.sh`, such as `builds/dev`, `builds/dev-js`, `builds/system`, or `builds/devops`. The `builds/test-fixture` directory is **testing-only** ([`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md); noop harness for CI/agents)—do **not** use it like a production build unless explicitly asked.
+2. Identify the target build directory under `builds/<name>/`. Valid build directories contain both `conf.sh` and `install.sh`, such as `builds/dev`, `builds/dev-js`, `builds/system`, or `builds/devops`. The `builds/fixture-builder` directory is **testing-only** ([`builds/fixture-builder/README.md`](../../../builds/fixture-builder/README.md); noop harness for CI/agents)—do **not** use it like a production build unless explicitly asked.
 3. Read the target build's `conf.sh`, `install.sh`, and nearby `builds/<name>/<slug>/install.sh` files before editing.
 4. Add the component token to **the third argument (CSV)** of `registerBuildMetadata` in `conf.sh`.
 5. Add `builds/<name>/<slug>/install.sh`, creating the `<slug>` directory as needed. Map hyphens in the token to underscores in `slug` (examples: `docker-desktop` → `docker_desktop/install.sh`; `postgres-server` → `postgres_server/install.sh`).
@@ -75,7 +75,7 @@ printInfo "<Name> installed"
 
 Repo-wide `./test/lint.sh` (ShellCheck + `bash -n`; ShellCheck `--shell=bats` on `test/docker/*.bats`). After substantive edits to `src/builder/install-dispatch.sh`, shared helpers, or `test/docker/` (skip for trivial one-off component scripts), run `./test/run-tests.sh` from the repo root (lint + Docker Bats), per [`test/README.md`](../../../test/README.md).
 
-If you change any **exact user-visible string** (e.g. `printInfo`/`printWarning`/`printError` lines, `getFile` cache warnings/prompts, usage text), `rg` `test/` and `builds/test-fixture/` (especially `test/docker/*.bats`) for the old wording and update **assertions or golden substrings** in the same PR; stale regex/`grep` checks are a common regression.
+If you change any **exact user-visible string** (e.g. `printInfo`/`printWarning`/`printError` lines, `getFile` cache warnings/prompts, usage text), `rg` `test/` and `builds/fixture-builder/` (especially `test/docker/*.bats`) for the old wording and update **assertions or golden substrings** in the same PR; stale regex/`grep` checks are a common regression.
 
 After editing, run targeted syntax checks:
 

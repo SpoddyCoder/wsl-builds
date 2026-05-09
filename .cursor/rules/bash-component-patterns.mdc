@@ -44,7 +44,7 @@ alwaysApply: false
 - **Channels:** `printInfo` / `printWarning` / `printError` for status; `echo` only for heredocs / file payloads.
 - **Optional version:** `printInfo "<Name> version: $(cmd …)"` (or first line). No `2>/dev/null || echo …` fallbacks.
 - **Golden example:** [`builds/dev-js/node/install.sh`](../../builds/dev-js/node/install.sh).
-- **Tests:** changing fixed `print*` / prompts / usage text can break `test/docker/*.bats`. `rg` `test/` and `builds/test-fixture/` for old substrings and update in the **same change**; run `./test/run-tests.sh` after substantive `src/` or `./wsl-builder.sh` messaging edits.
+- **Tests:** changing fixed `print*` / prompts / usage text can break `test/docker/*.bats`. `rg` `test/` and `builds/fixture-builder/` for old substrings and update in the **same change**; run `./test/run-tests.sh` after substantive `src/` or `./wsl-builder.sh` messaging edits.
 
 ## Optional: disable start on boot (systemd)
 
@@ -61,4 +61,4 @@ Vendor installs may `systemctl enable` a unit. After substantive install (before
 
 ## Test fixture
 
-- **`builds/test-fixture/`** is **testing-only**: noop per-component `install.sh` files. See [`builds/test-fixture/README.md`](../../builds/test-fixture/README.md) and [`test/README.md`](../../test/README.md).
+- **`builds/fixture-builder/`** is **testing-only**: noop per-component `install.sh` files. See [`builds/fixture-builder/README.md`](../../builds/fixture-builder/README.md) and [`test/README.md`](../../test/README.md).

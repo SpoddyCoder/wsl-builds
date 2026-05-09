@@ -87,7 +87,7 @@ Use `builds/<build>/<slug>/audit.notes.md` for maintainer-facing narrative:
 | `run-check` | Run one `src/review/audit-checks/<name>.sh` module directly; derive `audit_check_id` from the module stem and pass it as argv[1], then append caller `--args`. |
 | `run-audit` | Run one `builds/<build>/<slug>/audit.sh`, validate its measurement envelope, and print stdout. |
 | `run-review` | Invoke `./review/component-review.sh <build> <component>` and print the persisted `<slug>/review.result.json`. |
-| `run-e2e` | Convenience wrapper: run `run-audit` then `run-review`. Default `--build` is `review-fixture`. |
+| `run-e2e` | Convenience wrapper: run `run-audit` then `run-review`. Default `--build` is `fixture-review`. |
 
 Output options:
 
@@ -100,17 +100,17 @@ Examples:
 ```bash
 ./review/review-debug.sh --help
 ./review/review-debug.sh run-check  --module cli-reported-version --args 'no-such-cli-tool' --pretty
-./review/review-debug.sh run-audit  --build review-fixture --component happy-path --pretty --show-concerns
-./review/review-debug.sh run-review --build review-fixture --component issue-routed --pretty
+./review/review-debug.sh run-audit  --build fixture-review --component happy-path --pretty --show-concerns
+./review/review-debug.sh run-review --build fixture-review --component issue-routed --pretty
 ./review/review-debug.sh run-e2e    --component policy-none-route --show-concerns --pretty
 ```
 
 The harness exits non-zero on bad args, missing modules/audit scripts, or runner failures, and forwards the underlying exit code where applicable.
 
-## Review fixture (`builds/review-fixture/`)
+## Review fixture (`builds/fixture-review/`)
 
-`builds/review-fixture/` provides deterministic offline scenarios for both the Docker Bats suite (`test/docker/review-fixture-tests.bats`) and the debug harness above. Each component token maps to one scenario whose `<slug>/audit.sh` emits a fixed, hand-written JSON line — no jq, helpers, or network — so the runner contract (envelope validation, `concerns` derivation, persisted artefact shape, no-overwrite-on-failure) can be exercised reliably.
+`builds/fixture-review/` provides deterministic offline scenarios for both the Docker Bats suite (`test/docker/review-fixture-tests.bats`) and the debug harness above. Each component token maps to one scenario whose `<slug>/audit.sh` emits a fixed, hand-written JSON line — no jq, helpers, or network — so the runner contract (envelope validation, `concerns` derivation, persisted artefact shape, no-overwrite-on-failure) can be exercised reliably.
 
-See [`builds/review-fixture/README.md`](../builds/review-fixture/README.md) for the scenario table and expected `concerns` per token.
+See [`builds/fixture-review/README.md`](../builds/fixture-review/README.md) for the scenario table and expected `concerns` per token.
 
 Normative contract: [Automated builds review (v1 spec)](../docs/automated-builds-review-v1-spec.md).
