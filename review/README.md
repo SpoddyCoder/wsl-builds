@@ -18,6 +18,8 @@ Maintainers edit `audit.manifest.yaml` and `audit.notes.md`; `component-review.s
 
 `<slug>` is the on-disk directory fragment (CSV hyphens → underscores), so token `mysql-client` uses `mysql_client/install.sh`, `mysql_client/audit.sh`, `mysql_client/audit.manifest.yaml`, `mysql_client/audit.notes.md`, and `mysql_client/review.result.json`.
 
+Repository-wide defaults for automated review live in **`review/review-policy.yaml`** (flat `key: value` lines, same mechanical constraints as per-component manifests). Audits resolve values with **component manifest → `review/review-policy.yaml` → fallback constant** in `src/review/audit-check-helpers/review-policy-defaults.sh` (for example `resolveInstallerStalenessMaxDays` for `installer-validated-staleness`).
+
 ## Facts vs policy
 
 - **`Concerns`** (four booleans) on the persisted file are **measurement-aligned facts**, not verdict codes: **`security`**, **`freshness`**, **`skipped`**, **`incomplete`** (always present — see normative contract in [`docs/automated-builds-review-v1-spec.md`](../docs/automated-builds-review-v1-spec.md)). They are computed by **`component-review.sh`** from **`checks`** + **`required_check_ids`** + **`custom_issue_policy`** supplied on audit stdout — audits do not emit **`concerns`**.
@@ -36,7 +38,7 @@ Use the component output to spot **security-class issues**, **staleness/upstream
 | Merged JSON validation | `src/review/merged-result-validation.sh` | Enforce audit measurement envelope; enforce persisted **`concerns`** shape and forbid verdict-only fields after merge. |
 | Concerns derivation | `src/review/checks-rollup.sh`, `src/review/checks-rollup.jq` (`emitConcernsFromChecks`) | From **`checks`** + policy inputs → **`concerns`** object (runner only). |
 | Reusable measurement modules | `src/review/audit-checks/*.sh` | One stdout line per run: single check JSON object with optional nested `evidence`. |
-| Shared helpers | `src/review/audit-check-helpers/*.sh` | Bundling measurements, manifest scalars, HTTP fetch — **no** required stdout contract as a whole. |
+| Shared helpers | `src/review/audit-check-helpers/*.sh` | Bundling measurements, manifest scalars, HTTP fetch, repo-level policy resolution — **no** required stdout contract as a whole. |
 | Per-component audit | `builds/<build>/<slug>/audit.sh` | Measurement only (`checks` with optional nested per-check `evidence`, `required_check_ids`, optional **`custom_issue_policy`**); reads `<slug>/audit.manifest.yaml` when needed (`component-review.sh` does not parse YAML). |
 
 ### Per-component `audit.sh` (repo root and catalogue paths)
@@ -67,7 +69,7 @@ Full field list and types: [Maintainer manifest (v1 minimal shape)](../docs/auto
 | `installer_validated` | Optional | `YYYY-MM-DD` (recommended): last time someone validated the installer approach. |
 | `notes` | Optional | Short scalar note only; narrative prose belongs in `audit.notes.md`. |
 
-**Extensions (examples):** audits may read additional **single-line** scalars — for example `installer_staleness_max_days`, `compare_cli_to_github_semver` — defined and documented **per component** in the manifest and `<slug>/audit.sh`, not by a global schema in v1.
+**Extensions (examples):** audits may read additional **single-line** scalars — for example `installer_staleness_max_days` (optional per-component override of [`review/review-policy.yaml`](review-policy.yaml) / resolver fallback), `compare_cli_to_github_semver` — defined and documented in the manifest and `<slug>/audit.sh` where used.
 
 ## `<slug>/audit.notes.md` (human prose)
 

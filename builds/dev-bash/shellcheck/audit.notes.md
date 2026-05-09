@@ -9,5 +9,5 @@ Maintainer notes for advisory review (human prose only).
 - `http-json-upstream-version` always runs but is not required; fetch/parse `inconclusive` there alone does not make the story incomplete.
 - `upstream-semver-drift` runs only when `compare_cli_to_github_semver` is true; when false the audit emits a skipped row so `concerns.skipped` reflects that.
 - Empty `last_known_upstream` makes `upstream-exact-match` skipped (set a deb version in `last_known_upstream` to enable exact-match).
-- `installer-validated-staleness` compares `installer_validated` to `installer_staleness_max_days` and skips if `installer_validated` is empty.
+- `installer-validated-staleness` compares `installer_validated` age to a max-days threshold from `installer_staleness_max_days` in this manifest if set, else [`review/review-policy.yaml`](../../../review/review-policy.yaml), else the fallback in `src/review/audit-check-helpers/review-policy-defaults.sh`; skips if `installer_validated` is empty.
 - Six v1 audit-check modules compose in `shellcheck/audit.sh` under `src/review/audit-checks/`.

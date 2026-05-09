@@ -1,0 +1,6 @@
+# Repository-wide defaults for automated builds review (maintainer-facing).
+# Flat key: value lines only — same constraints as per-component audit.manifest.yaml.
+# Precedence for installer_staleness_max_days: component audit.manifest.yaml overrides this file;
+# if both omit the key, src/review/audit-check-helpers/review-policy-defaults.sh supplies a fallback.
+
+installer_staleness_max_days: 180

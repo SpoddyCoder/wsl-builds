@@ -26,7 +26,7 @@ resolveRepoRootFromAuditScript "${BASH_SOURCE[0]}" || exit 1
 # shellcheck source=/dev/null
 source "${REPO_ROOT}/src/review/audit-check-helpers/audit-flow.sh"
 # shellcheck source=/dev/null
-source "${REPO_ROOT}/src/review/audit-check-helpers/read-manifest-scalar.sh"
+source "${REPO_ROOT}/src/review/audit-check-helpers/review-policy-defaults.sh"
 
 
 ########################################################
@@ -37,11 +37,8 @@ readonly _github_latest_url='https://api.github.com/repos/koalaman/shellcheck/re
 
 readonly _manifest="${SCRIPT_DIR}/audit.manifest.yaml"
 installer_validated=$(readManifestScalarLine "${_manifest}" installer_validated)
-installer_staleness_max_days=$(readManifestScalarLine "${_manifest}" installer_staleness_max_days)
+installer_staleness_max_days=$(resolveInstallerStalenessMaxDays "${_manifest}")
 last_known_upstream=$(readManifestScalarLine "${_manifest}" last_known_upstream)
-if [ -z "${installer_staleness_max_days}" ]; then
-    installer_staleness_max_days='90'
-fi
 
 ########################################################
 # Start Audit Flow
