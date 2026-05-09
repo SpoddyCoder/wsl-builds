@@ -32,10 +32,10 @@ registerBuildMetadata "<build-dir>" "1.0.0" "" 0
 ```bash
 #!/usr/bin/env bash
 # shellcheck source=src/builder/install-dispatch.sh
-source "${TOOL_DIR}/src/builder/install-dispatch.sh"
+source "${REPO_ROOT}/src/builder/install-dispatch.sh"
 ```
 
-(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./wsl-builder.sh`; `install-dispatch.sh` runs at top level when sourced. Use `./wsl-builder.sh`, not executing `install.sh` directly. **`./wsl-builder.sh`** sets `TOOL_DIR` to the repository root before sourcing this file; see `src/common/bootstrap-common.sh` and `docs/standardise-bootstrap-plan.md`.)
+(`registerBuildMetadata` is defined once `conf.sh` is sourced from `./wsl-builder.sh`; `install-dispatch.sh` runs at top level when sourced. Use `./wsl-builder.sh`, not executing `install.sh` directly. **`./wsl-builder.sh`** sets `REPO_ROOT` before sourcing this file; see `src/common/bootstrap-common.sh` and `docs/standardise-bootstrap-plan.md`.)
 
 ## README.md template
 

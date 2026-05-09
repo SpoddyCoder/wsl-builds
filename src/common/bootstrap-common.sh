@@ -21,7 +21,7 @@ resolveRepoRootFromSourcePath() {
     fi
 }
 
-# wsl-builder.sh: use the path the user invoked ($0) so behaviour matches historical TOOL_DIR resolution.
+# wsl-builder.sh: use the path the user invoked ($0) so behaviour matches historical resolution.
 resolveRepoRootFromBuilderPath() {
     local invocationPath="${1:?invocation path required}"
     REPO_ROOT="$(cd "$(dirname "${invocationPath}")" && pwd)" || return 1

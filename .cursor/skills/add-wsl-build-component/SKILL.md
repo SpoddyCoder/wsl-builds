@@ -29,10 +29,10 @@ Build directory `install.sh` files should remain:
 ```bash
 #!/usr/bin/env bash
 # shellcheck source=src/builder/install-dispatch.sh
-source "${TOOL_DIR}/src/builder/install-dispatch.sh"
+source "${REPO_ROOT}/src/builder/install-dispatch.sh"
 ```
 
-Component iteration and `recordComponentSuccess` live in `src/builder/install-dispatch.sh` (top level when sourced from `./wsl-builder.sh`). **`./wsl-builder.sh`** sets `TOOL_DIR` to the repository root (same as `REPO_ROOT`); see `src/common/bootstrap-common.sh` and `docs/standardise-bootstrap-plan.md`.
+Component iteration and `recordComponentSuccess` live in `src/builder/install-dispatch.sh` (top level when sourced from `./wsl-builder.sh`). **`./wsl-builder.sh`** sets `REPO_ROOT` before sourcing this file; see `src/common/bootstrap-common.sh` and `docs/standardise-bootstrap-plan.md`.
 
 `declareInstallComponents` (from `src/builder/arg-helpers.sh`) maps component tokens like `postgres-client` to `INSTALL_POSTGRES_CLIENT`. Dispatch sources `builds/<name>/postgres_client/install.sh` for that token (hyphens → underscores in the directory name only).
 
@@ -81,7 +81,7 @@ After editing, run targeted syntax checks:
 
 ```bash
 bash -n wsl-builder.sh
-bash -n src/*.sh
+bash -n src/common/*.sh src/builder/*.sh
 bash -n builds/<build-dir>/conf.sh
 bash -n builds/<build-dir>/install.sh
 bash -n builds/<build-dir>/<slug>/install.sh
