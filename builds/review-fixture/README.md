@@ -15,7 +15,7 @@ Each component token maps to one scenario:
 | `skipped-only` | One `skipped` row, nothing required. | `skipped: true` |
 | `validation-fail` | Audit deliberately emits a forbidden top-level field. | runner exits non-zero, **no** result file written. |
 
-Each `<slug>/audit.sh` emits one deterministic JSON object on stdout via `printf` (no jq, no network). Fixture audits do source `get-audit-check-id.sh` so `audit_check_id` values follow the same derivation path as real audits/debug checks. Persisted `<slug>/review.result.json` is tracked for the five valid scenarios; `validation-fail` deliberately has no tracked result file (the runner must not create one).
+Each scenario directory also includes `audit.manifest.yaml` (machine-readable scalar fixture metadata) and `audit.notes.md` (human scenario prose). Each `<slug>/audit.sh` emits one deterministic JSON object on stdout via `printf` (no jq, no network). Fixture audits do source `get-audit-check-id.sh` so `audit_check_id` values follow the same derivation path as real audits/debug checks. Persisted `<slug>/review.result.json` is tracked for the five valid scenarios; `validation-fail` deliberately has no tracked result file (the runner must not create one).
 
 ## Pointers
 

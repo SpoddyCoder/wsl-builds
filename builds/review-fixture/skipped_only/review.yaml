@@ -1,7 +1,0 @@
-component: skipped-only
-upstream_tracking: review-fixture scenario only (no real upstream)
-aggregation_notes: >-
-  Deterministic offline scenario; one skipped check, no required ids, no issues. Expected
-  runner-derived concerns: skipped=true, others false.
-notes: >-
-  Automated review testing only — see builds/review-fixture/README.md.

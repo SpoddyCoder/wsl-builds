@@ -46,12 +46,12 @@
     {
       "audit_check_id": "upstream-semver-drift",
       "outcome": "skipped",
-      "detail": "compare_cli_to_github_semver is not true in shellcheck/review.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
+      "detail": "compare_cli_to_github_semver is not true in shellcheck/audit.manifest.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
     }
   ],
   "build": "dev-bash",
   "component": "shellcheck",
-  "review_completed": "2026-05-09T10:55:21Z",
+  "review_completed": "2026-05-09T11:29:43Z",
   "concerns": {
     "security": false,
     "freshness": false,

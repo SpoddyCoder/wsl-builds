@@ -9,10 +9,11 @@ Each build keeps its install scripts (`conf.sh`, `install.sh`, `install_<slug>.s
 | Role | Path |
 | ---- | ---- |
 | Audit script (measurement) | `builds/<build>/<slug>/audit.sh` |
-| Maintainer manifest | `builds/<build>/<slug>/review.yaml` |
+| Maintainer manifest (machine) | `builds/<build>/<slug>/audit.manifest.yaml` |
+| Maintainer notes (human) | `builds/<build>/<slug>/audit.notes.md` |
 | Persisted review result | `builds/<build>/<slug>/review.result.json` |
 
-`<slug>` is the same on-disk fragment as `install_<slug>.sh` (CSV hyphens → underscores), so token `mysql-client` keeps `install_mysql_client.sh` at the build root and adds `mysql_client/audit.sh`, `mysql_client/review.yaml`, and `mysql_client/review.result.json` under it.
+`<slug>` is the same on-disk fragment as `install_<slug>.sh` (CSV hyphens → underscores), so token `mysql-client` keeps `install_mysql_client.sh` at the build root and adds `mysql_client/audit.sh`, `mysql_client/audit.manifest.yaml`, `mysql_client/audit.notes.md`, and `mysql_client/review.result.json` under it.
 
 ## Facts vs policy
 
@@ -32,19 +33,19 @@ Use the component output to spot **security-class issues**, **staleness/upstream
 | Concerns derivation | `src/review/checks-rollup.sh`, `src/review/checks-rollup.jq` (`emitConcernsFromChecks`) | From **`checks`** + policy inputs → **`concerns`** object (runner only). |
 | Reusable measurement modules | `src/review/audit-checks/*.sh` | One stdout line per run: single check JSON object with optional nested `evidence`. |
 | Shared helpers | `src/review/audit-check-helpers/*.sh` | Bundling measurements, manifest scalars, HTTP fetch — **no** required stdout contract as a whole. |
-| Per-component audit | `builds/<build>/<slug>/audit.sh` | Measurement only (`checks` with optional nested per-check `evidence`, `required_check_ids`, optional **`custom_issue_policy`**); reads `<slug>/review.yaml` when needed (`component-review.sh` does not parse YAML). |
+| Per-component audit | `builds/<build>/<slug>/audit.sh` | Measurement only (`checks` with optional nested per-check `evidence`, `required_check_ids`, optional **`custom_issue_policy`**); reads `<slug>/audit.manifest.yaml` when needed (`component-review.sh` does not parse YAML). |
 
-## `<slug>/review.yaml` (maintainer manifest)
+## `<slug>/audit.manifest.yaml` (maintainer manifest)
 
-A **human-owned** file under `builds/<build>/<slug>/review.yaml`, where `<slug>` matches the install basename (hyphens in the CSV token become underscores, same as `install_<slug>.sh`). It holds **policy-friendly values** and **prose** for PR reviewers. `<slug>/review.result.json` is the **machine-written** last run; do not hand-edit that file.
+A **machine-readable maintainer file** under `builds/<build>/<slug>/audit.manifest.yaml`, where `<slug>` matches the install basename (hyphens in the CSV token become underscores, same as `install_<slug>.sh`). Keep this file concise and scalar-oriented for values audits read directly. `<slug>/review.result.json` is the **machine-written** last run; do not hand-edit that file.
 
 ### What maintainers should do
 
 - Keep `component` correct and aligned with `conf.sh` / dispatch.
 - Update `installer_validated` when you have **verified** the install path still matches reality (and adjust any thresholds your audit uses).
 - Set `last_known_upstream` when you want **exact-match** (or related) checks to mean something concrete; leave empty if that check should **skip**.
-- Use `upstream_tracking`, `aggregation_notes`, and `notes` so the next maintainer understands **how upstream is tracked**, **which checks are required**, and **what drives `concerns` / rollup intent**.
-- Add **component-specific** single-line scalars only when `<slug>/audit.sh` reads them (see pilot `shellcheck/review.yaml`). Prefer simple `key: value` rows: helpers like `readManifestScalarLine` do not parse folded YAML blocks for machine fields.
+- Add **component-specific** single-line scalars only when `<slug>/audit.sh` reads them (see pilot `shellcheck/audit.manifest.yaml`). Prefer simple `key: value` rows: helpers like `readManifestScalarLine` do not parse folded YAML blocks for machine fields.
+- Keep longer rationale, reviewer prose, and check-story commentary in `<slug>/audit.notes.md` (not in the manifest YAML).
 
 Full field list and types: [Maintainer manifest (v1 minimal shape)](../docs/automated-builds-review-v1-spec.md#maintainer-manifest-v1-minimal-shape).
 
@@ -52,14 +53,22 @@ Full field list and types: [Maintainer manifest (v1 minimal shape)](../docs/auto
 
 | Key | Tier | Purpose |
 | --- | ---- | ------- |
-| `component` | Required | Canonical CSV token; must match review JSON `component`; file lives at `<slug>/review.yaml`. |
+| `component` | Required | Canonical CSV token; must match review JSON `component`; file lives at `<slug>/audit.manifest.yaml`. |
 | `upstream_tracking` | Recommended | Plain language: apt vs tarball vs API — **not** parsing rules (those stay in `<slug>/audit.sh`). |
-| `aggregation_notes` | Recommended | Human summary: required check IDs, thresholds, what raises **`concerns`** — **not** version-string grammar. |
 | `last_known_upstream` | Optional | Maintainer-known upstream/deb string for drift checks (**interpretation** in the audit script). |
 | `installer_validated` | Optional | `YYYY-MM-DD` (recommended): last time someone validated the installer approach. |
-| `notes` | Optional | Freeform context for reviewers. |
+| `notes` | Optional | Short scalar note only; narrative prose belongs in `audit.notes.md`. |
 
 **Extensions (examples):** audits may read additional **single-line** scalars — for example `installer_staleness_max_days`, `compare_cli_to_github_semver` — defined and documented **per component** in the manifest and `<slug>/audit.sh`, not by a global schema in v1.
+
+## `<slug>/audit.notes.md` (human prose)
+
+Use `builds/<build>/<slug>/audit.notes.md` for maintainer-facing narrative:
+
+- Why checks are required or optional.
+- Interpretation caveats (for example apt lag vs upstream GitHub tags).
+- Expected concern behavior for fixture scenarios.
+- Any longer rationale that would make YAML noisy or parser-hostile.
 
 ## Debug harness (`src/review/review-debug.sh`)
 

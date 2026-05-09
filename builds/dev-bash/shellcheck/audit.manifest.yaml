@@ -1,0 +1,6 @@
+component: shellcheck
+compare_cli_to_github_semver: false
+installer_validated: 2026-05-06
+installer_staleness_max_days: 90
+last_known_upstream: ""
+upstream_tracking: apt package shellcheck; optional GitHub tag fetch for measurement only.

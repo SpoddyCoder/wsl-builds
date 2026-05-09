@@ -22,7 +22,7 @@ source "${_repo_root}/src/review/audit-check-helpers/read-manifest-scalar.sh"
 # shellcheck source=/dev/null
 source "${_repo_root}/src/review/audit-check-helpers/get-audit-check-id.sh"
 
-readonly _manifest="${_script_dir}/review.yaml"
+readonly _manifest="${_script_dir}/audit.manifest.yaml"
 
 readonly requiredCheckIdsJson='["cli-reported-version","deb-installed-version","installer-validated-staleness","upstream-exact-match"]'
 readonly _emptyChecks='[]'
@@ -107,7 +107,7 @@ else
         '{
              audit_check_id: $audit_check_id,
              outcome: "skipped",
-             detail: "compare_cli_to_github_semver is not true in shellcheck/review.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
+             detail: "compare_cli_to_github_semver is not true in shellcheck/audit.manifest.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
          }')"
 fi
 
