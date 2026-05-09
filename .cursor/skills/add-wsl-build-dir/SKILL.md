@@ -57,6 +57,7 @@ source "${REPO_ROOT}/src/builder/install-dispatch.sh"
 - `conf.sh` and `install.sh` are sourced (not executed); `install.sh` has a shebang for consistency and local `shellcheck`; `conf.sh` does not require a shebang.
 - If the user asks for something that sounds like `test-fixture` (noop components, CI-only), read [`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md) and [`test/README.md`](../../../test/README.md) first. `test-fixture` is **not** a README “Build List” build unless the maintainer explicitly asks to list it—it exists for Bats in Docker.
 - When adding the first real component, follow **Component messaging** and the minimal per-component `install.sh` template in the `add-wsl-build-component` skill (open/close `printInfo`, helpers-only status, optional version line).
+- Automated advisory review CLIs live under `review/` (e.g. `./review/component-review.sh`); libraries under `src/review/`. See [`review/README.md`](../../../review/README.md) if you add or change `audit.sh` / manifests.
 
 ## Verification
 

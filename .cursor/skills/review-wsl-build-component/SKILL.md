@@ -5,7 +5,7 @@ description: Review an existing wsl-builds install component against current off
 
 # Review WSL Build Component
 
-This skill covers **manual / vendor** review of an install component (docs, security feeds, conventions). For the **automated advisory** review (`component-review.sh`, `<slug>/audit.sh`, `<slug>/audit.manifest.yaml`, `<slug>/audit.notes.md` under `builds/<build>/<slug>/`), see [`review/README.md`](../../../review/README.md) and [`docs/automated-builds-review-v1-spec.md`](../../../docs/automated-builds-review-v1-spec.md).
+This skill covers **manual / vendor** review of an install component (docs, security feeds, conventions). For the **automated advisory** review (`./review/component-review.sh`, `<slug>/audit.sh`, `<slug>/audit.manifest.yaml`, `<slug>/audit.notes.md` under `builds/<build>/<slug>/`), see [`review/README.md`](../../../review/README.md) and [`docs/automated-builds-review-v1-spec.md`](../../../docs/automated-builds-review-v1-spec.md).
 
 Use this skill to review an existing component and report whether it should be updated. Do not edit files unless the user explicitly asks for implementation after reviewing the summary.
 

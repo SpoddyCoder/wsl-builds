@@ -55,6 +55,7 @@ change-hostname python-ai
 * Each build is very simple, containing only a few related components intended to deliver a single purpose.
 * Pick and choose! Use multiple runs of the build tool to combine components, packages, and features from different builds as you need.
 * Build history is kept in `~/.wsl-build.info`
+* Maintainers: optional advisory component reviews (no installs) are documented in [review/README.md](review/README.md).
 
 ## Build List
 

@@ -29,8 +29,9 @@ Use the component output to spot **security-class issues**, **staleness/upstream
 
 | Piece | Location | Role |
 | ----- | -------- | ---- |
+| Shared bootstrap and printing | `src/common/bootstrap-common.sh`, `src/common/print.sh`, … | Repo root resolution, messaging; review CLIs and **the builder** source these before review libraries. |
 | Component review runner | `review/component-review.sh` | Invoke `<slug>/audit.sh`; validate audit stdout; merge `build`, `component`, `review_completed`; derive **`concerns`**; validate merged JSON; write `<slug>/review.result.json` on success. |
-| Build review runner (planned) | `src/review/build-review.sh` | Walk `VALID_INSTALL_COMPONENTS` in CSV order; soft-skip when `<slug>/audit.sh` is missing; future build-level roll-up and exits. |
+| Build review runner (planned) | `review/build-review.sh` | Walk `VALID_INSTALL_COMPONENTS` in CSV order; soft-skip when `<slug>/audit.sh` is missing; future build-level roll-up and exits. Orchestrator implementation will live under `src/review/` (sourced by this CLI). |
 | Shared path / token helpers | `src/review/runner-common.sh` | Resolve repo root, map CSV token → `<slug>` (hyphens → underscores), paths to install / audit / manifest / result files. |
 | Merged JSON validation | `src/review/merged-result-validation.sh` | Enforce audit measurement envelope; enforce persisted **`concerns`** shape and forbid verdict-only fields after merge. |
 | Concerns derivation | `src/review/checks-rollup.sh`, `src/review/checks-rollup.jq` (`emitConcernsFromChecks`) | From **`checks`** + policy inputs → **`concerns`** object (runner only). |
