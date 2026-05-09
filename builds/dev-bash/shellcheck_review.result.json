@@ -31,10 +31,11 @@
     },
     {
       "audit_check_id": "http-json-upstream-version",
-      "outcome": "inconclusive",
-      "detail": "HTTP fetch failed or gave non-success status for https://api.github.com/repos/koalaman/shellcheck/releases/latest.",
+      "outcome": "passed",
+      "detail": "Fetched upstream value: v0.11.0",
       "evidence": {
-        "upstream_url": "https://api.github.com/repos/koalaman/shellcheck/releases/latest"
+        "upstream_url": "https://api.github.com/repos/koalaman/shellcheck/releases/latest",
+        "http_json_extracted": "v0.11.0"
       }
     },
     {
@@ -50,7 +51,7 @@
   ],
   "build": "dev-bash",
   "component": "shellcheck",
-  "review_completed": "2026-05-08T14:23:05Z",
+  "review_completed": "2026-05-08T19:33:05Z",
   "concerns": {
     "security": false,
     "freshness": false,

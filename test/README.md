@@ -91,9 +91,9 @@ Each row is one `@test`. The `#` column is the stable **RF**… id (same order a
 | RF4 | `policy-none-route excludes custom issue from security/freshness without forcing incomplete` | `custom_issue_policy.routes_by_audit_check_id` `"none"` excludes the `custom` issue cleanly. |
 | RF5 | `skipped-only sets concerns.skipped=true and other concerns false` | One `skipped` row, no required ids → `concerns.skipped=true` only. |
 | RF6 | `validation-fail audit stdout fails validation and writes no result.json` | Forbidden top-level `summary` on audit stdout → runner exits non-zero; `validation_fail_review.result.json` is not created. |
-| RF7 | `review-debug.sh --help prints usage and exits 0` | Maintainer harness emits usage with `Usage: review-debug.sh` + `scenario` mode line. |
-| RF8 | `review-debug.sh scenario happy-path --show-concerns succeeds and prints concerns keys` | End-to-end scenario run via the harness includes `Derived concerns` and all four `concerns` keys. |
-| RF9 | `review-debug.sh scenario validation-fail exits non-zero with diagnostic` | Harness propagates audit measurement validation failure with the same diagnostic string. |
+| RF7 | `review-debug.sh --help prints usage and exits 0` | Maintainer harness emits usage with `Usage: review-debug.sh` + `run-e2e` mode line. |
+| RF8 | `review-debug.sh run-e2e happy-path --show-concerns succeeds and prints concerns keys` | End-to-end run via the harness includes `Derived concerns` and all four `concerns` keys. |
+| RF9 | `review-debug.sh run-e2e validation-fail exits non-zero with diagnostic` | Harness propagates audit measurement validation failure with the same diagnostic string. |
 
 ## Commands catalog (`docker/commands-tests.bats`)
 

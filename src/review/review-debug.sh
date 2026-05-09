@@ -2,16 +2,16 @@
 # Maintainer debug harness for the automated builds review.
 #
 # Modes:
-#   check      — invoke one src/review/audit-checks/<name>.sh module directly
-#   audit      — run one builds/<build>/<slug>_audit.sh (validates measurement envelope)
-#   component  — run ./src/review/component-review.sh against one build + token
-#   scenario   — convenience wrapper: audit then component (default --build review-fixture)
+#   run-check  — invoke one src/review/audit-checks/<name>.sh module directly
+#   run-audit  — run one builds/<build>/<slug>_audit.sh (validates measurement envelope)
+#   run-review — run ./src/review/component-review.sh against one build + token
+#   run-e2e    — convenience wrapper: run-audit then run-review (default --build review-fixture)
 #
 # Output options:
 #   default    — concise summary on stderr; raw JSON on stdout where applicable
 #   --json     — print the relevant JSON payload to stdout (no pretty-print)
 #   --pretty   — pretty-print the JSON payload via jq .
-#   --show-concerns — also derive and print the runner-owned concerns object (audit/scenario)
+#   --show-concerns — also derive and print the runner-owned concerns object (run-audit / run-e2e)
 #
 # Spec refs: docs/automated-builds-review-v1-spec.md
 # Fixture: builds/review-fixture/ (single source for Bats + this harness)
@@ -42,23 +42,25 @@ printDebugUsage() {
 Usage: ${RUNNER_BASENAME} <mode> [options]
 
 Modes:
-  check      --module <name>  [--args '<argv>']        [--json|--pretty]
-  audit      --build <name>   --component <token>      [--show-concerns] [--json|--pretty]
-  component  --build <name>   --component <token>      [--json|--pretty]
-  scenario  [--build <name>]  --component <token>      [--show-concerns] [--json|--pretty]
+  run-check  --module <name>  [--args '<argv>']        [--json|--pretty]
+  run-audit  --build <name>   --component <token>      [--show-concerns] [--json|--pretty]
+  run-review --build <name>   --component <token>      [--json|--pretty]
+  run-e2e   [--build <name>]  --component <token>      [--show-concerns] [--json|--pretty]
   --help
 
 Defaults:
-  scenario --build defaults to '${DEFAULT_FIXTURE_BUILD}'.
+  run-e2e --build defaults to '${DEFAULT_FIXTURE_BUILD}'.
   --module is the catalogue stem under src/review/audit-checks/ (no path, no .sh).
-  check mode always derives audit_check_id from --module via auditCheckIdFromModulePath.
+  run-check always derives audit_check_id from --module via auditCheckIdFromModulePath.
   --args is split by shell word-splitting and passed after the derived check_id.
 
+Legacy aliases (deprecated): check, audit, component, scenario.
+
 Examples:
-  ${RUNNER_BASENAME} check --module cli-reported-version --args 'shellcheck'
-  ${RUNNER_BASENAME} audit --build review-fixture --component happy-path --pretty
-  ${RUNNER_BASENAME} component --build review-fixture --component happy-path --pretty
-  ${RUNNER_BASENAME} scenario --component issue-routed --show-concerns --pretty
+  ${RUNNER_BASENAME} run-check  --module cli-reported-version --args 'shellcheck'
+  ${RUNNER_BASENAME} run-audit  --build review-fixture --component happy-path --pretty
+  ${RUNNER_BASENAME} run-review --build review-fixture --component happy-path --pretty
+  ${RUNNER_BASENAME} run-e2e    --component issue-routed --show-concerns --pretty
 USAGE
 }
 
@@ -137,20 +139,20 @@ runCheckMode() {
                 shift
                 ;;
             *)
-                printError "check: unknown argument '$1'"
+                printError "run-check: unknown argument '$1'"
                 printDebugUsage
                 exit 1
                 ;;
         esac
     done
     if [ -z "${module_name}" ]; then
-        printError "check: --module is required"
+        printError "run-check: --module is required"
         printDebugUsage
         exit 1
     fi
     local module_path="${REVIEW_REPO_ROOT}/src/review/audit-checks/${module_name}.sh"
     if [ ! -f "${module_path}" ]; then
-        printError "check: module not found at ${module_path}"
+        printError "run-check: module not found at ${module_path}"
         exit 1
     fi
     local derived_check_id
@@ -168,7 +170,7 @@ runCheckMode() {
     set -e
     emitJsonPayload "${module_stdout}" "${output_mode}"
     if [ "${module_ec}" -ne 0 ]; then
-        printError "check: module exited ${module_ec}"
+        printError "run-check: module exited ${module_ec}"
         exit "${module_ec}"
     fi
 }
@@ -201,14 +203,14 @@ runAuditMode() {
                 shift
                 ;;
             *)
-                printError "audit: unknown argument '$1'"
+                printError "run-audit: unknown argument '$1'"
                 printDebugUsage
                 exit 1
                 ;;
         esac
     done
     if [ -z "${build_name}" ] || [ -z "${token}" ]; then
-        printError "audit: --build and --component are required"
+        printError "run-audit: --build and --component are required"
         printDebugUsage
         exit 1
     fi
@@ -224,13 +226,13 @@ runAuditMode() {
     set -e
     if [ "${audit_ec}" -ne 0 ]; then
         emitJsonPayload "${audit_stdout}" "${output_mode}"
-        printError "audit: script exited ${audit_ec}"
+        printError "run-audit: script exited ${audit_ec}"
         exit "${audit_ec}"
     fi
     local audit_json
     if ! audit_json=$(jq -ec . <<<"${audit_stdout}" 2>/dev/null); then
         emitJsonPayload "${audit_stdout}" "${output_mode}"
-        printError "audit: stdout is not parseable as one JSON object"
+        printError "run-audit: stdout is not parseable as one JSON object"
         exit 1
     fi
     if ! validateAuditMeasurementJson "${audit_json}"; then
@@ -271,14 +273,14 @@ runComponentMode() {
                 shift
                 ;;
             *)
-                printError "component: unknown argument '$1'"
+                printError "run-review: unknown argument '$1'"
                 printDebugUsage
                 exit 1
                 ;;
         esac
     done
     if [ -z "${build_name}" ] || [ -z "${token}" ]; then
-        printError "component: --build and --component are required"
+        printError "run-review: --build and --component are required"
         printDebugUsage
         exit 1
     fi
@@ -290,13 +292,13 @@ runComponentMode() {
     local runner_ec=$?
     set -e
     if [ "${runner_ec}" -ne 0 ]; then
-        printError "component: component-review.sh exited ${runner_ec}"
+        printError "run-review: component-review.sh exited ${runner_ec}"
         exit "${runner_ec}"
     fi
     local result_path
     result_path=$(pathForReviewResultJson "${build_dir}" "${token}") || exit 1
     if [ ! -f "${result_path}" ]; then
-        printError "component: expected persisted result at ${result_path}"
+        printError "run-review: expected persisted result at ${result_path}"
         exit 1
     fi
     if [ "${output_mode}" = "pretty" ]; then
@@ -334,14 +336,14 @@ runScenarioMode() {
                 shift
                 ;;
             *)
-                printError "scenario: unknown argument '$1'"
+                printError "run-e2e: unknown argument '$1'"
                 printDebugUsage
                 exit 1
                 ;;
         esac
     done
     if [ -z "${token}" ]; then
-        printError "scenario: --component is required"
+        printError "run-e2e: --component is required"
         printDebugUsage
         exit 1
     fi
@@ -353,9 +355,9 @@ runScenarioMode() {
         json) audit_args+=( --json ) ;;
         pretty) audit_args+=( --pretty ) ;;
     esac
-    printInfo "Scenario step 1/2: audit ${build_name}/${token}"
+    printInfo "run-e2e step 1/2: audit ${build_name}/${token}"
     runAuditMode "${audit_args[@]}"
-    printInfo "Scenario step 2/2: component-review ${build_name}/${token}"
+    printInfo "run-e2e step 2/2: component-review ${build_name}/${token}"
     local -a component_args=( --build "${build_name}" --component "${token}" )
     case "${output_mode}" in
         json) component_args+=( --json ) ;;
@@ -376,19 +378,19 @@ main() {
             printDebugUsage
             exit 0
             ;;
-        check)
+        run-check|check)
             requireJqOrExit
             runCheckMode "$@"
             ;;
-        audit)
+        run-audit|audit)
             requireJqOrExit
             runAuditMode "$@"
             ;;
-        component)
+        run-review|component)
             requireJqOrExit
             runComponentMode "$@"
             ;;
-        scenario)
+        run-e2e|scenario)
             requireJqOrExit
             runScenarioMode "$@"
             ;;

@@ -55,25 +55,25 @@ Full field list and types: [Maintainer manifest (v1 minimal shape)](../docs/auto
 
 | Mode | What it does |
 | ---- | ------------ |
-| `check` | Run one `src/review/audit-checks/<name>.sh` module directly; derive `audit_check_id` from the module stem and pass it as argv[1], then append caller `--args`. |
-| `audit` | Run one `builds/<build>/<slug>_audit.sh`, validate its measurement envelope, and print stdout. |
-| `component` | Invoke `./src/review/component-review.sh <build> <component>` and print the persisted `<slug>_review.result.json`. |
-| `scenario` | Convenience wrapper: run `audit` then `component`. Default `--build` is `review-fixture`. |
+| `run-check` | Run one `src/review/audit-checks/<name>.sh` module directly; derive `audit_check_id` from the module stem and pass it as argv[1], then append caller `--args`. |
+| `run-audit` | Run one `builds/<build>/<slug>_audit.sh`, validate its measurement envelope, and print stdout. |
+| `run-review` | Invoke `./src/review/component-review.sh <build> <component>` and print the persisted `<slug>_review.result.json`. |
+| `run-e2e` | Convenience wrapper: run `run-audit` then `run-review`. Default `--build` is `review-fixture`. |
 
 Output options:
 
 - `--json` — print the relevant JSON payload (compact).
 - `--pretty` — pretty-print the JSON payload through `jq .`.
-- `--show-concerns` — also derive and print the runner-owned `concerns` object from the audit envelope (works in `audit` and `scenario`).
+- `--show-concerns` — also derive and print the runner-owned `concerns` object from the audit envelope (works in `run-audit` and `run-e2e`).
 
 Examples:
 
 ```bash
 ./src/review/review-debug.sh --help
-./src/review/review-debug.sh check     --module cli-reported-version --args 'no-such-cli-tool' --pretty
-./src/review/review-debug.sh audit     --build review-fixture --component happy-path --pretty --show-concerns
-./src/review/review-debug.sh component --build review-fixture --component issue-routed --pretty
-./src/review/review-debug.sh scenario  --component policy-none-route --show-concerns --pretty
+./src/review/review-debug.sh run-check  --module cli-reported-version --args 'no-such-cli-tool' --pretty
+./src/review/review-debug.sh run-audit  --build review-fixture --component happy-path --pretty --show-concerns
+./src/review/review-debug.sh run-review --build review-fixture --component issue-routed --pretty
+./src/review/review-debug.sh run-e2e    --component policy-none-route --show-concerns --pretty
 ```
 
 The harness exits non-zero on bad args, missing modules/audit scripts, or runner failures, and forwards the underlying exit code where applicable.

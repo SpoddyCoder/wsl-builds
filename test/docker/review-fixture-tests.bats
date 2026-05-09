@@ -90,11 +90,11 @@ teardown() {
 	run ./src/review/review-debug.sh --help
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Usage:\ review-debug.sh ]]
-	[[ "${output:?}" =~ scenario ]]
+	[[ "${output:?}" =~ run-e2e ]]
 }
 
-@test 'RF8: review-debug.sh scenario happy-path --show-concerns succeeds and prints concerns keys' {
-	run ./src/review/review-debug.sh scenario --component happy-path --show-concerns --pretty
+@test 'RF8: review-debug.sh run-e2e happy-path --show-concerns succeeds and prints concerns keys' {
+	run ./src/review/review-debug.sh run-e2e --component happy-path --show-concerns --pretty
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Derived\ concerns ]]
 	[[ "${output:?}" =~ \"security\" ]]
@@ -103,8 +103,8 @@ teardown() {
 	[[ "${output:?}" =~ \"incomplete\" ]]
 }
 
-@test 'RF9: review-debug.sh scenario validation-fail exits non-zero with diagnostic' {
-	run ./src/review/review-debug.sh scenario --component validation-fail
+@test 'RF9: review-debug.sh run-e2e validation-fail exits non-zero with diagnostic' {
+	run ./src/review/review-debug.sh run-e2e --component validation-fail
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
