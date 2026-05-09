@@ -2,7 +2,9 @@
 # Interactive (or --noninteractive) setup for WSL_BUILDS_CONF (Windows host) or ~/.wsl-builds.conf.
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=src/bootstrap-common.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/src/bootstrap-common.sh"
+resolveRepoRootFromSourcePath "${BASH_SOURCE[0]}" || exit 1
 # shellcheck source=src/print.sh
 source "${REPO_ROOT}/src/print.sh"
 # shellcheck source=src/prompt-yesno.sh

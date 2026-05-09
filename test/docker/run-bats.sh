@@ -4,7 +4,9 @@
 # Repo is copied into the image at build time (no bind mount).
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+# shellcheck source=../../src/bootstrap-common.sh
+source "${SCRIPT_DIR}/../../src/bootstrap-common.sh"
+resolveRepoRootFromSourcePath "${BASH_SOURCE[0]}" "../.." || exit 1
 cd "$REPO_ROOT"
 unset WSL_BUILDS_CONF
 

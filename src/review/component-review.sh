@@ -17,24 +17,7 @@ exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
 # shellcheck source=src/print.sh
 source "${REPO_ROOT}/src/print.sh"
 
-WSL_BUILDS_USER_CONF="${HOME}/.wsl-builds.conf"
-if [ -n "${WSL_BUILDS_CONF:-}" ]; then
-    if [ ! -r "${WSL_BUILDS_CONF}" ]; then
-        printError "WSL_BUILDS_CONF is set but is not readable: ${WSL_BUILDS_CONF}"
-        exit 1
-    fi
-    # shellcheck source=wsl-builds.conf.example
-    source "${WSL_BUILDS_CONF}"
-    printInfo "Using: ${WSL_BUILDS_CONF}"
-else
-    if [ ! -r "${WSL_BUILDS_USER_CONF}" ]; then
-        printError "No wsl-builds.conf found (set WSL_BUILDS_CONF or create ~/.wsl-builds.conf). Run ./configure.sh"
-        exit 1
-    fi
-    # shellcheck source=wsl-builds.conf.example
-    source "${WSL_BUILDS_USER_CONF}"
-    printInfo "Using: ${WSL_BUILDS_USER_CONF}"
-fi
+loadWslBuildsConfOrExit
 
 # shellcheck source=src/builds-root.sh
 source "${REPO_ROOT}/src/builds-root.sh"

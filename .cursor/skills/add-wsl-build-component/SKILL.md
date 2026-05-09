@@ -32,7 +32,7 @@ Build directory `install.sh` files should remain:
 source "${TOOL_DIR}/src/install-dispatch.sh"
 ```
 
-Component iteration and `recordComponentSuccess` live in `src/install-dispatch.sh` (top level when sourced from `./wsl-builder.sh`).
+Component iteration and `recordComponentSuccess` live in `src/install-dispatch.sh` (top level when sourced from `./wsl-builder.sh`). **`./wsl-builder.sh`** sets `TOOL_DIR` to the repository root (same as `REPO_ROOT`); see `src/bootstrap-common.sh` and `docs/standardise-bootstrap-plan.md`.
 
 `declareInstallComponents` (from `src/arg-helpers.sh`) maps component tokens like `postgres-client` to `INSTALL_POSTGRES_CLIENT`. Dispatch sources `builds/<name>/postgres_client/install.sh` for that token (hyphens → underscores in the directory name only).
 

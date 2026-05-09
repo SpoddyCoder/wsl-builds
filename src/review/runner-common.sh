@@ -2,6 +2,9 @@
 # Behaviour matches src/install-dispatch.sh (hyphen → underscore in per-component path segments only).
 # Spec: "Component enumeration (v1): dispatch-aligned", "Paths and filenames (v1)".
 
+# shellcheck source=../bootstrap-common.sh
+source "${BASH_SOURCE[0]%/*}/../bootstrap-common.sh"
+
 # Resolve repository root from a review runner script path (a *.sh file directly under
 # src/review/). Sets and exports REPO_ROOT for child processes.
 #
@@ -11,7 +14,7 @@
 #   exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
 exportRepoRootFromRunnerPath() {
     local runnerPath="${1:?runner script path required}"
-    REPO_ROOT="$(cd "$(dirname "${runnerPath}")/../.." && pwd)" || return 1
+    resolveRepoRootFromSourcePath "${runnerPath}" "../.." || return 1
     export REPO_ROOT
 }
 

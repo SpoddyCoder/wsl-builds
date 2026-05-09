@@ -19,8 +19,9 @@ set -euo pipefail
 #
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
-export REPO_ROOT
+# shellcheck source=../../../src/bootstrap-common.sh
+source "${SCRIPT_DIR}/../../../src/bootstrap-common.sh"
+resolveRepoRootFromAuditScript "${BASH_SOURCE[0]}" || exit 1
 
 # shellcheck source=/dev/null
 source "${REPO_ROOT}/src/review/audit-check-helpers/audit-flow.sh"

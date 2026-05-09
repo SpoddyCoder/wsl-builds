@@ -1,44 +1,31 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-# source user config + helpers
-TOOL_DIR=$(dirname "$0")
+# shellcheck source=src/bootstrap-common.sh
+source "$(cd "$(dirname "$0")" && pwd)/src/bootstrap-common.sh"
+resolveRepoRootFromBuilderPath "$0" || exit 1
+# shellcheck disable=SC2034 # consumed by builds/<name>/install.sh after sourcing
+TOOL_DIR="${REPO_ROOT}"
+
 # shellcheck source=src/print.sh
-source "${TOOL_DIR}"/src/print.sh
-# WSL_BUILDS_CONF overrides; else ~/.wsl-builds.conf. shellcheck source=wsl-builds.conf.example
-WSL_BUILDS_USER_CONF="${HOME}/.wsl-builds.conf"
-if [ -n "${WSL_BUILDS_CONF:-}" ]; then
-    if [ ! -r "${WSL_BUILDS_CONF}" ]; then
-        printError "WSL_BUILDS_CONF is set but not readable: ${WSL_BUILDS_CONF}"
-        exit 1
-    fi
-    # shellcheck source=wsl-builds.conf.example
-    source "${WSL_BUILDS_CONF}"
-    printInfo "Using: ${WSL_BUILDS_CONF}"
-else
-    if [ ! -r "${WSL_BUILDS_USER_CONF}" ]; then
-        printError "No wsl-builds.conf found (set WSL_BUILDS_CONF or create ~/.wsl-builds.conf). Run ./configure.sh"
-        exit 1
-    fi
-    # shellcheck source=wsl-builds.conf.example
-    source "${WSL_BUILDS_USER_CONF}"
-    printInfo "Using: ${WSL_BUILDS_USER_CONF}"
-fi
+source "${REPO_ROOT}/src/print.sh"
+loadWslBuildsConfOrExit
+
 # shellcheck source=src/builds-root.sh
-source "${TOOL_DIR}"/src/builds-root.sh
-resolveBuildsRootFromRepoRoot "${TOOL_DIR}" || exit 1
+source "${REPO_ROOT}/src/builds-root.sh"
+resolveBuildsRootFromRepoRoot "${REPO_ROOT}" || exit 1
 # getFile (install-helpers.sh); optional override in wsl-builds.conf
 CACHE_DIR="${CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/wsl-builds}"
 # shellcheck source=src/arg-helpers.sh
-source "${TOOL_DIR}"/src/arg-helpers.sh
+source "${REPO_ROOT}/src/arg-helpers.sh"
 # shellcheck source=src/install-helpers.sh
-source "${TOOL_DIR}"/src/install-helpers.sh
+source "${REPO_ROOT}/src/install-helpers.sh"
 # shellcheck source=src/shell-rc.sh
-source "${TOOL_DIR}"/src/shell-rc.sh
+source "${REPO_ROOT}/src/shell-rc.sh"
 # shellcheck source=src/wsl-conf.sh
-source "${TOOL_DIR}"/src/wsl-conf.sh
+source "${REPO_ROOT}/src/wsl-conf.sh"
 # shellcheck source=src/build-metadata.sh
-source "${TOOL_DIR}"/src/build-metadata.sh
+source "${REPO_ROOT}/src/build-metadata.sh"
 # shellcheck disable=SC2034 # consumed by src/install-helpers.sh after sourcing
 BUILD_INFO_FILE=~/.wsl-build.info
 

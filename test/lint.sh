@@ -10,10 +10,12 @@
 #   --source-path=SCRIPTDIR  resolve `# shellcheck source=...` directive paths
 #                            relative to the directory of the script being
 #                            linted (independent of the caller's CWD)
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+# shellcheck source=../src/bootstrap-common.sh
+source "${SCRIPT_DIR}/../src/bootstrap-common.sh"
+resolveRepoRootFromSourcePath "${BASH_SOURCE[0]}" ".." || exit 1
 cd "$REPO_ROOT"
 
 if ! command -v shellcheck >/dev/null 2>&1; then
@@ -34,8 +36,12 @@ else
         test/docker/run-bats.sh \
         test/lint.sh \
         src/*.sh \
+        src/review/*.sh \
+        src/review/audit-check-helpers/*.sh \
+        src/review/audit-checks/*.sh \
         builds/*/install.sh \
         builds/*/*/install.sh \
+        builds/*/*/audit.sh \
         builds/*/conf.sh \
         builds/system/apt-mirror-switch \
         builds/system/change-hostname
@@ -49,6 +55,7 @@ else
     fi
 
     # Syntax-only sanity check on Bash-shaped scripts (.bats use bats syntax and are omitted here).
+    shopt -s globstar
     for _lint_bash_file in \
         "${REPO_ROOT}/wsl-builder.sh" \
         "${REPO_ROOT}/configure.sh" \
@@ -56,8 +63,10 @@ else
         "${REPO_ROOT}/test/docker/run-bats.sh" \
         "${REPO_ROOT}/test/lint.sh" \
         "${REPO_ROOT}"/src/*.sh \
+        "${REPO_ROOT}"/src/review/**/*.sh \
         "${REPO_ROOT}"/builds/*/install.sh \
         "${REPO_ROOT}"/builds/*/*/install.sh \
+        "${REPO_ROOT}"/builds/*/*/audit.sh \
         "${REPO_ROOT}"/builds/*/conf.sh \
         "${REPO_ROOT}/builds/system/apt-mirror-switch" \
         "${REPO_ROOT}/builds/system/change-hostname"; do
@@ -65,5 +74,6 @@ else
         bash -n -- "${_lint_bash_file}" || exit "${?}"
     done
     unset -v _lint_bash_file
+    shopt -u globstar
     shopt -u nullglob
 fi

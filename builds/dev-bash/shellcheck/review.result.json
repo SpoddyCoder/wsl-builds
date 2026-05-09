@@ -51,7 +51,7 @@
   ],
   "build": "dev-bash",
   "component": "shellcheck",
-  "review_completed": "2026-05-09T15:22:55Z",
+  "review_completed": "2026-05-09T16:34:00Z",
   "concerns": {
     "security": false,
     "freshness": false,

@@ -20,6 +20,9 @@ Only two rules for PR submissions;
 * `./test/lint.sh path/to/script.sh` — lint specific files
 * Install ShellCheck `./wsl-builder.sh dev-bash shellcheck`
 
+### Entrypoint bootstrap
+* Top-level scripts (`./wsl-builder.sh`, `./configure.sh`, review runners, test drivers) use `set -euo pipefail` where they are the process entrypoint and share [`src/bootstrap-common.sh`](src/bootstrap-common.sh) for repository root resolution and, where user config is loaded, `loadWslBuildsConfOrExit`. Normative checklist and rationale: [`docs/standardise-bootstrap-plan.md`](docs/standardise-bootstrap-plan.md).
+
 ### Testing
 * [Bats](https://bats-core.readthedocs.io/en/stable/) is used as a testing framework for the bash scripts.
 * Bats tests are run in an isolated Docker container for safety and consistency.
