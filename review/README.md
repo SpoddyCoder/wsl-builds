@@ -11,12 +11,11 @@ Each build keeps `conf.sh`, `install.sh`, and `README.md` at the build root. Per
 | Component install (sourced by dispatch) | `builds/<build>/<slug>/install.sh` |
 | Audit script (measurement) | `builds/<build>/<slug>/audit.sh` |
 | Maintainer manifest (maintainer-edited, machine-readable) | `builds/<build>/<slug>/audit.manifest.yaml` |
-| Maintainer notes (human prose) | `builds/<build>/<slug>/audit.notes.md` |
 | Persisted review result (runner-written) | `builds/<build>/<slug>/review.result.json` |
 
-Maintainers edit `audit.manifest.yaml` and `audit.notes.md`; `component-review.sh` does not parse YAML or notes—it runs `audit.sh`, which reads the manifest when needed. Only `review.result.json` is written by the runner.
+Maintainers edit `audit.manifest.yaml`; `component-review.sh` does not parse YAML—it runs `audit.sh`, which reads the manifest when needed. Only `review.result.json` is written by the runner.
 
-`<slug>` is the on-disk directory fragment (CSV hyphens → underscores), so token `mysql-client` uses `mysql_client/install.sh`, `mysql_client/audit.sh`, `mysql_client/audit.manifest.yaml`, `mysql_client/audit.notes.md`, and `mysql_client/review.result.json`.
+`<slug>` is the on-disk directory fragment (CSV hyphens → underscores), so token `mysql-client` uses `mysql_client/install.sh`, `mysql_client/audit.sh`, `mysql_client/audit.manifest.yaml`, and `mysql_client/review.result.json`.
 
 Repository-wide defaults for automated review live in **`review/review-policy.yaml`** (flat `key: value` lines, same mechanical constraints as per-component manifests). Audits resolve values with **component manifest → `review/review-policy.yaml` → fallback constant** in `src/review/audit-check-helpers/review-policy-defaults.sh` (for example `resolveInstallerStalenessMaxDays` for `installer-validated-staleness`).
 
@@ -55,7 +54,7 @@ A **maintainer-edited, machine-readable** YAML file under `builds/<build>/<slug>
 - Update `installer_validated` when you have **verified** the install path still matches reality (and adjust any thresholds your audit uses).
 - Set `last_known_upstream` when you want **exact-match** (or related) checks to mean something concrete; leave empty if that check should **skip**.
 - Add **component-specific** single-line scalars only when `<slug>/audit.sh` reads them (see pilot `shellcheck/audit.manifest.yaml`). Prefer simple `key: value` rows: helpers like `readManifestScalarLine` do not parse folded YAML blocks for machine fields.
-- Keep longer rationale, reviewer prose, and check-story commentary in `<slug>/audit.notes.md` (not in the manifest YAML).
+- Keep the manifest concise; put longer rationale in `<slug>/audit.sh` comments (or a short optional `notes` scalar when a single line suffices).
 
 Full field list and types: [Maintainer manifest (v1 minimal shape)](../docs/automated-builds-review-v1-spec.md#maintainer-manifest-v1-minimal-shape).
 
@@ -67,18 +66,9 @@ Full field list and types: [Maintainer manifest (v1 minimal shape)](../docs/auto
 | `upstream_tracking` | Recommended | Plain language: apt vs tarball vs API — **not** parsing rules (those stay in `<slug>/audit.sh`). |
 | `last_known_upstream` | Optional | Maintainer-known upstream/deb string for drift checks (**interpretation** in the audit script). |
 | `installer_validated` | Optional | `YYYY-MM-DD` (recommended): last time someone validated the installer approach. |
-| `notes` | Optional | Short scalar note only; narrative prose belongs in `audit.notes.md`. |
+| `notes` | Optional | Short maintainer note; keep concise—interpretation belongs in `<slug>/audit.sh`. |
 
 **Extensions (examples):** audits may read additional **single-line** scalars — for example `installer_staleness_max_days` (optional per-component override of [`review/review-policy.yaml`](review-policy.yaml) / resolver fallback), `compare_cli_to_github_semver` — defined and documented in the manifest and `<slug>/audit.sh` where used.
-
-## `<slug>/audit.notes.md` (human prose)
-
-Use `builds/<build>/<slug>/audit.notes.md` for maintainer-facing narrative:
-
-- Why checks are required or optional.
-- Interpretation caveats (for example apt lag vs upstream GitHub tags).
-- Expected concern behavior for fixture scenarios.
-- Any longer rationale that would make YAML noisy or parser-hostile.
 
 ## Debug harness (`review/review-debug.sh`)
 
