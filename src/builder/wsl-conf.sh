@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Add-only, idempotent /etc/wsl.conf edits. Requires src/print.sh (sourced first).
+# Add-only, idempotent /etc/wsl.conf edits. Requires src/common/print.sh (sourced first).
 
 readonly WSL_CONF_PATH=/etc/wsl.conf
 

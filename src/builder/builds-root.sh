@@ -1,8 +1,8 @@
-# shellcheck source=print.sh
+# shellcheck source=../common/print.sh
 # Resolve BUILDS_ROOT after user wsl-builds.conf has been sourced (EXTERNAL_BUILDS_ROOT may be set).
 # Shared by ./wsl-builder.sh and review runners (e.g. src/review/component-review.sh).
 #
-# Caller must source src/print.sh first (uses printError / printInfo).
+# Caller must source src/common/print.sh first (uses printError / printInfo).
 # Sets global BUILDS_ROOT; prints "Using external builds root: …" when EXTERNAL_BUILDS_ROOT is set and valid.
 resolveBuildsRootFromRepoRoot() {
     local repoRoot="${1:?repository root required}"

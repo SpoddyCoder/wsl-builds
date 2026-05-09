@@ -1,5 +1,5 @@
 # Runner validation for merged review result JSON (spec: persisted component artefact — facts bundle).
-# Caller must source src/print.sh (printError) before sourcing this file.
+# Caller must source src/common/print.sh (printError) before sourcing this file.
 
 printMergedValidationFailure() {
     printError "Merged review JSON failed runner validation (see spec: Runner validation after audit (v1))"

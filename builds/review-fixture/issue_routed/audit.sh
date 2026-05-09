@@ -8,8 +8,8 @@ set -euo pipefail
 ########################################################
 # Source Helpers
 #
-# shellcheck source=../../../src/bootstrap-common.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)/src/bootstrap-common.sh"
+# shellcheck source=../../../src/common/bootstrap-common.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)/src/common/bootstrap-common.sh"
 resolveRepoRootFromAuditScript "${BASH_SOURCE[0]}" || exit 1
 
 # shellcheck source=/dev/null

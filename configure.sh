@@ -2,15 +2,15 @@
 # Interactive (or --noninteractive) setup for WSL_BUILDS_CONF (Windows host) or ~/.wsl-builds.conf.
 set -euo pipefail
 
-# shellcheck source=src/bootstrap-common.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/src/bootstrap-common.sh"
+# shellcheck source=src/common/bootstrap-common.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/src/common/bootstrap-common.sh"
 resolveRepoRootFromSourcePath "${BASH_SOURCE[0]}" || exit 1
-# shellcheck source=src/print.sh
-source "${REPO_ROOT}/src/print.sh"
-# shellcheck source=src/prompt-yesno.sh
-source "${REPO_ROOT}/src/prompt-yesno.sh"
-# shellcheck source=src/shell-rc.sh
-source "${REPO_ROOT}/src/shell-rc.sh"
+# shellcheck source=src/common/print.sh
+source "${REPO_ROOT}/src/common/print.sh"
+# shellcheck source=src/common/prompt-yesno.sh
+source "${REPO_ROOT}/src/common/prompt-yesno.sh"
+# shellcheck source=src/builder/shell-rc.sh
+source "${REPO_ROOT}/src/builder/shell-rc.sh"
 
 NONINTERACTIVE=false
 

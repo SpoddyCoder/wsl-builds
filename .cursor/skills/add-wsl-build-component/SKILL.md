@@ -14,7 +14,7 @@ Use this skill when adding or changing a build component in this repository.
 3. Read the target build's `conf.sh`, `install.sh`, and nearby `builds/<name>/<slug>/install.sh` files before editing.
 4. Add the component token to **the third argument (CSV)** of `registerBuildMetadata` in `conf.sh`.
 5. Add `builds/<name>/<slug>/install.sh`, creating the `<slug>` directory as needed. Map hyphens in the token to underscores in `slug` (examples: `docker-desktop` → `docker_desktop/install.sh`; `postgres-server` → `postgres_server/install.sh`).
-6. Leave `install.sh` as the thin `source install-dispatch.sh` stub unless you need build-specific behavior beyond `src/install-dispatch.sh`.
+6. Leave `install.sh` as the thin `source install-dispatch.sh` stub unless you need build-specific behavior beyond `src/builder/install-dispatch.sh`.
 7. Update the repo root `README.md` **Build List** if the component should appear there—add or edit table rows only. Headers are **Build** | **Packages, Frameworks, Tools & Extras** | **Additional Conf**. Read the component `install.sh` first; put the component in the **middle** column (list substantive installs before QoL/DX-only fixes when both exist in one build). Add or update **Additional Conf** when the component reads keys from `wsl-builds.conf` (see `wsl-builds.conf.example`), using `component`: before the keys like the middle column. In **Additional Conf**, use `<br/>` so each line stays about **30 characters** (visual width, approximate) without breaking words or env var names.
    - Keep that file strictly **end-user** focused (install, `./wsl-builder.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc` and `.cursor/rules/bash-component-patterns.mdc` § **Repo root Build List**.
 8. **Optional** `wsl-builds.conf` keys (large downloads / durable caches the user may want on a host path): add **commented examples** to `wsl-builds.conf.example` and document usage in the build’s `README.md`. See `.cursor/rules/bash-component-patterns.mdc`.
@@ -28,13 +28,13 @@ Build directory `install.sh` files should remain:
 
 ```bash
 #!/usr/bin/env bash
-# shellcheck source=src/install-dispatch.sh
-source "${TOOL_DIR}/src/install-dispatch.sh"
+# shellcheck source=src/builder/install-dispatch.sh
+source "${TOOL_DIR}/src/builder/install-dispatch.sh"
 ```
 
-Component iteration and `recordComponentSuccess` live in `src/install-dispatch.sh` (top level when sourced from `./wsl-builder.sh`). **`./wsl-builder.sh`** sets `TOOL_DIR` to the repository root (same as `REPO_ROOT`); see `src/bootstrap-common.sh` and `docs/standardise-bootstrap-plan.md`.
+Component iteration and `recordComponentSuccess` live in `src/builder/install-dispatch.sh` (top level when sourced from `./wsl-builder.sh`). **`./wsl-builder.sh`** sets `TOOL_DIR` to the repository root (same as `REPO_ROOT`); see `src/common/bootstrap-common.sh` and `docs/standardise-bootstrap-plan.md`.
 
-`declareInstallComponents` (from `src/arg-helpers.sh`) maps component tokens like `postgres-client` to `INSTALL_POSTGRES_CLIENT`. Dispatch sources `builds/<name>/postgres_client/install.sh` for that token (hyphens → underscores in the directory name only).
+`declareInstallComponents` (from `src/builder/arg-helpers.sh`) maps component tokens like `postgres-client` to `INSTALL_POSTGRES_CLIENT`. Dispatch sources `builds/<name>/postgres_client/install.sh` for that token (hyphens → underscores in the directory name only).
 
 ## Install Script Guidelines
 
@@ -73,7 +73,7 @@ printInfo "<Name> installed"
 
 ## Verification
 
-Repo-wide `./test/lint.sh` (ShellCheck + `bash -n`; ShellCheck `--shell=bats` on `test/docker/*.bats`). After substantive edits to `src/install-dispatch.sh`, shared helpers, or `test/docker/` (skip for trivial one-off component scripts), run `./test/run-tests.sh` from the repo root (lint + Docker Bats), per [`test/README.md`](../../../test/README.md).
+Repo-wide `./test/lint.sh` (ShellCheck + `bash -n`; ShellCheck `--shell=bats` on `test/docker/*.bats`). After substantive edits to `src/builder/install-dispatch.sh`, shared helpers, or `test/docker/` (skip for trivial one-off component scripts), run `./test/run-tests.sh` from the repo root (lint + Docker Bats), per [`test/README.md`](../../../test/README.md).
 
 If you change any **exact user-visible string** (e.g. `printInfo`/`printWarning`/`printError` lines, `getFile` cache warnings/prompts, usage text), `rg` `test/` and `builds/test-fixture/` (especially `test/docker/*.bats`) for the old wording and update **assertions or golden substrings** in the same PR; stale regex/`grep` checks are a common regression.
 

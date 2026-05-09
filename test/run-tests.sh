@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Lint the repo, build the Bats test image, and run tests in Docker (embedded copy of the repo).
 set -euo pipefail
-# shellcheck source=../src/bootstrap-common.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/src/bootstrap-common.sh"
+# shellcheck source=../src/common/bootstrap-common.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/src/common/bootstrap-common.sh"
 resolveRepoRootFromSourcePath "${BASH_SOURCE[0]}" ".." || exit 1
 cd "$REPO_ROOT"
 

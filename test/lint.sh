@@ -13,8 +13,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=../src/bootstrap-common.sh
-source "${SCRIPT_DIR}/../src/bootstrap-common.sh"
+# shellcheck source=../src/common/bootstrap-common.sh
+source "${SCRIPT_DIR}/../src/common/bootstrap-common.sh"
 resolveRepoRootFromSourcePath "${BASH_SOURCE[0]}" ".." || exit 1
 cd "$REPO_ROOT"
 
@@ -35,7 +35,8 @@ else
         test/run-tests.sh \
         test/docker/run-bats.sh \
         test/lint.sh \
-        src/*.sh \
+        src/common/*.sh \
+        src/builder/*.sh \
         src/review/*.sh \
         src/review/audit-check-helpers/*.sh \
         src/review/audit-checks/*.sh \
@@ -62,7 +63,9 @@ else
         "${REPO_ROOT}/test/run-tests.sh" \
         "${REPO_ROOT}/test/docker/run-bats.sh" \
         "${REPO_ROOT}/test/lint.sh" \
-        "${REPO_ROOT}"/src/*.sh \
+        "${REPO_ROOT}"/src/common/*.sh \
+        "${REPO_ROOT}"/src/builder/*.sh \
+        "${REPO_ROOT}"/src/configure/*.sh \
         "${REPO_ROOT}"/src/review/**/*.sh \
         "${REPO_ROOT}"/builds/*/install.sh \
         "${REPO_ROOT}"/builds/*/*/install.sh \

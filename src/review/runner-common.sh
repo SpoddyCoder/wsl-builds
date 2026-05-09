@@ -1,9 +1,9 @@
 # Shared review primitives: repo layout for runners, CSV token ↔ on-disk filenames.
-# Behaviour matches src/install-dispatch.sh (hyphen → underscore in per-component path segments only).
+# Behaviour matches src/builder/install-dispatch.sh (hyphen → underscore in per-component path segments only).
 # Spec: "Component enumeration (v1): dispatch-aligned", "Paths and filenames (v1)".
 
-# shellcheck source=../bootstrap-common.sh
-source "${BASH_SOURCE[0]%/*}/../bootstrap-common.sh"
+# shellcheck source=../common/bootstrap-common.sh
+source "${BASH_SOURCE[0]%/*}/../common/bootstrap-common.sh"
 
 # Resolve repository root from a review runner script path (a *.sh file directly under
 # src/review/). Sets and exports REPO_ROOT for child processes.
@@ -18,7 +18,7 @@ exportRepoRootFromRunnerPath() {
     export REPO_ROOT
 }
 
-# On-disk slug: same mapping as per-component directories in src/install-dispatch.sh (CSV hyphens → underscores).
+# On-disk slug: same mapping as per-component directories in src/builder/install-dispatch.sh (CSV hyphens → underscores).
 # Used for install path helpers, audit script path (<slug>/audit.sh), and maintainer artefact paths
 # (<slug>/audit.manifest.yaml, <slug>/review.result.json) under each builds/<build>/ directory.
 canonicalCsvTokenToOnDiskSlug() {
@@ -27,7 +27,7 @@ canonicalCsvTokenToOnDiskSlug() {
 }
 
 # Default builds directory under the repo only (<repo>/builds). For runtime resolution including
-# EXTERNAL_BUILDS_ROOT, callers source src/builds-root.sh after user conf + src/print.sh (same as ./wsl-builder.sh).
+# EXTERNAL_BUILDS_ROOT, callers source src/builder/builds-root.sh after user conf + src/common/print.sh (same as ./wsl-builder.sh).
 defaultBuildsDirUnderRepo() {
     local repoRoot="${1:?repository root required}"
     printf '%s/builds\n' "${repoRoot%/}"

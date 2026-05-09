@@ -25,8 +25,8 @@ source "${BASH_SOURCE[0]%/*}/runner-common.sh"
 RUNNER_BASENAME="$(basename "${BASH_SOURCE[0]}")"
 exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
 
-# shellcheck source=src/print.sh
-source "${REPO_ROOT}/src/print.sh"
+# shellcheck source=../common/print.sh
+source "${REPO_ROOT}/src/common/print.sh"
 
 # shellcheck source=merged-result-validation.sh
 source "${BASH_SOURCE[0]%/*}/merged-result-validation.sh"

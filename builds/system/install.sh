@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-# shellcheck source=src/install-dispatch.sh
-source "${TOOL_DIR}/src/install-dispatch.sh"
+# shellcheck source=src/builder/install-dispatch.sh
+source "${TOOL_DIR}/src/builder/install-dispatch.sh"

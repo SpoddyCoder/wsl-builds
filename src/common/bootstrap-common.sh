@@ -1,11 +1,11 @@
 # Shared bootstrap helpers for top-level entrypoints (strict mode lives in callers).
 #
 # Call order (when user config + BUILDS_ROOT are needed):
-#   1. Source this file (path must be resolvable without REPO_ROOT, e.g. "$(cd "$(dirname "$0")" && pwd)/src/bootstrap-common.sh").
+#   1. Source this file (path must be resolvable without REPO_ROOT, e.g. "$(cd "$(dirname "$0")" && pwd)/src/common/bootstrap-common.sh").
 #   2. resolveRepoRoot* / resolveRepoRootFromSourcePath — sets REPO_ROOT (no print helpers required).
-#   3. Source "${REPO_ROOT}/src/print.sh" before any function here that uses printError / printInfo.
+#   3. Source "${REPO_ROOT}/src/common/print.sh" before any function here that uses printError / printInfo.
 #   4. loadWslBuildsConfOrExit — after print.sh.
-#   5. Source "${REPO_ROOT}/src/builds-root.sh" and resolveBuildsRootFromRepoRoot "${REPO_ROOT}" when BUILDS_ROOT / EXTERNAL_BUILDS_ROOT apply.
+#   5. Source "${REPO_ROOT}/src/builder/builds-root.sh" and resolveBuildsRootFromRepoRoot "${REPO_ROOT}" when BUILDS_ROOT / EXTERNAL_BUILDS_ROOT apply.
 #
 # Do not add set -euo pipefail in this file; entrypoints own shell options.
 
@@ -36,7 +36,7 @@ resolveRepoRootFromAuditScript() {
     export REPO_ROOT
 }
 
-# Single implementation for WSL_BUILDS_CONF vs ~/.wsl-builds.conf. Caller must source src/print.sh first.
+# Single implementation for WSL_BUILDS_CONF vs ~/.wsl-builds.conf. Caller must source src/common/print.sh first.
 loadWslBuildsConfOrExit() {
     local userConf="${HOME}/.wsl-builds.conf"
     if [ -n "${WSL_BUILDS_CONF:-}" ]; then

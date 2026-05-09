@@ -17,7 +17,7 @@ Automated checks cover ShellCheck/`bash -n` and Bats tests running in an isolate
 * Builder and review tests use an isolated `$HOME` and copy harness [`docker/wsl-builds.conf`](docker/wsl-builds.conf) to `~/.wsl-builds.conf`. Wizard tests use their own fake `$HOME` only.
 * **Docker harness files:** [`docker/`](docker/) - contains the Docker image and all the files necesary to run the Bats tests in an isolated container.
 
-Before changing `./wsl-builder.sh`, `src/install-dispatch.sh`, shared helpers under `src/`, `configure.sh`, or Bats tests, skim this doc and run `./test/run-tests.sh` when behaviour may regress.
+Before changing `./wsl-builder.sh`, `src/builder/install-dispatch.sh`, shared helpers under `src/`, `configure.sh`, or Bats tests, skim this doc and run `./test/run-tests.sh` when behaviour may regress.
 
 ## Bats catalog (`docker/builder-tests.bats`)
 

@@ -14,13 +14,13 @@ printComponentReviewUsage() {
 RUNNER_BASENAME=$(basename "${BASH_SOURCE[0]}")
 exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
 
-# shellcheck source=src/print.sh
-source "${REPO_ROOT}/src/print.sh"
+# shellcheck source=../common/print.sh
+source "${REPO_ROOT}/src/common/print.sh"
 
 loadWslBuildsConfOrExit
 
-# shellcheck source=src/builds-root.sh
-source "${REPO_ROOT}/src/builds-root.sh"
+# shellcheck source=../builder/builds-root.sh
+source "${REPO_ROOT}/src/builder/builds-root.sh"
 resolveBuildsRootFromRepoRoot "${REPO_ROOT}" || exit 1
 
 if ! command -v jq >/dev/null 2>&1; then

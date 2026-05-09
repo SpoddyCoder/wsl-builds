@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Named regions in ~/.bashrc and ~/.zshrc. Requires src/print.sh (sourced first).
+# Named regions in ~/.bashrc and ~/.zshrc. Requires src/common/print.sh (sourced first).
 
 readonly SHELL_RC_LEGACY_MANAGED_BEGIN='# >>> wsl-builds (managed) >>>'
 readonly SHELL_RC_LEGACY_MANAGED_END='# <<< wsl-builds (managed) <<<'
