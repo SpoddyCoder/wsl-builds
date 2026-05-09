@@ -37,6 +37,7 @@ else
         test/lint.sh \
         src/common/*.sh \
         src/builder/*.sh \
+        src/configure/*.sh \
         src/review/*.sh \
         src/review/audit-check-helpers/*.sh \
         src/review/audit-checks/*.sh \
