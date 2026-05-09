@@ -5,11 +5,11 @@
 # shellcheck source=../common/bootstrap-common.sh
 source "${BASH_SOURCE[0]%/*}/../common/bootstrap-common.sh"
 
-# Resolve repository root from a path under src/review/ (e.g. *.impl.sh). Sets and exports
+# Resolve repository root from a path under src/review/ (e.g. *-main.sh). Sets and exports
 # REPO_ROOT for child processes. Review CLIs under review/ use resolveRepoRootFromSourcePath
 # with ".." instead.
 #
-# Usage (from src/review/*.impl.sh after this file is sourced, when needed):
+# Usage (from src/review/*-main.sh after this file is sourced, when needed):
 #   # shellcheck source=runner-common.sh
 #   source "${BASH_SOURCE[0]%/*}/runner-common.sh"
 #   exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"

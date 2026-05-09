@@ -30,7 +30,7 @@ source "${REPO_ROOT}/src/common/print.sh"
 
 RUNNER_BASENAME="$(basename "${BASH_SOURCE[0]}")"
 
-# shellcheck source=../src/review/review-debug.impl.sh
-source "${REPO_ROOT}/src/review/review-debug.impl.sh"
+# shellcheck source=../src/review/review-debug-main.sh
+source "${REPO_ROOT}/src/review/review-debug-main.sh"
 
 reviewDebugMain "$@"

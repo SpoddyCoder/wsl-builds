@@ -25,7 +25,7 @@ fi
 
 RUNNER_BASENAME=$(basename "${BASH_SOURCE[0]}")
 
-# shellcheck source=../src/review/component-review.impl.sh
-source "${REPO_ROOT}/src/review/component-review.impl.sh"
+# shellcheck source=../src/review/component-review-main.sh
+source "${REPO_ROOT}/src/review/component-review-main.sh"
 
 componentReviewMain "$@"

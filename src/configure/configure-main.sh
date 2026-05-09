@@ -1,4 +1,4 @@
-# Configure wizard implementation: sourced by ./configure.sh after bootstrap and print.sh.
+# Configure main implementation (configure-main.sh): sourced by ./configure.sh after bootstrap and print.sh.
 
 # shellcheck source=src/common/prompt-yesno.sh
 source "${REPO_ROOT}/src/common/prompt-yesno.sh"

@@ -7,8 +7,8 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/src/common/bootstrap-commo
 resolveRepoRootFromSourcePath "${BASH_SOURCE[0]}" || exit 1
 # shellcheck source=src/common/print.sh
 source "${REPO_ROOT}/src/common/print.sh"
-# shellcheck source=src/configure/wizard.sh
-source "${REPO_ROOT}/src/configure/wizard.sh"
+# shellcheck source=src/configure/configure-main.sh
+source "${REPO_ROOT}/src/configure/configure-main.sh"
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     mainWizard "$@"

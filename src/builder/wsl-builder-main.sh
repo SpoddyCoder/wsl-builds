@@ -1,4 +1,4 @@
-# Builder orchestration: sourced by ./wsl-builder.sh after bootstrap, REPO_ROOT, and print.sh.
+# Builder main implementation (wsl-builder-main.sh): sourced by ./wsl-builder.sh after bootstrap, REPO_ROOT, and print.sh.
 
 loadWslBuildsConfOrExit
 

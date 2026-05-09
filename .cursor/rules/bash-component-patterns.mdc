@@ -8,7 +8,7 @@ alwaysApply: false
 
 - Keep scripts Bash-first and consistent with nearby files; avoid introducing heavier tooling for simple install steps.
 - Name **all Bash functions in camelCase** (no `snake_case` or leading underscores); match helpers in [`src/`](/src/) (e.g. `registerBuildMetadata`, `showUsage`, `ensureShellRcRegion`, `ensureWslConfIniLine`, `getFile`, `printInfo`).
-- **`src/` domains:** `src/common/` (bootstrap, `print.sh`, shared prompts), `src/builder/` (dispatch, install helpers, `builds-root.sh`), `src/configure/` (wizard), `src/review/` (review libraries, validation, `audit-checks/` modules). Maintainer-facing review **CLIs** live under `review/` (`component-review.sh`, `review-debug.sh`); do not add new runnable review entrypoints under `src/review/`.
+- **`src/` domains:** `src/common/` (bootstrap, `print.sh`, shared prompts), `src/builder/` (dispatch, install helpers, `builds-root.sh`), `src/configure/` (`configure-main.sh`, wizard flow), `src/review/` (review libraries, validation, `audit-checks/` modules). Maintainer-facing review **CLIs** live under `review/` (`component-review.sh`, `review-debug.sh`); do not add new runnable review entrypoints under `src/review/`.
 
 ## Metadata and dispatch (`conf.sh`, `install.sh`)
 

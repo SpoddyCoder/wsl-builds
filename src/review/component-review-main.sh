@@ -1,4 +1,4 @@
-# Component review runner implementation (sourced from review/component-review.sh).
+# Component review main implementation (sourced from review/component-review.sh).
 # Requires: REPO_ROOT, RUNNER_BASENAME, print helpers, loadWslBuildsConfOrExit,
 # resolveBuildsRootFromRepoRoot, jq on PATH.
 

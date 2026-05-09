@@ -1,4 +1,4 @@
-# Maintainer debug harness implementation (sourced from review/review-debug.sh).
+# Review debug main implementation (sourced from review/review-debug.sh).
 # Requires: REPO_ROOT, RUNNER_BASENAME, print helpers, jq on PATH for most modes.
 
 # shellcheck source=runner-common.sh
