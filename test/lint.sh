@@ -34,7 +34,8 @@ else
         test/docker/run-bats.sh \
         test/lint.sh \
         src/*.sh \
-        builds/*/install*.sh \
+        builds/*/install.sh \
+        builds/*/*/install.sh \
         builds/*/conf.sh \
         builds/system/apt-mirror-switch \
         builds/system/change-hostname
@@ -55,7 +56,8 @@ else
         "${REPO_ROOT}/test/docker/run-bats.sh" \
         "${REPO_ROOT}/test/lint.sh" \
         "${REPO_ROOT}"/src/*.sh \
-        "${REPO_ROOT}"/builds/*/install*.sh \
+        "${REPO_ROOT}"/builds/*/install.sh \
+        "${REPO_ROOT}"/builds/*/*/install.sh \
         "${REPO_ROOT}"/builds/*/conf.sh \
         "${REPO_ROOT}/builds/system/apt-mirror-switch" \
         "${REPO_ROOT}/builds/system/change-hostname"; do

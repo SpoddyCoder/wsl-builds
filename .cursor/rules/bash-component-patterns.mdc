@@ -12,10 +12,10 @@ alwaysApply: false
 ## Metadata and dispatch (`conf.sh`, `install.sh`)
 
 - `conf.sh` calls `registerBuildMetadata` ([`src/build-metadata.sh`](../../src/build-metadata.sh)): `BUILD_DIR_NAME` (usually basename of `builds/<name>/`), `BUILD_VER`, CSV of valid components, `NUM_ADDITIONAL_ARGS`.
-- **ai-resources:** optional `AI_RESOURCES_PROJECT_DIR` in user `wsl-builds.conf`; `conf.sh` sets `PROJECT_DIR` (default `$HOME/ai-resources`) for `install_<component>.sh`.
-- Add new components to the **third argument** CSV. Hyphens in tokens map to underscores in filenames (`mysql-client` → `install_mysql_client.sh`).
+- **ai-resources:** optional `AI_RESOURCES_PROJECT_DIR` in user `wsl-builds.conf`; `conf.sh` sets `PROJECT_DIR` (default `$HOME/ai-resources`) for per-component `builds/<name>/<slug>/install.sh` scripts.
+- Add new components to the **third argument** CSV. Hyphens in tokens map to underscores in the per-component directory name (`mysql-client` → `builds/<name>/mysql_client/install.sh`).
 - `install.sh` is only `source "${TOOL_DIR}/src/install-dispatch.sh"`. The dispatch loop runs **at top level** in `src/install-dispatch.sh` (no wrapper) so **the builder** (`./wsl-builder.sh`) stays the entrypoint and `$@` propagates when `install.sh` is sourced. **Do not** add per-component `if`/`source` in `install.sh` or duplicate dispatch logic.
-- After each `install_<component>.sh` finishes, **`src/install-dispatch.sh`** calls `recordComponentSuccess` with the **canonical component token (hyphens preserved)** so `~/.wsl-build.info` lines stay stable and `BUILD_UPDATED=true`; partial success is still recorded if a later component fails. **Do not** call `recordComponentSuccess` inside `install_<component>.sh`.
+- After each per-component `install.sh` finishes, **`src/install-dispatch.sh`** calls `recordComponentSuccess` with the **canonical component token (hyphens preserved)** so `~/.wsl-build.info` lines stay stable and `BUILD_UPDATED=true`; partial success is still recorded if a later component fails. **Do not** call `recordComponentSuccess` inside `builds/<name>/<slug>/install.sh`.
 - **`isComponentInstalled`:** checks `~/.wsl-build.info`; respects `--force`. Returns 0 if already installed, 1 if not (or when `--force` skips the short-circuit).
 - **`warnComponentAlreadyInstalled`:** use for the standard “already installed” warning (includes `--force` hint).
 
@@ -23,7 +23,7 @@ alwaysApply: false
 
 - `~/.bashrc` / `~/.zshrc`: use `ensureShellRcRegion`, `replaceManagedShellRcRegion`, or `removeManagedShellRcRegion` from [`src/shell-rc.sh`](../../src/shell-rc.sh) (named `wsl-builds:<id>` blocks), not ad hoc `grep` + `>>`.
 - `/etc/wsl.conf`: use `ensureWslConfIniLine` from [`src/wsl-conf.sh`](../../src/wsl-conf.sh) for idempotent section lines (with `sudo`).
-- Put component logic in `install_<component>.sh` (underscore filename as above).
+- Put component logic in `builds/<name>/<slug>/install.sh` (`slug` = token with hyphens mapped to underscores).
 
 ## apt (Ubuntu)
 
@@ -32,7 +32,7 @@ alwaysApply: false
 ## Downloads, caches, `set -e`
 
 - **`getFile`:** caches under `CACHE_DIR`; uses a `/tmp` working area—failed runs do not require manual cleanup across reboot. Pair with **`cleanupGetFiles`** after installers when you want explicit cleanup.
-- **Large / durable caches:** optional `wsl-builds.conf` vars (**UPPER_SNAKE_CASE**, tool-scoped), sourced by **the builder** before installs; gate with `[ -n "${VAR:-}" ]`; add commented examples to `wsl-builds.conf.example` and document in the build `README.md`. See `builds/ai-resources/install_sg3.sh`, `builds/ai/install_ollama.sh`.
+- **Large / durable caches:** optional `wsl-builds.conf` vars (**UPPER_SNAKE_CASE**, tool-scoped), sourced by **the builder** before installs; gate with `[ -n "${VAR:-}" ]`; add commented examples to `wsl-builds.conf.example` and document in the build `README.md`. See `builds/ai-resources/sg3/install.sh`, `builds/ai/ollama/install.sh`.
 - **`./wsl-builder.sh`** uses `set -e`—avoid broad error swallowing; you generally cannot rely on in-script cleanup after a failed command.
 
 ## Component messaging
@@ -42,12 +42,12 @@ alwaysApply: false
 - **Close:** `printInfo "<Name> installed"` — past tense, no “successfully”, no ellipsis, no trailing period; **last** user-facing status after any verification.
 - **Channels:** `printInfo` / `printWarning` / `printError` for status; `echo` only for heredocs / file payloads.
 - **Optional version:** `printInfo "<Name> version: $(cmd …)"` (or first line). No `2>/dev/null || echo …` fallbacks.
-- **Golden example:** [`builds/dev-js/install_node.sh`](../../builds/dev-js/install_node.sh).
+- **Golden example:** [`builds/dev-js/node/install.sh`](../../builds/dev-js/node/install.sh).
 - **Tests:** changing fixed `print*` / prompts / usage text can break `test/docker/*.bats`. `rg` `test/` and `builds/test-fixture/` for old substrings and update in the **same change**; run `./test/run-tests.sh` after substantive `src/` or `./wsl-builder.sh` messaging edits.
 
 ## Optional: disable start on boot (systemd)
 
-Vendor installs may `systemctl enable` a unit. After substantive install (before final `printInfo "<Name> installed"`), you may offer an opt-out: gate on `command -v systemctl` and the unit, **`promptYesNo`**, then `sudo systemctl disable --now <unit>`. Components with multiple systemd units (e.g. Docker) keep `disable --now` order **in the component**—no generic `src/` helper until several callers match. EOF/non-interactive skips disable (CI-safe). **Do not** add without the user agreeing in that task. Examples: [`builds/ai/install_ollama.sh`](../../builds/ai/install_ollama.sh), [`builds/devops/install_docker.sh`](../../builds/devops/install_docker.sh), [`builds/db/install_mysql_server.sh`](../../builds/db/install_mysql_server.sh), [`builds/db/install_postgres_server.sh`](../../builds/db/install_postgres_server.sh). Document new prompts in the build `README.md`; check `test/` for assertions on new strings.
+Vendor installs may `systemctl enable` a unit. After substantive install (before final `printInfo "<Name> installed"`), you may offer an opt-out: gate on `command -v systemctl` and the unit, **`promptYesNo`**, then `sudo systemctl disable --now <unit>`. Components with multiple systemd units (e.g. Docker) keep `disable --now` order **in the component**—no generic `src/` helper until several callers match. EOF/non-interactive skips disable (CI-safe). **Do not** add without the user agreeing in that task. Examples: [`builds/ai/ollama/install.sh`](../../builds/ai/ollama/install.sh), [`builds/devops/docker/install.sh`](../../builds/devops/docker/install.sh), [`builds/db/mysql_server/install.sh`](../../builds/db/mysql_server/install.sh), [`builds/db/postgres_server/install.sh`](../../builds/db/postgres_server/install.sh). Document new prompts in the build `README.md`; check `test/` for assertions on new strings.
 
 ## Repo root Build List (`README.md`)
 
@@ -55,9 +55,9 @@ Vendor installs may `systemctl enable` a unit. After substantive install (before
 
 - When user-visible builds or components change, update the **Build List** table. Keep that README for **end users** (install, `./wsl-builder.sh`, the list). **No** meta lines about how the table is written (“one row per build”, “bold means …”). Table styling conventions belong in rules, not user-facing prose. See [readme-user-facing.mdc](readme-user-facing.mdc) for tone.
 - **Columns:** **Build** | **Packages, Frameworks, Tools & Extras** | **Additional Conf**.
-- **Middle column:** every component (bold token, short description). Read each `install_<component>.sh` first. List **substantive installs / framework scaffolds** before **QoL, wrappers, DX-only layers, workaround fixes**. *Substantive:* OS/vendor packages (runtimes, SDKs, CUDA, DBs, `docker`, `awscli`, infra CLIs, `x11` / `smb` / `nfs` / `systemd` / `wslu`), framework installers (`react`, `nextjs`, **ai-resources** pieces), `essentials` / `update`, `node` / `nvm` / `yarn`, `python3` / `conda`, `shellcheck`, `bats`, `hugo`, `jekyll`, `ollama`. *QoL / thin / fix:* e.g. dev-js `essentials` (npm globals), `qol`, `fstab`, `vscode`, `cursor`, devops-aws `qol`, `cuda-wsl-lib-symlinks`. Mixed components (e.g. `cursor`): order by **primary purpose**, not by whether `apt` appears.
+- **Middle column:** every component (bold token, short description). Read each `builds/<name>/<slug>/install.sh` first. List **substantive installs / framework scaffolds** before **QoL, wrappers, DX-only layers, workaround fixes**. *Substantive:* OS/vendor packages (runtimes, SDKs, CUDA, DBs, `docker`, `awscli`, infra CLIs, `x11` / `smb` / `nfs` / `systemd` / `wslu`), framework installers (`react`, `nextjs`, **ai-resources** pieces), `essentials` / `update`, `node` / `nvm` / `yarn`, `python3` / `conda`, `shellcheck`, `bats`, `hugo`, `jekyll`, `ollama`. *QoL / thin / fix:* e.g. dev-js `essentials` (npm globals), `qol`, `fstab`, `vscode`, `cursor`, devops-aws `qol`, `cuda-wsl-lib-symlinks`. Mixed components (e.g. `cursor`): order by **primary purpose**, not by whether `apt` appears.
 - **Additional Conf:** `wsl-builds.conf` keys this build reads (see `wsl-builds.conf.example`). Prefix each group with **`component`:** like the middle column. Separate groups with `<br/>`. Target **~30 characters per visual line**; add `<br/>` without **splitting tokens** (no breaks inside env names, `GIT_*`, or bold labels). One key shared by all components: comma-separated bold tokens before the colon (e.g. **ai-resources**: **sg3**, **lsd**, **spleeter**, **rudalle**). Empty cell if none. Omit builder-global keys (`CACHE_DIR`, `EXTERNAL_BUILDS_ROOT`, …) from rows unless there is a strong reason to repeat.
 
 ## Test fixture
 
-- **`builds/test-fixture/`** is **testing-only**: noop `install_<component>.sh`. See [`builds/test-fixture/README.md`](../../builds/test-fixture/README.md) and [`test/README.md`](../../test/README.md).
+- **`builds/test-fixture/`** is **testing-only**: noop per-component `install.sh` files. See [`builds/test-fixture/README.md`](../../builds/test-fixture/README.md) and [`test/README.md`](../../test/README.md).

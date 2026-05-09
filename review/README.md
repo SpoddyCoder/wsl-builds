@@ -4,10 +4,11 @@ The automated review **does not install anything** and **is not a CI gate** unle
 
 ## File layout
 
-Each build keeps its install scripts (`conf.sh`, `install.sh`, `install_<slug>.sh`) at the build root, unchanged. Review-only artefacts move into a per-component subdirectory `builds/<build>/<slug>/`:
+Each build keeps `conf.sh`, `install.sh`, and `README.md` at the build root. Per-component install and review files share `builds/<build>/<slug>/` (CSV hyphens → underscores in `slug`):
 
 | Role | Path |
 | ---- | ---- |
+| Component install (sourced by dispatch) | `builds/<build>/<slug>/install.sh` |
 | Audit script (measurement) | `builds/<build>/<slug>/audit.sh` |
 | Maintainer manifest (maintainer-edited, machine-readable) | `builds/<build>/<slug>/audit.manifest.yaml` |
 | Maintainer notes (human prose) | `builds/<build>/<slug>/audit.notes.md` |
@@ -15,7 +16,7 @@ Each build keeps its install scripts (`conf.sh`, `install.sh`, `install_<slug>.s
 
 Maintainers edit `audit.manifest.yaml` and `audit.notes.md`; `component-review.sh` does not parse YAML or notes—it runs `audit.sh`, which reads the manifest when needed. Only `review.result.json` is written by the runner.
 
-`<slug>` is the same on-disk fragment as `install_<slug>.sh` (CSV hyphens → underscores), so token `mysql-client` keeps `install_mysql_client.sh` at the build root and adds `mysql_client/audit.sh`, `mysql_client/audit.manifest.yaml`, `mysql_client/audit.notes.md`, and `mysql_client/review.result.json` under it.
+`<slug>` is the on-disk directory fragment (CSV hyphens → underscores), so token `mysql-client` uses `mysql_client/install.sh`, `mysql_client/audit.sh`, `mysql_client/audit.manifest.yaml`, `mysql_client/audit.notes.md`, and `mysql_client/review.result.json`.
 
 ## Facts vs policy
 
@@ -43,7 +44,7 @@ Set `REPO_ROOT` to the git root of this repository and `export` it before sourci
 
 ## `<slug>/audit.manifest.yaml` (maintainer manifest)
 
-A **maintainer-edited, machine-readable** YAML file under `builds/<build>/<slug>/audit.manifest.yaml`, where `<slug>` matches the install basename (hyphens in the CSV token become underscores, same as `install_<slug>.sh`). Keep it concise and scalar-oriented for values **`audit.sh`** reads directly. **`review.result.json`** is **runner-written** (last merged run); do not hand-edit that file.
+A **maintainer-edited, machine-readable** YAML file under `builds/<build>/<slug>/audit.manifest.yaml`, where `<slug>` is the same directory name as the per-component install path (hyphens in the CSV token become underscores). Keep it concise and scalar-oriented for values **`audit.sh`** reads directly. **`review.result.json`** is **runner-written** (last merged run); do not hand-edit that file.
 
 ### What maintainers should do
 

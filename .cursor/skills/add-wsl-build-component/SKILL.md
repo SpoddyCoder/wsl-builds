@@ -11,14 +11,14 @@ Use this skill when adding or changing a build component in this repository.
 
 1. Read repo root [`README.md`](../../../README.md) and [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) **in full** (entire files) before editing so the Build List, tone, and contributor expectations stay aligned.
 2. Identify the target build directory under `builds/<name>/`. Valid build directories contain both `conf.sh` and `install.sh`, such as `builds/dev`, `builds/dev-js`, `builds/system`, or `builds/devops`. The `builds/test-fixture` directory is **testing-only** ([`builds/test-fixture/README.md`](../../../builds/test-fixture/README.md); noop harness for CI/agents)—do **not** use it like a production build unless explicitly asked.
-3. Read the target build's `conf.sh`, `install.sh`, and nearby `install_<component>.sh` files before editing.
+3. Read the target build's `conf.sh`, `install.sh`, and nearby `builds/<name>/<slug>/install.sh` files before editing.
 4. Add the component token to **the third argument (CSV)** of `registerBuildMetadata` in `conf.sh`.
-5. Add `install_<name>.sh`, mapping hyphens to underscores in the basename (examples: `docker-desktop` → `install_docker_desktop.sh`; `postgres-server` → `install_postgres_server.sh`).
+5. Add `builds/<name>/<slug>/install.sh`, creating the `<slug>` directory as needed. Map hyphens in the token to underscores in `slug` (examples: `docker-desktop` → `docker_desktop/install.sh`; `postgres-server` → `postgres_server/install.sh`).
 6. Leave `install.sh` as the thin `source install-dispatch.sh` stub unless you need build-specific behavior beyond `src/install-dispatch.sh`.
-7. Update the repo root `README.md` **Build List** if the component should appear there—add or edit table rows only. Headers are **Build** | **Packages, Frameworks, Tools & Extras** | **Additional Conf**. Read `install_<component>.sh` first; put the component in the **middle** column (list substantive installs before QoL/DX-only fixes when both exist in one build). Add or update **Additional Conf** when the component reads keys from `wsl-builds.conf` (see `wsl-builds.conf.example`), using `component`: before the keys like the middle column. In **Additional Conf**, use `<br/>` so each line stays about **30 characters** (visual width, approximate) without breaking words or env var names.
+7. Update the repo root `README.md` **Build List** if the component should appear there—add or edit table rows only. Headers are **Build** | **Packages, Frameworks, Tools & Extras** | **Additional Conf**. Read the component `install.sh` first; put the component in the **middle** column (list substantive installs before QoL/DX-only fixes when both exist in one build). Add or update **Additional Conf** when the component reads keys from `wsl-builds.conf` (see `wsl-builds.conf.example`), using `component`: before the keys like the middle column. In **Additional Conf**, use `<br/>` so each line stays about **30 characters** (visual width, approximate) without breaking words or env var names.
    - Keep that file strictly **end-user** focused (install, `./wsl-builder.sh`, the list itself); do not add meta lines about table formatting or maintenance. See `.cursor/rules/readme-user-facing.mdc` and `.cursor/rules/bash-component-patterns.mdc` § **Repo root Build List**.
 8. **Optional** `wsl-builds.conf` keys (large downloads / durable caches the user may want on a host path): add **commented examples** to `wsl-builds.conf.example` and document usage in the build’s `README.md`. See `.cursor/rules/bash-component-patterns.mdc`.
-9. **Start on boot:** After you know what the component installs, check whether it enables a **systemd unit** (or equivalent) that **starts automatically on boot**. If yes, and the component script does not already offer an optional disable step, **ask the user** in chat whether to add the standard `promptYesNo` + `sudo systemctl disable --now <unit>` pattern (see `.cursor/rules/bash-component-patterns.mdc`, *Optional: disable start on boot*, and `builds/ai/install_ollama.sh`). Components with multiple systemd units encode `disable --now` and ordering locally—do not introduce a generic `src/` helper without several identical callers. Only implement after they agree—do not assume every daemon should be disabled by default.
+9. **Start on boot:** After you know what the component installs, check whether it enables a **systemd unit** (or equivalent) that **starts automatically on boot**. If yes, and the component script does not already offer an optional disable step, **ask the user** in chat whether to add the standard `promptYesNo` + `sudo systemctl disable --now <unit>` pattern (see `.cursor/rules/bash-component-patterns.mdc`, *Optional: disable start on boot*, and `builds/ai/ollama/install.sh`). Components with multiple systemd units encode `disable --now` and ordering locally—do not introduce a generic `src/` helper without several identical callers. Only implement after they agree—do not assume every daemon should be disabled by default.
 10. **Automated advisory review (optional):** If you add or change `<slug>/audit.sh`, `<slug>/audit.manifest.yaml`, `<slug>/audit.notes.md` (review-only files under `builds/<build>/<slug>/`), or shared code under `src/review/`, follow [`review/README.md`](../../../review/README.md) and [`docs/automated-builds-review-v1-spec.md`](../../../docs/automated-builds-review-v1-spec.md); host tools and `CONTRIBUTING.md` expectations apply.
 11. Run Bash syntax checks for touched shell files.
 
@@ -34,7 +34,7 @@ source "${TOOL_DIR}/src/install-dispatch.sh"
 
 Component iteration and `recordComponentSuccess` live in `src/install-dispatch.sh` (top level when sourced from `./wsl-builder.sh`).
 
-`declareInstallComponents` (from `src/arg-helpers.sh`) maps component tokens like `postgres-client` to `INSTALL_POSTGRES_CLIENT`. Filename mapping for `source` targets is the underscore form (`install_postgres_client.sh`).
+`declareInstallComponents` (from `src/arg-helpers.sh`) maps component tokens like `postgres-client` to `INSTALL_POSTGRES_CLIENT`. Dispatch sources `builds/<name>/postgres_client/install.sh` for that token (hyphens → underscores in the directory name only).
 
 ## Install Script Guidelines
 
@@ -48,14 +48,14 @@ Full conventions: [`.cursor/rules/bash-component-patterns.mdc`](../../rules/bash
 - Use `getFile` for downloads so files are cached through `CACHE_DIR`.
 - Call `cleanupGetFiles` after using downloaded installers when cleanup is appropriate.
 - Prefer existing helper functions in `src/` over new helpers.
-- Do not call `recordComponentSuccess` inside `install_<component>.sh`; the dispatcher records success after the script completes.
+- Do not call `recordComponentSuccess` inside per-component `install.sh`; the dispatcher records success after the script completes.
 - Avoid broad error handling that hides failures; **the builder** (`./wsl-builder.sh`) runs with `set -e`.
 - Preserve the repository's simple Bash style unless the user asks for a larger refactor.
-- If the user agrees to a **disable start-on-boot** prompt, follow `.cursor/rules/bash-component-patterns.mdc` (*Optional: disable start on boot*) and mirror `builds/ai/install_ollama.sh` (and multi-unit examples such as `builds/devops/install_docker.sh`): gate on `systemctl` and the unit(s), use `promptYesNo`, run `sudo systemctl disable --now` on yes (stop now + no boot), confirm with `printInfo`; document wording in the build `README.md`.
+- If the user agrees to a **disable start-on-boot** prompt, follow `.cursor/rules/bash-component-patterns.mdc` (*Optional: disable start on boot*) and mirror `builds/ai/ollama/install.sh` (and multi-unit examples such as `builds/devops/docker/install.sh`): gate on `systemctl` and the unit(s), use `promptYesNo`, run `sudo systemctl disable --now` on yes (stop now + no boot), confirm with `printInfo`; document wording in the build `README.md`.
 
-**Golden example:** [`builds/dev-js/install_node.sh`](../../../builds/dev-js/install_node.sh).
+**Golden example:** [`builds/dev-js/node/install.sh`](../../../builds/dev-js/node/install.sh).
 
-### Minimal `install_<component>.sh` template
+### Minimal per-component `install.sh` template
 
 Replace `<Name>` and the body; add mid-step `printInfo` as needed. Pair `getFile` with `cleanupGetFiles` when you download.
 
@@ -84,7 +84,7 @@ bash -n wsl-builder.sh
 bash -n src/*.sh
 bash -n builds/<build-dir>/conf.sh
 bash -n builds/<build-dir>/install.sh
-bash -n builds/<build-dir>/install_<component>.sh
+bash -n builds/<build-dir>/<slug>/install.sh
 ```
 
 If `shellcheck` is installed, run it on the touched shell files and fix clear issues that fit the existing style.

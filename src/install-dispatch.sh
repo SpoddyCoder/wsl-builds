@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Sourced by each `<build-dir>/install.sh` (which `wsl-builder.sh` sources). Do not wrap this
-# loop in a function: SIGINT during `source …/install_<comp>.sh` + nested function frames
+# loop in a function: SIGINT during `source …/<slug>/install.sh` + nested function frames
 # has triggered Bash `pop_var_context` noise on some versions.
 #
 # Inherited when sourced: `VALID_INSTALL_COMPONENTS`, `BUILD_DIR`, `INSTALL_*`, and `$@`
@@ -14,8 +14,8 @@ for dispatch_install_component_name in "${dispatch_install_component_names[@]}";
         continue
     fi
     if ! isComponentInstalled "${dispatch_install_component_name}" "$@"; then
-        dispatch_install_component_script_path="${BUILD_DIR}/install_${dispatch_install_component_slug}.sh"
-        # shellcheck source=/dev/null # install_<component>.sh resolved from $VALID_INSTALL_COMPONENTS
+        dispatch_install_component_script_path="${BUILD_DIR}/${dispatch_install_component_slug}/install.sh"
+        # shellcheck source=/dev/null # per-<slug>/install.sh resolved from $VALID_INSTALL_COMPONENTS
         source "${dispatch_install_component_script_path}"
         recordComponentSuccess "${dispatch_install_component_name}"
     else

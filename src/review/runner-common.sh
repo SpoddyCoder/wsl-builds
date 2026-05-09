@@ -1,5 +1,5 @@
 # Shared review primitives: repo layout for runners, CSV token ↔ on-disk filenames.
-# Behaviour matches src/install-dispatch.sh (hyphen → underscore in script basenames only).
+# Behaviour matches src/install-dispatch.sh (hyphen → underscore in per-component path segments only).
 # Spec: "Component enumeration (v1): dispatch-aligned", "Paths and filenames (v1)".
 
 # Resolve repository root from a review runner script path (a *.sh file directly under
@@ -15,7 +15,7 @@ exportRepoRootFromRunnerPath() {
     export REPO_ROOT
 }
 
-# On-disk slug: same mapping as install_<slug>.sh in src/install-dispatch.sh (CSV hyphens → underscores).
+# On-disk slug: same mapping as per-component directories in src/install-dispatch.sh (CSV hyphens → underscores).
 # Used for install path helpers, audit script path (<slug>/audit.sh), and maintainer artefact paths
 # (<slug>/audit.manifest.yaml, <slug>/review.result.json) under each builds/<build>/ directory.
 canonicalCsvTokenToOnDiskSlug() {
@@ -40,7 +40,7 @@ pathForInstallScript() {
     local token="${2:?canonical CSV token required}"
     local slug
     slug=$(canonicalCsvTokenToOnDiskSlug "${token}") || return 1
-    printf '%s/install_%s.sh\n' "${buildDir%/}" "${slug}"
+    printf '%s/%s/install.sh\n' "${buildDir%/}" "${slug}"
 }
 
 pathForAuditScript() {

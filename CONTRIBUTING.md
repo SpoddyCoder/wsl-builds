@@ -38,6 +38,7 @@ Only two rules for PR submissions;
 ---
 
 ## Contributing builds / components
+* Each registered component’s install script is `builds/<build-dir>/<slug>/install.sh` (CSV token hyphens map to underscores in `slug`); build roots hold `conf.sh`, top-level `install.sh`, and `README.md` only. See [.cursor/rules/bash-component-patterns.mdc](.cursor/rules/bash-component-patterns.mdc).
 * This project is AI assisted. With human controlled quality and structure. Human readable docs and code are very important.
 * [Rules](./.cursor/rules) help the AI agent understand the project and its conventions.
 * In almost all cases, you can simply ask the AI agent to use the [skills](./.cursor/skills) to add new things.

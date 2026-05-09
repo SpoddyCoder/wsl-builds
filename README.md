@@ -85,7 +85,7 @@ change-hostname python-ai
 
 ### External Builds Root
 * `EXTERNAL_BUILDS_ROOT` in `wsl-builds.conf` can point at another `builds/` directory outside the repo.
-* Each inner build directory must have a `conf.sh`, `install.sh` and `install_<component>.sh` files.
+* Each inner build directory must have `conf.sh`, `install.sh`, and `README.md` at its root; component install scripts live at `builds/<build-dir>/<slug>/install.sh` (CSV hyphens in the token map to underscores in `slug`, same as **the builder** dispatch).
 * See [CONTRIBUTING.md](CONTRIBUTING.md) for more info.
 
 ## Enabling + Configuring WSL2 on the Windows Host
