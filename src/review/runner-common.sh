@@ -16,7 +16,8 @@ exportRepoRootFromRunnerPath() {
 }
 
 # On-disk slug: same mapping as install_<slug>.sh in src/install-dispatch.sh (CSV hyphens → underscores).
-# Used for install path helpers, audit script path (<slug>_audit.sh), and maintainer artefact names (<slug>_review.*).
+# Used for install path helpers, audit script path (<slug>/audit.sh), and maintainer artefact paths
+# (<slug>/review.yaml, <slug>/review.result.json) under each builds/<build>/ directory.
 canonicalCsvTokenToOnDiskSlug() {
     local token="${1:?canonical CSV component token required}"
     printf '%s\n' "${token//-/_}"
@@ -47,16 +48,17 @@ pathForAuditScript() {
     local token="${2:?canonical CSV token required}"
     local slug
     slug=$(canonicalCsvTokenToOnDiskSlug "${token}") || return 1
-    printf '%s/%s_audit.sh\n' "${buildDir%/}" "${slug}"
+    printf '%s/%s/audit.sh\n' "${buildDir%/}" "${slug}"
 }
 
-# Maintainer manifest and persisted JSON use the same slug as install/audit basenames (not hyphenated CSV in filenames).
+# Maintainer manifest and persisted JSON live in the per-component review subdirectory
+# builds/<build>/<slug>/ with short basenames (review.yaml, review.result.json).
 pathForMaintainerYaml() {
     local buildDir="${1:?build directory path required}"
     local token="${2:?canonical CSV token required}"
     local slug
     slug=$(canonicalCsvTokenToOnDiskSlug "${token}") || return 1
-    printf '%s/%s_review.yaml\n' "${buildDir%/}" "${slug}"
+    printf '%s/%s/review.yaml\n' "${buildDir%/}" "${slug}"
 }
 
 pathForReviewResultJson() {
@@ -64,5 +66,5 @@ pathForReviewResultJson() {
     local token="${2:?canonical CSV token required}"
     local slug
     slug=$(canonicalCsvTokenToOnDiskSlug "${token}") || return 1
-    printf '%s/%s_review.result.json\n' "${buildDir%/}" "${slug}"
+    printf '%s/%s/review.result.json\n' "${buildDir%/}" "${slug}"
 }

@@ -14,7 +14,7 @@
 set -euo pipefail
 
 _script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-_repo_root="$(cd "${_script_dir}/../.." && pwd)"
+_repo_root="$(cd "${_script_dir}/../../.." && pwd)"
 # shellcheck source=/dev/null
 source "${_repo_root}/src/review/audit-check-helpers/measurement-bundle.sh"
 # shellcheck source=/dev/null
@@ -22,7 +22,7 @@ source "${_repo_root}/src/review/audit-check-helpers/read-manifest-scalar.sh"
 # shellcheck source=/dev/null
 source "${_repo_root}/src/review/audit-check-helpers/get-audit-check-id.sh"
 
-readonly _manifest="${_script_dir}/shellcheck_review.yaml"
+readonly _manifest="${_script_dir}/review.yaml"
 
 readonly requiredCheckIdsJson='["cli-reported-version","deb-installed-version","installer-validated-staleness","upstream-exact-match"]'
 readonly _emptyChecks='[]'
@@ -43,7 +43,7 @@ _idSemver=$(auditCheckIdFromModulePath "${_semverModule}") || exit 1
 readonly _idCli _idDeb _idStaleness _idHttp _idExact _idSemver
 
 if ! command -v jq >/dev/null 2>&1; then
-    printf '%s\n' "shellcheck_audit.sh: jq is required to emit JSON; see CONTRIBUTING.md (Automated builds review tooling)." >&2
+    printf '%s\n' "shellcheck/audit.sh: jq is required to emit JSON; see CONTRIBUTING.md (Automated builds review tooling)." >&2
     exit 1
 fi
 
@@ -70,26 +70,26 @@ appendCheckLine() {
 }
 
 appendCheckLine "$(bash "${_cliCheckModule}" "${_idCli}" shellcheck)" || {
-    printf '%s\n' 'shellcheck_audit.sh: cli-reported-version.sh failed' >&2
+    printf '%s\n' 'shellcheck/audit.sh: cli-reported-version.sh failed' >&2
     exit 1
 }
 appendCheckLine "$(bash "${_debCheckModule}" "${_idDeb}" shellcheck)" || {
-    printf '%s\n' 'shellcheck_audit.sh: deb-installed-version.sh failed' >&2
+    printf '%s\n' 'shellcheck/audit.sh: deb-installed-version.sh failed' >&2
     exit 1
 }
 appendCheckLine "$(bash "${_stalenessCheckModule}" "${_idStaleness}" "${installer_validated}" "${installer_staleness_max_days}")" || {
-    printf '%s\n' 'shellcheck_audit.sh: installer-validated-staleness.sh failed' >&2
+    printf '%s\n' 'shellcheck/audit.sh: installer-validated-staleness.sh failed' >&2
     exit 1
 }
 
 appendCheckLine "$(bash "${_httpJsonModule}" "${_idHttp}" "${_github_latest_url}" '.tag_name')" || {
-    printf '%s\n' 'shellcheck_audit.sh: http-json-upstream-version.sh failed' >&2
+    printf '%s\n' 'shellcheck/audit.sh: http-json-upstream-version.sh failed' >&2
     exit 1
 }
 
 deb_ver=$(jq -r '.[] | select(.audit_check_id=="deb-installed-version") | .evidence.deb_installed_version // empty' <<<"${checks_json}")
 appendCheckLine "$(bash "${_upstreamExactModule}" "${_idExact}" "${last_known_upstream}" "${deb_ver}")" || {
-    printf '%s\n' 'shellcheck_audit.sh: upstream-exact-match.sh failed' >&2
+    printf '%s\n' 'shellcheck/audit.sh: upstream-exact-match.sh failed' >&2
     exit 1
 }
 
@@ -98,7 +98,7 @@ gh_tag=$(jq -r '.[] | select(.audit_check_id=="http-json-upstream-version") | .e
 compare_cli_to_github_semver=$(readManifestScalarLine "${_manifest}" compare_cli_to_github_semver)
 if [ "${compare_cli_to_github_semver}" = "true" ]; then
     appendCheckLine "$(bash "${_semverModule}" "${_idSemver}" "${cli_ver}" "${gh_tag}")" || {
-        printf '%s\n' 'shellcheck_audit.sh: upstream-semver-drift.sh failed' >&2
+        printf '%s\n' 'shellcheck/audit.sh: upstream-semver-drift.sh failed' >&2
         exit 1
     }
 else
@@ -107,7 +107,7 @@ else
         '{
              audit_check_id: $audit_check_id,
              outcome: "skipped",
-             detail: "compare_cli_to_github_semver is not true in shellcheck_review.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
+             detail: "compare_cli_to_github_semver is not true in shellcheck/review.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
          }')"
 fi
 

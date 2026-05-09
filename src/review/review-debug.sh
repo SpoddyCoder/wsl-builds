@@ -3,7 +3,7 @@
 #
 # Modes:
 #   run-check  — invoke one src/review/audit-checks/<name>.sh module directly
-#   run-audit  — run one builds/<build>/<slug>_audit.sh (validates measurement envelope)
+#   run-audit  — run one builds/<build>/<slug>/audit.sh (validates measurement envelope)
 #   run-review — run ./src/review/component-review.sh against one build + token
 #   run-e2e    — convenience wrapper: run-audit then run-review (default --build review-fixture)
 #

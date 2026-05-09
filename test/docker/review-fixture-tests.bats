@@ -2,7 +2,7 @@
 # shellcheck shell=bats
 
 # Docker-only scenario tests for the review-fixture build.
-# Single source: builds/review-fixture/<slug>_audit.sh — deterministic offline scenarios consumed
+# Single source: builds/review-fixture/<slug>/audit.sh — deterministic offline scenarios consumed
 # by both this Bats suite and src/review/review-debug.sh (the maintainer debug harness).
 
 setup() {
@@ -21,7 +21,7 @@ teardown() {
 @test 'RF1: happy-path persists facts-only result with all concerns false' {
 	run ./src/review/component-review.sh review-fixture happy-path
 	[[ "${status:?}" -eq 0 ]]
-	_result="${TEST_ROOT}/builds/review-fixture/happy_path_review.result.json"
+	_result="${TEST_ROOT}/builds/review-fixture/happy_path/review.result.json"
 	[[ -f "${_result}" ]]
 	[[ "$(jq -r '.build' "${_result}")" == 'review-fixture' ]]
 	[[ "$(jq -r '.component' "${_result}")" == 'happy-path' ]]
@@ -36,7 +36,7 @@ teardown() {
 @test 'RF2: incomplete-required forces concerns.incomplete=true' {
 	run ./src/review/component-review.sh review-fixture incomplete-required
 	[[ "${status:?}" -eq 0 ]]
-	_result="${TEST_ROOT}/builds/review-fixture/incomplete_required_review.result.json"
+	_result="${TEST_ROOT}/builds/review-fixture/incomplete_required/review.result.json"
 	[[ -f "${_result}" ]]
 	[[ "$(jq -r '.concerns.incomplete' "${_result}")" == 'true' ]]
 	[[ "$(jq -r '.concerns.security' "${_result}")" == 'false' ]]
@@ -47,7 +47,7 @@ teardown() {
 @test 'RF3: issue-routed sets concerns.security and concerns.freshness' {
 	run ./src/review/component-review.sh review-fixture issue-routed
 	[[ "${status:?}" -eq 0 ]]
-	_result="${TEST_ROOT}/builds/review-fixture/issue_routed_review.result.json"
+	_result="${TEST_ROOT}/builds/review-fixture/issue_routed/review.result.json"
 	[[ -f "${_result}" ]]
 	[[ "$(jq -r '.concerns.security' "${_result}")" == 'true' ]]
 	[[ "$(jq -r '.concerns.freshness' "${_result}")" == 'true' ]]
@@ -58,7 +58,7 @@ teardown() {
 @test 'RF4: policy-none-route excludes custom issue from security/freshness without forcing incomplete' {
 	run ./src/review/component-review.sh review-fixture policy-none-route
 	[[ "${status:?}" -eq 0 ]]
-	_result="${TEST_ROOT}/builds/review-fixture/policy_none_route_review.result.json"
+	_result="${TEST_ROOT}/builds/review-fixture/policy_none_route/review.result.json"
 	[[ -f "${_result}" ]]
 	[[ "$(jq -r '.concerns.security' "${_result}")" == 'false' ]]
 	[[ "$(jq -r '.concerns.freshness' "${_result}")" == 'false' ]]
@@ -69,7 +69,7 @@ teardown() {
 @test 'RF5: skipped-only sets concerns.skipped=true and other concerns false' {
 	run ./src/review/component-review.sh review-fixture skipped-only
 	[[ "${status:?}" -eq 0 ]]
-	_result="${TEST_ROOT}/builds/review-fixture/skipped_only_review.result.json"
+	_result="${TEST_ROOT}/builds/review-fixture/skipped_only/review.result.json"
 	[[ -f "${_result}" ]]
 	[[ "$(jq -r '.concerns.skipped' "${_result}")" == 'true' ]]
 	[[ "$(jq -r '.concerns.security' "${_result}")" == 'false' ]]
@@ -78,7 +78,7 @@ teardown() {
 }
 
 @test 'RF6: validation-fail audit stdout fails validation and writes no result.json' {
-	_result="${TEST_ROOT}/builds/review-fixture/validation_fail_review.result.json"
+	_result="${TEST_ROOT}/builds/review-fixture/validation_fail/review.result.json"
 	rm -f "${_result}"
 	run ./src/review/component-review.sh review-fixture validation-fail
 	[[ "${status:?}" -ne 0 ]]

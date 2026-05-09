@@ -4,7 +4,7 @@
 # Spec: Audit helper library (shared measurement); helpers must not set review verdict fields,
 # concerns — computed by component-review.sh from checks + policy.
 #
-# Source from <slug>_audit.sh or from audit-checks modules. Requires jq on PATH (same as
+# Source from <slug>/audit.sh or from audit-checks modules. Requires jq on PATH (same as
 # component-review / aggregation); do not install tools here.
 
 # Append one logical-line stdout check object from an audit-checks/*.sh module to a checks array.

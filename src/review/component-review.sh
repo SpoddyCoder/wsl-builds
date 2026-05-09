@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Component review (spec Phase 1): invoke <slug>_audit.sh, merge runner fields, validate merged JSON,
-# persist validated merged JSON to <slug>_review.result.json.
+# Component review (spec Phase 1): invoke <slug>/audit.sh, merge runner fields, validate merged JSON,
+# persist validated merged JSON to <slug>/review.result.json.
 set -euo pipefail
 
 # shellcheck source=runner-common.sh

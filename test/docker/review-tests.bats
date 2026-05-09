@@ -12,6 +12,8 @@ setup() {
 	/bin/cp -f "${TEST_DIR}/wsl-builds.conf" "${HOME}/.wsl-builds.conf"
 	REVIEW_BUILD_DIR="$(mktemp -d "${TEST_ROOT}/builds/.bats-review.XXXXXX")"
 	: >"${REVIEW_BUILD_DIR}/conf.sh"
+	REVIEW_SLUG_DIR="${REVIEW_BUILD_DIR}/review_stub"
+	mkdir -p "${REVIEW_SLUG_DIR}"
 }
 
 teardown() {
@@ -20,17 +22,17 @@ teardown() {
 }
 
 @test 'R1: component-review accepts measurement JSON merged with runner fields' {
-	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
+	cat >"${REVIEW_SLUG_DIR}/audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[]}'
 EOS
-	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
+	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"
 	run ./src/review/component-review.sh "${_bld}" review-stub
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Wrote ]]
-	_result="${REVIEW_BUILD_DIR}/review_stub_review.result.json"
+	_result="${REVIEW_SLUG_DIR}/review.result.json"
 	[[ -f "${_result}" ]]
 	[[ "$(jq -r '.build' "${_result}")" == "${_bld}" ]]
 	[[ "$(jq -r '.component' "${_result}")" == 'review-stub' ]]
@@ -40,66 +42,66 @@ EOS
 }
 
 @test 'R2: audit stdout carrying policy-view fields fails validation' {
-	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
+	cat >"${REVIEW_SLUG_DIR}/audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[],"summary":"nope"}'
 EOS
-	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
+	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
 
 @test 'R3: audit stdout with forbidden verdict-style field fails validation' {
-	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
+	cat >"${REVIEW_SLUG_DIR}/audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[{"audit_check_id":"x","outcome":"passed","detail":"ok"}],"required_check_ids":["x"],"review_result":1}'
 EOS
-	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
+	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
 
 @test 'R3b: audit stdout missing checks array fails validation' {
-	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
+	cat >"${REVIEW_SLUG_DIR}/audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"required_check_ids":[]}'
 EOS
-	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
+	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
 
-@test 'R4: validation failure does not create or overwrite <slug>_review.result.json' {
-	printf '%s\n' '{"stale_marker":true}' >"${REVIEW_BUILD_DIR}/review_stub_review.result.json"
-	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
+@test 'R4: validation failure does not create or overwrite <slug>/review.result.json' {
+	printf '%s\n' '{"stale_marker":true}' >"${REVIEW_SLUG_DIR}/review.result.json"
+	cat >"${REVIEW_SLUG_DIR}/audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[],"review_result":0}'
 EOS
-	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
+	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
-	[[ "$(cat "${REVIEW_BUILD_DIR}/review_stub_review.result.json")" == "$(printf '%s\n' '{"stale_marker":true}')" ]]
+	[[ "$(cat "${REVIEW_SLUG_DIR}/review.result.json")" == "$(printf '%s\n' '{"stale_marker":true}')" ]]
 }
 
-@test 'R5: successful run overwrites an existing <slug>_review.result.json' {
-	printf '%s\n' '{"stale_marker":true}' >"${REVIEW_BUILD_DIR}/review_stub_review.result.json"
-	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
+@test 'R5: successful run overwrites an existing <slug>/review.result.json' {
+	printf '%s\n' '{"stale_marker":true}' >"${REVIEW_SLUG_DIR}/review.result.json"
+	cat >"${REVIEW_SLUG_DIR}/audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[]}'
 EOS
-	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
+	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"
 	run ./src/review/component-review.sh "${_bld}" review-stub
 	[[ "${status:?}" -eq 0 ]]
-	_result="${REVIEW_BUILD_DIR}/review_stub_review.result.json"
+	_result="${REVIEW_SLUG_DIR}/review.result.json"
 	[[ "$(jq -r 'has("stale_marker")' "${_result}")" == 'false' ]]
 	[[ "$(jq -r '.concerns.skipped' "${_result}")" == 'false' ]]
 	[[ "$(jq -r 'has("evidence")' "${_result}")" == 'false' ]]
@@ -107,12 +109,12 @@ EOS
 }
 
 @test 'R5b: top-level evidence on audit stdout fails validation' {
-	cat >"${REVIEW_BUILD_DIR}/review_stub_audit.sh" <<'EOS'
+	cat >"${REVIEW_SLUG_DIR}/audit.sh" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[],"evidence":{}}'
 EOS
-	chmod +x "${REVIEW_BUILD_DIR}/review_stub_audit.sh"
+	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
 	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]

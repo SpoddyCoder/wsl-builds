@@ -63,23 +63,23 @@ Each row is one `@test`. The `#` column is the stable **B**… id (same order as
 
 Maintainer-oriented overview of the **automated** review (runners, manifests, layout): [`review/README.md`](../review/README.md).
 
-Each row is one `@test`. The `#` column is the stable **R**… id (same order as TAP `ok N …` in this file). Tests use an ephemeral directory under `builds/` with `conf.sh` and a stub **`<slug>_audit.sh`** (e.g. `review_stub_audit.sh` for token `review-stub`); harness `~/.wsl-builds.conf` is installed like builder tests.
+Each row is one `@test`. The `#` column is the stable **R**… id (same order as TAP `ok N …` in this file). Tests use an ephemeral directory under `builds/` with `conf.sh` and a stub `<slug>/audit.sh` (e.g. `review_stub/audit.sh` for token `review-stub`); harness `~/.wsl-builds.conf` is installed like builder tests.
 
 | # | Test | What it checks |
 | -: | ---- | ---------------- |
-| R1 | `component-review accepts measurement JSON merged with runner fields` | Minimal measurement envelope (**`checks`**, **`required_check_ids`**) → exit 0; path echoed; **`concerns`** on **`<slug>_review.result.json`**. |
+| R1 | `component-review accepts measurement JSON merged with runner fields` | Minimal measurement envelope (**`checks`**, **`required_check_ids`**) → exit 0; path echoed; **`concerns`** on `<slug>/review.result.json`. |
 | R2 | `audit stdout carrying policy-view fields fails validation` | Forbidden top-level **`summary`** on audit stdout → nonzero; audit measurement validation. |
 | R3 | `audit stdout with forbidden verdict-style field fails validation` | Audit carries **`review_result`** → nonzero; audit measurement validation. |
 | R3b | `audit stdout missing checks array fails validation` | Omit **`checks`** → nonzero; audit measurement validation. |
-| R4 | `validation failure does not create or overwrite <slug>_review.result.json` | Pre-seeded **`review_stub_review.result.json`** unchanged when audit output fails validation before merge write. |
-| R5 | `successful run overwrites an existing <slug>_review.result.json` | Placeholder cleared; **`concerns`** present on rewritten file; merged runner fields preserved. |
+| R4 | `validation failure does not create or overwrite <slug>/review.result.json` | Pre-seeded `review_stub/review.result.json` unchanged when audit output fails validation before merge write. |
+| R5 | `successful run overwrites an existing <slug>/review.result.json` | Placeholder cleared; **`concerns`** present on rewritten file; merged runner fields preserved. |
 | R5b | `top-level evidence on audit stdout fails validation` | Audit stdout includes legacy top-level **`evidence`** → nonzero; explicit migration guardrail. |
 | R6 | `emitConcernsFromChecks sets security and freshness when issues span buckets` | Derivation sets **`concerns.security`** and **`concerns.freshness`** true when **`checks`** carry routed **`issue`** rows in both buckets. |
 | R7 | `routes_by_audit_check_id none excludes issue from security/freshness flags` | **`custom_issue_policy`** **`none`** route excludes **`issue`** row from **`security`**/**`freshness`** without **`incomplete`**. |
 
 ## Review-fixture catalog (`docker/review-fixture-tests.bats`)
 
-Scenario-based end-to-end coverage that drives `./src/review/component-review.sh` against the deterministic offline fixture build [`builds/review-fixture/`](../builds/review-fixture/). Each token has a hand-written `<slug>_audit.sh` (no jq, no network) so the runner contract (envelope validation, `concerns` derivation, persisted artefact shape, no-overwrite-on-failure) is exercised reliably. RF tests run after the existing **R**… runner contract guards in [`docker/run-bats.sh`](docker/run-bats.sh) and use the same isolated `$HOME` + harness `~/.wsl-builds.conf` setup as the Review catalog.
+Scenario-based end-to-end coverage that drives `./src/review/component-review.sh` against the deterministic offline fixture build [`builds/review-fixture/`](../builds/review-fixture/). Each token has a hand-written `<slug>/audit.sh` (no jq, no network) so the runner contract (envelope validation, `concerns` derivation, persisted artefact shape, no-overwrite-on-failure) is exercised reliably. RF tests run after the existing **R**… runner contract guards in [`docker/run-bats.sh`](docker/run-bats.sh) and use the same isolated `$HOME` + harness `~/.wsl-builds.conf` setup as the Review catalog.
 
 Each row is one `@test`. The `#` column is the stable **RF**… id (same order as TAP `ok N …` in this file).
 
@@ -90,7 +90,7 @@ Each row is one `@test`. The `#` column is the stable **RF**… id (same order a
 | RF3 | `issue-routed sets concerns.security and concerns.freshness` | Routed `security` + `staleness` `issue` rows → both `security` and `freshness` concerns true. |
 | RF4 | `policy-none-route excludes custom issue from security/freshness without forcing incomplete` | `custom_issue_policy.routes_by_audit_check_id` `"none"` excludes the `custom` issue cleanly. |
 | RF5 | `skipped-only sets concerns.skipped=true and other concerns false` | One `skipped` row, no required ids → `concerns.skipped=true` only. |
-| RF6 | `validation-fail audit stdout fails validation and writes no result.json` | Forbidden top-level `summary` on audit stdout → runner exits non-zero; `validation_fail_review.result.json` is not created. |
+| RF6 | `validation-fail audit stdout fails validation and writes no result.json` | Forbidden top-level `summary` on audit stdout → runner exits non-zero; `validation_fail/review.result.json` is not created. |
 | RF7 | `review-debug.sh --help prints usage and exits 0` | Maintainer harness emits usage with `Usage: review-debug.sh` + `run-e2e` mode line. |
 | RF8 | `review-debug.sh run-e2e happy-path --show-concerns succeeds and prints concerns keys` | End-to-end run via the harness includes `Derived concerns` and all four `concerns` keys. |
 | RF9 | `review-debug.sh run-e2e validation-fail exits non-zero with diagnostic` | Harness propagates audit measurement validation failure with the same diagnostic string. |

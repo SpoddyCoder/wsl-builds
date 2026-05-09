@@ -3,6 +3,6 @@ upstream_tracking: review-fixture scenario only (no real upstream)
 aggregation_notes: >-
   Deterministic offline scenario; the audit deliberately emits a forbidden top-level "summary"
   on stdout to exercise validateAuditMeasurementJson. The runner must exit non-zero and never
-  create or overwrite validation_fail_review.result.json.
+  create or overwrite validation_fail/review.result.json.
 notes: >-
-  Automated review testing only — no <slug>_review.result.json is tracked for this scenario.
+  Automated review testing only — no <slug>/review.result.json is tracked for this scenario.

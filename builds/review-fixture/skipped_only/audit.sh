@@ -6,7 +6,7 @@
 set -euo pipefail
 
 _script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-_repo_root="$(cd "${_script_dir}/../.." && pwd)"
+_repo_root="$(cd "${_script_dir}/../../.." && pwd)"
 # shellcheck source=/dev/null
 source "${_repo_root}/src/review/audit-check-helpers/get-audit-check-id.sh"
 
