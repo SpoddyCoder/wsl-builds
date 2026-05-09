@@ -9,9 +9,11 @@ Each build keeps its install scripts (`conf.sh`, `install.sh`, `install_<slug>.s
 | Role | Path |
 | ---- | ---- |
 | Audit script (measurement) | `builds/<build>/<slug>/audit.sh` |
-| Maintainer manifest (machine) | `builds/<build>/<slug>/audit.manifest.yaml` |
-| Maintainer notes (human) | `builds/<build>/<slug>/audit.notes.md` |
-| Persisted review result | `builds/<build>/<slug>/review.result.json` |
+| Maintainer manifest (maintainer-edited, machine-readable) | `builds/<build>/<slug>/audit.manifest.yaml` |
+| Maintainer notes (human prose) | `builds/<build>/<slug>/audit.notes.md` |
+| Persisted review result (runner-written) | `builds/<build>/<slug>/review.result.json` |
+
+Maintainers edit `audit.manifest.yaml` and `audit.notes.md`; `component-review.sh` does not parse YAML or notes—it runs `audit.sh`, which reads the manifest when needed. Only `review.result.json` is written by the runner.
 
 `<slug>` is the same on-disk fragment as `install_<slug>.sh` (CSV hyphens → underscores), so token `mysql-client` keeps `install_mysql_client.sh` at the build root and adds `mysql_client/audit.sh`, `mysql_client/audit.manifest.yaml`, `mysql_client/audit.notes.md`, and `mysql_client/review.result.json` under it.
 
@@ -37,7 +39,7 @@ Use the component output to spot **security-class issues**, **staleness/upstream
 
 ## `<slug>/audit.manifest.yaml` (maintainer manifest)
 
-A **machine-readable maintainer file** under `builds/<build>/<slug>/audit.manifest.yaml`, where `<slug>` matches the install basename (hyphens in the CSV token become underscores, same as `install_<slug>.sh`). Keep this file concise and scalar-oriented for values audits read directly. `<slug>/review.result.json` is the **machine-written** last run; do not hand-edit that file.
+A **maintainer-edited, machine-readable** YAML file under `builds/<build>/<slug>/audit.manifest.yaml`, where `<slug>` matches the install basename (hyphens in the CSV token become underscores, same as `install_<slug>.sh`). Keep it concise and scalar-oriented for values **`audit.sh`** reads directly. **`review.result.json`** is **runner-written** (last merged run); do not hand-edit that file.
 
 ### What maintainers should do
 
