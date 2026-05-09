@@ -2,7 +2,7 @@
 
 **Automated review testing only.**
 
-This build directory exists to drive deterministic scenarios for the **automated builds review** (`src/review/component-review.sh`) and the maintainer debug harness (`src/review/review-debug.sh`). It is **not** a real environment build.
+This build directory exists to drive deterministic scenarios for the **automated builds review** (`review/component-review.sh`) and the maintainer debug harness (`review/review-debug.sh`). It is **not** a real environment build.
 
 Each component token maps to one scenario:
 

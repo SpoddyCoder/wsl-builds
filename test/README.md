@@ -79,7 +79,7 @@ Each row is one `@test`. The `#` column is the stable **R**… id (same order as
 
 ## Review-fixture catalog (`docker/review-fixture-tests.bats`)
 
-Scenario-based end-to-end coverage that drives `./src/review/component-review.sh` against the deterministic offline fixture build [`builds/review-fixture/`](../builds/review-fixture/). Each token has a hand-written `<slug>/audit.sh` (no jq, no network) so the runner contract (envelope validation, `concerns` derivation, persisted artefact shape, no-overwrite-on-failure) is exercised reliably. RF tests run after the existing **R**… runner contract guards in [`docker/run-bats.sh`](docker/run-bats.sh) and use the same isolated `$HOME` + harness `~/.wsl-builds.conf` setup as the Review catalog.
+Scenario-based end-to-end coverage that drives `./review/component-review.sh` against the deterministic offline fixture build [`builds/review-fixture/`](../builds/review-fixture/). Each token has a hand-written `<slug>/audit.sh` (no jq, no network) so the runner contract (envelope validation, `concerns` derivation, persisted artefact shape, no-overwrite-on-failure) is exercised reliably. RF tests run after the existing **R**… runner contract guards in [`docker/run-bats.sh`](docker/run-bats.sh) and use the same isolated `$HOME` + harness `~/.wsl-builds.conf` setup as the Review catalog.
 
 Each row is one `@test`. The `#` column is the stable **RF**… id (same order as TAP `ok N …` in this file).
 

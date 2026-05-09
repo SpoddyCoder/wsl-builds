@@ -1,32 +1,8 @@
-#!/usr/bin/env bash
-# Maintainer debug harness for the automated builds review.
-#
-# Modes:
-#   run-check  — invoke one src/review/audit-checks/<name>.sh module directly
-#   run-audit  — run one builds/<build>/<slug>/audit.sh (validates measurement envelope)
-#   run-review — run ./src/review/component-review.sh against one build + token
-#   run-e2e    — convenience wrapper: run-audit then run-review (default --build review-fixture)
-#
-# Output options:
-#   default    — concise summary on stderr; raw JSON on stdout where applicable
-#   --json     — print the relevant JSON payload to stdout (no pretty-print)
-#   --pretty   — pretty-print the JSON payload via jq .
-#   --show-concerns — also derive and print the runner-owned concerns object (run-audit / run-e2e)
-#
-# Spec refs: docs/automated-builds-review-v1-spec.md
-# Fixture: builds/review-fixture/ (single source for Bats + this harness)
-#
-# Does not install dependencies; requires jq + bash on PATH (same as component-review.sh).
-set -euo pipefail
+# Maintainer debug harness implementation (sourced from review/review-debug.sh).
+# Requires: REPO_ROOT, RUNNER_BASENAME, print helpers, jq on PATH for most modes.
 
 # shellcheck source=runner-common.sh
 source "${BASH_SOURCE[0]%/*}/runner-common.sh"
-
-RUNNER_BASENAME="$(basename "${BASH_SOURCE[0]}")"
-exportRepoRootFromRunnerPath "${BASH_SOURCE[0]}"
-
-# shellcheck source=../common/print.sh
-source "${REPO_ROOT}/src/common/print.sh"
 
 # shellcheck source=merged-result-validation.sh
 source "${BASH_SOURCE[0]%/*}/merged-result-validation.sh"
@@ -287,7 +263,7 @@ runComponentMode() {
     build_dir=$(resolveBuildDirOrExit "${build_name}")
     printInfo "Running component-review for ${build_name}/${token}"
     set +e
-    "${REPO_ROOT}/src/review/component-review.sh" "${build_name}" "${token}" >&2
+    "${REPO_ROOT}/review/component-review.sh" "${build_name}" "${token}" >&2
     local runner_ec=$?
     set -e
     if [ "${runner_ec}" -ne 0 ]; then
@@ -365,7 +341,7 @@ runScenarioMode() {
     runComponentMode "${component_args[@]}"
 }
 
-main() {
+reviewDebugMain() {
     if [ "$#" -lt 1 ]; then
         printDebugUsage
         exit 1
@@ -400,5 +376,3 @@ main() {
             ;;
     esac
 }
-
-main "$@"

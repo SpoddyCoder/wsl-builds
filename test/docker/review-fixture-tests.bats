@@ -3,7 +3,7 @@
 
 # Docker-only scenario tests for the review-fixture build.
 # Single source: builds/review-fixture/<slug>/audit.sh — deterministic offline scenarios consumed
-# by both this Bats suite and src/review/review-debug.sh (the maintainer debug harness).
+# by both this Bats suite and review/review-debug.sh (the maintainer debug harness).
 
 setup() {
 	TEST_ROOT="$(cd "$(dirname "${BATS_TEST_FILENAME}")/../.." && pwd)"
@@ -19,7 +19,7 @@ teardown() {
 }
 
 @test 'RF1: happy-path persists facts-only result with all concerns false' {
-	run ./src/review/component-review.sh review-fixture happy-path
+	run ./review/component-review.sh review-fixture happy-path
 	[[ "${status:?}" -eq 0 ]]
 	_result="${TEST_ROOT}/builds/review-fixture/happy_path/review.result.json"
 	[[ -f "${_result}" ]]
@@ -34,7 +34,7 @@ teardown() {
 }
 
 @test 'RF2: incomplete-required forces concerns.incomplete=true' {
-	run ./src/review/component-review.sh review-fixture incomplete-required
+	run ./review/component-review.sh review-fixture incomplete-required
 	[[ "${status:?}" -eq 0 ]]
 	_result="${TEST_ROOT}/builds/review-fixture/incomplete_required/review.result.json"
 	[[ -f "${_result}" ]]
@@ -45,7 +45,7 @@ teardown() {
 }
 
 @test 'RF3: issue-routed sets concerns.security and concerns.freshness' {
-	run ./src/review/component-review.sh review-fixture issue-routed
+	run ./review/component-review.sh review-fixture issue-routed
 	[[ "${status:?}" -eq 0 ]]
 	_result="${TEST_ROOT}/builds/review-fixture/issue_routed/review.result.json"
 	[[ -f "${_result}" ]]
@@ -56,7 +56,7 @@ teardown() {
 }
 
 @test 'RF4: policy-none-route excludes custom issue from security/freshness without forcing incomplete' {
-	run ./src/review/component-review.sh review-fixture policy-none-route
+	run ./review/component-review.sh review-fixture policy-none-route
 	[[ "${status:?}" -eq 0 ]]
 	_result="${TEST_ROOT}/builds/review-fixture/policy_none_route/review.result.json"
 	[[ -f "${_result}" ]]
@@ -67,7 +67,7 @@ teardown() {
 }
 
 @test 'RF5: skipped-only sets concerns.skipped=true and other concerns false' {
-	run ./src/review/component-review.sh review-fixture skipped-only
+	run ./review/component-review.sh review-fixture skipped-only
 	[[ "${status:?}" -eq 0 ]]
 	_result="${TEST_ROOT}/builds/review-fixture/skipped_only/review.result.json"
 	[[ -f "${_result}" ]]
@@ -80,21 +80,21 @@ teardown() {
 @test 'RF6: validation-fail audit stdout fails validation and writes no result.json' {
 	_result="${TEST_ROOT}/builds/review-fixture/validation_fail/review.result.json"
 	rm -f "${_result}"
-	run ./src/review/component-review.sh review-fixture validation-fail
+	run ./review/component-review.sh review-fixture validation-fail
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 	[[ ! -f "${_result}" ]]
 }
 
 @test 'RF7: review-debug.sh --help prints usage and exits 0' {
-	run ./src/review/review-debug.sh --help
+	run ./review/review-debug.sh --help
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Usage:\ review-debug.sh ]]
 	[[ "${output:?}" =~ run-e2e ]]
 }
 
 @test 'RF8: review-debug.sh run-e2e happy-path --show-concerns succeeds and prints concerns keys' {
-	run ./src/review/review-debug.sh run-e2e --component happy-path --show-concerns --pretty
+	run ./review/review-debug.sh run-e2e --component happy-path --show-concerns --pretty
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Derived\ concerns ]]
 	[[ "${output:?}" =~ \"security\" ]]
@@ -104,7 +104,7 @@ teardown() {
 }
 
 @test 'RF9: review-debug.sh run-e2e validation-fail exits non-zero with diagnostic' {
-	run ./src/review/review-debug.sh run-e2e --component validation-fail
+	run ./review/review-debug.sh run-e2e --component validation-fail
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }

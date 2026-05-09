@@ -29,7 +29,7 @@ printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":
 EOS
 	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"
-	run ./src/review/component-review.sh "${_bld}" review-stub
+	run ./review/component-review.sh "${_bld}" review-stub
 	[[ "${status:?}" -eq 0 ]]
 	[[ "${output:?}" =~ Wrote ]]
 	_result="${REVIEW_SLUG_DIR}/review.result.json"
@@ -48,7 +48,7 @@ set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[],"summary":"nope"}'
 EOS
 	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
-	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
+	run ./review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
@@ -60,7 +60,7 @@ set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[{"audit_check_id":"x","outcome":"passed","detail":"ok"}],"required_check_ids":["x"],"review_result":1}'
 EOS
 	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
-	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
+	run ./review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
@@ -72,7 +72,7 @@ set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"required_check_ids":[]}'
 EOS
 	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
-	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
+	run ./review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }
@@ -85,7 +85,7 @@ set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[],"review_result":0}'
 EOS
 	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
-	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
+	run ./review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "$(cat "${REVIEW_SLUG_DIR}/review.result.json")" == "$(printf '%s\n' '{"stale_marker":true}')" ]]
 }
@@ -99,7 +99,7 @@ printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":
 EOS
 	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
 	_bld="$(basename "${REVIEW_BUILD_DIR}")"
-	run ./src/review/component-review.sh "${_bld}" review-stub
+	run ./review/component-review.sh "${_bld}" review-stub
 	[[ "${status:?}" -eq 0 ]]
 	_result="${REVIEW_SLUG_DIR}/review.result.json"
 	[[ "$(jq -r 'has("stale_marker")' "${_result}")" == 'false' ]]
@@ -115,7 +115,7 @@ set -euo pipefail
 printf '%s\n' '{"component_reviewer_version":1,"checks":[],"required_check_ids":[],"evidence":{}}'
 EOS
 	chmod +x "${REVIEW_SLUG_DIR}/audit.sh"
-	run ./src/review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
+	run ./review/component-review.sh "$(basename "${REVIEW_BUILD_DIR}")" review-stub
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Audit\ stdout\ failed\ measurement\ JSON\ validation ]]
 }

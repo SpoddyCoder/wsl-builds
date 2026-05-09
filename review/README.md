@@ -1,6 +1,6 @@
 # Automated Components Review
 
-The automated review **does not install anything** and **is not a CI gate** unless the project chooses that later. For a given build directory and component, `src/review/component-review.sh` runs `<slug>/audit.sh` (when present, under `builds/<build>/<slug>/`), validates **measurement-only** stdout, merges runner metadata and **runner-derived concerns**, persists `<slug>/review.result.json`, and prints a short acknowledgement.
+The automated review **does not install anything** and **is not a CI gate** unless the project chooses that later. For a given build directory and component, `./review/component-review.sh` runs `<slug>/audit.sh` (when present, under `builds/<build>/<slug>/`), validates **measurement-only** stdout, merges runner metadata and **runner-derived concerns**, persists `<slug>/review.result.json`, and prints a short acknowledgement.
 
 ## File layout
 
@@ -29,7 +29,7 @@ Use the component output to spot **security-class issues**, **staleness/upstream
 
 | Piece | Location | Role |
 | ----- | -------- | ---- |
-| Component review runner | `src/review/component-review.sh` | Invoke `<slug>/audit.sh`; validate audit stdout; merge `build`, `component`, `review_completed`; derive **`concerns`**; validate merged JSON; write `<slug>/review.result.json` on success. |
+| Component review runner | `review/component-review.sh` | Invoke `<slug>/audit.sh`; validate audit stdout; merge `build`, `component`, `review_completed`; derive **`concerns`**; validate merged JSON; write `<slug>/review.result.json` on success. |
 | Build review runner (planned) | `src/review/build-review.sh` | Walk `VALID_INSTALL_COMPONENTS` in CSV order; soft-skip when `<slug>/audit.sh` is missing; future build-level roll-up and exits. |
 | Shared path / token helpers | `src/review/runner-common.sh` | Resolve repo root, map CSV token → `<slug>` (hyphens → underscores), paths to install / audit / manifest / result files. |
 | Merged JSON validation | `src/review/merged-result-validation.sh` | Enforce audit measurement envelope; enforce persisted **`concerns`** shape and forbid verdict-only fields after merge. |
@@ -77,15 +77,15 @@ Use `builds/<build>/<slug>/audit.notes.md` for maintainer-facing narrative:
 - Expected concern behavior for fixture scenarios.
 - Any longer rationale that would make YAML noisy or parser-hostile.
 
-## Debug harness (`src/review/review-debug.sh`)
+## Debug harness (`review/review-debug.sh`)
 
-`src/review/review-debug.sh` is a maintainer-only helper for developing audits and audit-check modules. It does not modify the runner contract — it just shells out to existing pieces in isolation.
+`review/review-debug.sh` is a maintainer-only helper for developing audits and audit-check modules. It does not modify the runner contract — it just shells out to existing pieces in isolation.
 
 | Mode | What it does |
 | ---- | ------------ |
 | `run-check` | Run one `src/review/audit-checks/<name>.sh` module directly; derive `audit_check_id` from the module stem and pass it as argv[1], then append caller `--args`. |
 | `run-audit` | Run one `builds/<build>/<slug>/audit.sh`, validate its measurement envelope, and print stdout. |
-| `run-review` | Invoke `./src/review/component-review.sh <build> <component>` and print the persisted `<slug>/review.result.json`. |
+| `run-review` | Invoke `./review/component-review.sh <build> <component>` and print the persisted `<slug>/review.result.json`. |
 | `run-e2e` | Convenience wrapper: run `run-audit` then `run-review`. Default `--build` is `review-fixture`. |
 
 Output options:
@@ -97,11 +97,11 @@ Output options:
 Examples:
 
 ```bash
-./src/review/review-debug.sh --help
-./src/review/review-debug.sh run-check  --module cli-reported-version --args 'no-such-cli-tool' --pretty
-./src/review/review-debug.sh run-audit  --build review-fixture --component happy-path --pretty --show-concerns
-./src/review/review-debug.sh run-review --build review-fixture --component issue-routed --pretty
-./src/review/review-debug.sh run-e2e    --component policy-none-route --show-concerns --pretty
+./review/review-debug.sh --help
+./review/review-debug.sh run-check  --module cli-reported-version --args 'no-such-cli-tool' --pretty
+./review/review-debug.sh run-audit  --build review-fixture --component happy-path --pretty --show-concerns
+./review/review-debug.sh run-review --build review-fixture --component issue-routed --pretty
+./review/review-debug.sh run-e2e    --component policy-none-route --show-concerns --pretty
 ```
 
 The harness exits non-zero on bad args, missing modules/audit scripts, or runner failures, and forwards the underlying exit code where applicable.

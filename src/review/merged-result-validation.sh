@@ -18,7 +18,7 @@ printAuditMeasurementFailure() {
 # Validate audit stdout (before merge): measurement-only envelope; must not carry verdict/policy-view fields or concerns.
 # Note: explicit jq_err cleanup is preferred over `trap RETURN` because RETURN traps fire for *every*
 # subsequent function return after they are set, leaking the local jq_err out of scope when this
-# validator is called from inside another function (e.g. review-debug.sh modes).
+# validator is called from inside another function (e.g. review-debug harness modes).
 validateAuditMeasurementJson() {
     local audit="$1"
     local jq_err

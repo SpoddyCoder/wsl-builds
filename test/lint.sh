@@ -32,6 +32,8 @@ else
     shellcheck --shell=bash --external-sources --source-path=SCRIPTDIR -- \
         wsl-builder.sh \
         configure.sh \
+        review/component-review.sh \
+        review/review-debug.sh \
         test/run-tests.sh \
         test/docker/run-bats.sh \
         test/lint.sh \
@@ -61,6 +63,8 @@ else
     for _lint_bash_file in \
         "${REPO_ROOT}/wsl-builder.sh" \
         "${REPO_ROOT}/configure.sh" \
+        "${REPO_ROOT}/review/component-review.sh" \
+        "${REPO_ROOT}/review/review-debug.sh" \
         "${REPO_ROOT}/test/run-tests.sh" \
         "${REPO_ROOT}/test/docker/run-bats.sh" \
         "${REPO_ROOT}/test/lint.sh" \
