@@ -20,6 +20,14 @@ Only two rules for PR submissions;
 * `./test/lint.sh path/to/script.sh` — lint specific files
 * Install ShellCheck `./wsl-builder.sh dev-bash shellcheck`
 
+### Entrypoint bootstrap
+* Top-level scripts (`./wsl-builder.sh`, `./configure.sh`, review runners, test drivers) use `set -euo pipefail` where they are the process entrypoint and share [`src/common/bootstrap-common.sh`](src/common/bootstrap-common.sh) for repository root resolution and, where user config is loaded, `loadWslBuildsConfOrExit`. Normative checklist and rationale: [`docs/standardise-bootstrap-plan.md`](docs/standardise-bootstrap-plan.md).
+
+### Source tree (CLI vs `src/`)
+* **Entrypoints** (run from repo root): [`./wsl-builder.sh`](wsl-builder.sh), [`./configure.sh`](configure.sh); review maintainer scripts under [`review/`](review/) (for example `./review/component-review.sh`, `./review/review-debug.sh`); test drivers under [`test/`](test/) (for example `./test/run-tests.sh`, `./test/lint.sh`).
+* **`src/`** is for **sourced** libraries only, grouped by domain: [`src/common/`](src/common/), [`src/builder/`](src/builder/), [`src/configure/`](src/configure/), [`src/review/`](src/review/) (framework code sourced by those entrypoints). The intentional exception is [`src/review/audit-checks/`](src/review/audit-checks/): those modules are **executed** as subprocesses by the review framework, not invoked directly as user CLIs.
+* Full layout rationale and phase history: [`docs/source-tree-refactor.md`](docs/source-tree-refactor.md).
+
 ### Testing
 * [Bats](https://bats-core.readthedocs.io/en/stable/) is used as a testing framework for the bash scripts.
 * Bats tests are run in an isolated Docker container for safety and consistency.
@@ -31,9 +39,15 @@ Only two rules for PR submissions;
 * Lint + Bats tests are run on every push and PR.
 * See: [`.github/workflows`](.github/workflows)
 
+### Automated Component Reviews
+* Requirements: `jq,curl` (`./wsl-builder.sh dev essentials`)
+* Run from repo root: `./review/component-review.sh`, maintainer debug harness `./review/review-debug.sh` — see [review/README.md](review/README.md) and [`docs/automated-builds-review-v1-spec.md`](docs/automated-builds-review-v1-spec.md).
+* Terminology for review docs/scripts is standardized in the spec language contract (`audit catalogue`, `check module`, `check module name`, `check_id`, `check module args`); `stem` is deprecated in prose.
+
 ---
 
 ## Contributing builds / components
+* Each registered component’s install script is `builds/<build-dir>/<slug>/install.sh` (CSV token hyphens map to underscores in `slug`); build roots hold `conf.sh`, top-level `install.sh`, and `README.md` only. See [.cursor/rules/bash-component-patterns.mdc](.cursor/rules/bash-component-patterns.mdc).
 * This project is AI assisted. With human controlled quality and structure. Human readable docs and code are very important.
 * [Rules](./.cursor/rules) help the AI agent understand the project and its conventions.
 * In almost all cases, you can simply ask the AI agent to use the [skills](./.cursor/skills) to add new things.

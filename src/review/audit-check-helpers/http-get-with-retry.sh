@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+# Timed HTTP GET with retry budget for transient failures.
+# Spec: Network and flake policy (v1); concrete numbers are also summarized there under
+# "Shared helper behaviour (v1, httpGetWithRetry)".
+#
+# Behaviour: up to 3 attempts; backoff 1s before attempt 2, +1s each further wait; retry only on
+# HTTP 5xx or curl "000" (no status: timeout, reset, connection failure); never retry 4xx.
+# Default --max-time per attempt is 30s unless the caller passes a second argument.
+
+# Args: url [max_time_seconds]
+# On success: response body on stdout, exit 0.
+# On failure: stderr message, exit 1 (after retries exhausted for transient errors).
+httpGetWithRetry() {
+    local fetch_url="${1:?url required}"
+    local fetch_max_time="${2:-30}"
+    local attempts=3
+    local delay=1
+    local n=0
+    local tmp
+    tmp=$(mktemp) || return 1
+
+    while [ "${n}" -lt "${attempts}" ]; do
+        n=$((n + 1))
+        local code
+        code=$(curl -sS -L --max-time "${fetch_max_time}" -o "${tmp}" -w '%{http_code}' "${fetch_url}" || printf '%s' "000")
+        if [ "${code}" -ge 200 ] && [ "${code}" -lt 300 ]; then
+            cat "${tmp}"
+            rm -f "${tmp}"
+            return 0
+        fi
+        if [ "${code}" -ge 500 ] || [ "${code}" = "000" ]; then
+            if [ "${n}" -lt "${attempts}" ]; then
+                sleep "${delay}"
+                delay=$((delay + 1))
+                continue
+            fi
+        fi
+        printf '%s\n' "httpGetWithRetry: HTTP ${code} for ${fetch_url} (attempt ${n}/${attempts})" >&2
+        rm -f "${tmp}"
+        return 1
+    done
+    printf '%s\n' "httpGetWithRetry: failed ${fetch_url}" >&2
+    rm -f "${tmp}"
+    return 1
+}

@@ -1,0 +1,19 @@
+{
+  "component_reviewer_version": 1,
+  "checks": [
+    {
+      "audit_check_id": "cli-reported-version",
+      "outcome": "passed",
+      "detail": "All required checks pass."
+    }
+  ],
+  "build": "fixture-review",
+  "component": "happy-path",
+  "review_completed": "2026-05-09T11:24:33Z",
+  "concerns": {
+    "security": false,
+    "freshness": false,
+    "skipped": false,
+    "incomplete": false
+  }
+}

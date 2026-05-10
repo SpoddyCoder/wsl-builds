@@ -1,0 +1,61 @@
+{
+  "component_reviewer_version": 1,
+  "checks": [
+    {
+      "audit_check_id": "cli-reported-version",
+      "outcome": "passed",
+      "detail": "Reported package/version line: 0.9.0",
+      "evidence": {
+        "cli_reported_version": "0.9.0",
+        "cli_command_name": "shellcheck"
+      }
+    },
+    {
+      "audit_check_id": "deb-installed-version",
+      "outcome": "passed",
+      "detail": "Installed Debian package version: 0.9.0-1",
+      "evidence": {
+        "deb_package": "shellcheck",
+        "deb_installed_version": "0.9.0-1"
+      }
+    },
+    {
+      "audit_check_id": "installer-validated-staleness",
+      "outcome": "passed",
+      "detail": "installer_validated is within 180 days (4 days old).",
+      "evidence": {
+        "installer_validated": "2026-05-06",
+        "installer_age_days": 4,
+        "installer_staleness_max_days": 180
+      }
+    },
+    {
+      "audit_check_id": "http-json-upstream-version",
+      "outcome": "passed",
+      "detail": "Fetched upstream value: v0.11.0",
+      "evidence": {
+        "upstream_url": "https://api.github.com/repos/koalaman/shellcheck/releases/latest",
+        "http_json_extracted": "v0.11.0"
+      }
+    },
+    {
+      "audit_check_id": "upstream-exact-match",
+      "outcome": "skipped",
+      "detail": "last_known_upstream is not set; exact match check skipped."
+    },
+    {
+      "audit_check_id": "upstream-semver-drift",
+      "outcome": "skipped",
+      "detail": "compare_cli_to_github_semver is not true in shellcheck/audit.manifest.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)."
+    }
+  ],
+  "build": "dev-bash",
+  "component": "shellcheck",
+  "review_completed": "2026-05-10T13:28:47Z",
+  "concerns": {
+    "security": false,
+    "freshness": false,
+    "skipped": true,
+    "incomplete": false
+  }
+}
