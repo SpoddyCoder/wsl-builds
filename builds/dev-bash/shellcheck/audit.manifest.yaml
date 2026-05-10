@@ -1,5 +1,15 @@
 component: shellcheck
-compare_cli_to_github_semver: false
+
+# Last time the install script was run succesfully by a maintainer (proxy for freshness)
+# Used by: installer-validated-staleness
 installer_validated: 2026-05-06
+
+# If true, run upstream-semver-drift between CLI version and GitHub latest tag; false skips (typical for apt).
+# Used by: upstream-semver-drift
+compare_cli_to_github_semver: false
+
+# Maintainer-recorded upstream/deb version string for upstream-exact-match against dpkg (empty if not set).
 last_known_upstream: ""
+
+# Concise tracking mode for audits (how packaging relates to upstream); detail lives in audit.sh.
 upstream_tracking: apt package shellcheck; optional GitHub tag fetch for measurement only.

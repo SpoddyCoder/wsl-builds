@@ -1,93 +1,126 @@
 # Automated Components Review
 
-The automated review **does not install anything** and **is not a CI gate** unless the project chooses that later. For a given build directory and component, `./review/component-review.sh` runs `<slug>/audit.sh` (when present, under `builds/<build>/<slug>/`), validates **measurement-only** stdout, merges runner metadata and **runner-derived concerns**, persists `<slug>/review.result.json`, and prints a short acknowledgement.
+Advisory, **non-installing**, **non-gating** review for build components...
 
-## File layout
+```bash
+./review/component-review.sh <build> <component>
+```
 
-Each build keeps `conf.sh`, `install.sh`, and `README.md` at the build root. Per-component install and review files share `builds/<build>/<slug>/` (CSV hyphens → underscores in `slug`):
+...runs the component's `audit.sh` (when present), validates measurement-only stdout, derives `concerns`, and writes `builds/<build>/<component>/review.result.json`.
 
-| Role | Path |
-| ---- | ---- |
-| Component install (sourced by dispatch) | `builds/<build>/<slug>/install.sh` |
-| Audit script (measurement) | `builds/<build>/<slug>/audit.sh` |
-| Maintainer manifest (maintainer-edited, machine-readable) | `builds/<build>/<slug>/audit.manifest.yaml` |
-| Persisted review result (runner-written) | `builds/<build>/<slug>/review.result.json` |
+## Adding `audit.sh` to a component
 
-Maintainers edit `audit.manifest.yaml`; `component-review.sh` does not parse YAML—it runs `audit.sh`, which reads the manifest when needed. Only `review.result.json` is written by the runner.
+### File layout
 
-`<slug>` is the on-disk directory fragment (CSV hyphens → underscores), so token `mysql-client` uses `mysql_client/install.sh`, `mysql_client/audit.sh`, `mysql_client/audit.manifest.yaml`, and `mysql_client/review.result.json`.
 
-Repository-wide defaults for automated review live in **`review/review-policy.yaml`** (flat `key: value` lines, same mechanical constraints as per-component manifests). Audits resolve values with **component manifest → `review/review-policy.yaml` → fallback constant** in `src/review/audit-check-helpers/review-policy-defaults.sh` (for example `resolveInstallerStalenessMaxDays` for `installer-validated-staleness`).
+| Role                                                | Path                              |
+| --------------------------------------------------- | --------------------------------- |
+| Install                                             | `<component>/install.sh`          |
+| Audit script                                        | `<component>/audit.sh`            |
+| Maintainer manifest (you edit this)                 | `<component>/audit.manifest.yaml` |
+| Persisted result (runner-written; do not hand-edit) | `<component>/review.result.json`  |
 
-## Facts vs policy
 
-- **`Concerns`** (four booleans) on the persisted file are **measurement-aligned facts**, not verdict codes: **`security`**, **`freshness`**, **`skipped`**, **`incomplete`** (always present — see normative contract in [`docs/automated-builds-review-v1-spec.md`](../docs/automated-builds-review-v1-spec.md)). They are computed by **`component-review.sh`** from **`checks`** + **`required_check_ids`** + **`custom_issue_policy`** supplied on audit stdout — audits do not emit **`concerns`**.
-- **`review_result`**, fixed phrase labels, **`summary`**, and **`reasons`** are **policy views**. They belong to a future **build-level** review step (planned **`build-review.sh`**), **not** to the component artefact.
+Pilot to copy from: `[builds/dev-bash/shellcheck/](../builds/dev-bash/shellcheck/)`.
 
-Use the component output to spot **security-class issues**, **staleness/upstream drift**, **intentionally skipped checks**, **incomplete measurement stories**, and similar hygiene — **advisory** input for humans.
+### Terminology (canonical)
 
-## Layout and main pieces
+Use these terms consistently in review docs and scripts:
 
-| Piece | Location | Role |
-| ----- | -------- | ---- |
-| Shared bootstrap and printing | `src/common/bootstrap-common.sh`, `src/common/print.sh`, … | Repo root resolution, messaging; review CLIs and **the builder** source these before review libraries. |
-| Component review runner | `review/component-review.sh` | Invoke `<slug>/audit.sh`; validate audit stdout; merge `build`, `component`, `review_completed`; derive **`concerns`**; validate merged JSON; write `<slug>/review.result.json` on success. |
-| Build review runner (planned) | `review/build-review.sh` | Walk `VALID_INSTALL_COMPONENTS` in CSV order; soft-skip when `<slug>/audit.sh` is missing; future build-level roll-up and exits. Orchestrator implementation will live under `src/review/` (sourced by this CLI). |
-| Shared path / token helpers | `src/review/runner-common.sh` | Resolve repo root, map CSV token → `<slug>` (hyphens → underscores), paths to install / audit / manifest / result files. |
-| Merged JSON validation | `src/review/merged-result-validation.sh` | Enforce audit measurement envelope; enforce persisted **`concerns`** shape and forbid verdict-only fields after merge. |
-| Concerns derivation | `src/review/checks-rollup.sh`, `src/review/checks-rollup.jq` (`emitConcernsFromChecks`) | From **`checks`** + policy inputs → **`concerns`** object (runner only). |
-| Reusable measurement modules | `src/review/audit-checks/*.sh` | One stdout line per run: single check JSON object with optional nested `evidence`. |
-| Shared helpers | `src/review/audit-check-helpers/*.sh` | Bundling measurements, manifest scalars, HTTP fetch, repo-level policy resolution — **no** required stdout contract as a whole. |
-| Per-component audit | `builds/<build>/<slug>/audit.sh` | Measurement only (`checks` with optional nested per-check `evidence`, `required_check_ids`, optional **`custom_issue_policy`**); reads `<slug>/audit.manifest.yaml` when needed (`component-review.sh` does not parse YAML). |
+- `audit catalogue`: reusable scripts under `src/review/audit-checks/`.
+- `check module`: one executable in the audit catalogue.
+- `check module name`: module filename without `.sh` (for example `cli-reported-version`).
+- `check_id`: stable per-check identifier in emitted JSON (`audit_check_id` field).
+- `check module args`: positional args passed after `<check_id>` when invoking a module.
+- Deprecated: `stem`. Keep it only in historical notes.
 
-### Per-component `audit.sh` (repo root and catalogue paths)
+### Audit check modules
 
-Set `REPO_ROOT` to the git root of this repository and `export` it before sourcing `src/review/audit-check-helpers/`. For composition, prefer `audit-flow.sh` (`auditFlowInit`, `auditFlowRunModuleStem`, `auditFlowAppendSkippedFromModuleStem`, and related helpers) so catalogue modules resolve through `auditCheckModulePath` (unknown stems fail fast with a clear stderr message).
 
-## `<slug>/audit.manifest.yaml` (maintainer manifest)
+| Check module name               | What it measures                                                 | Check module args (after `<check_id>`)   | Outcomes                                                                                                           |
+| ------------------------------- | ---------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `cli-reported-version`          | Runs `<cli> --version` and extracts a version line.              | `<cli_command> [sed_extract_script]`     | `passed` (evidence: `cli_reported_version`, `cli_command_name`); `inconclusive` if CLI not on PATH.                |
+| `deb-installed-version`         | Reads installed Debian package version via `dpkg-query`.         | `<deb_package_name>`                     | `passed` (evidence: `deb_installed_version`); `inconclusive` if not Debian or package not installed.               |
+| `installer-validated-staleness` | Age of manifest `installer_validated` against a max-days policy. | `<YYYY-MM-DD> <max_age_days>`            | `passed`; `issue` (`finding_kind: staleness`); `skipped` if date empty; `inconclusive` for unparseable date.       |
+| `http-json-upstream-version`    | HTTP GET (with retry) and jq-extract a value.                    | `<url> <jq_filter> [max_time_seconds]`   | `passed` (evidence: `http_json_extracted`); `inconclusive` on fetch or extract failure.                            |
+| `upstream-exact-match`          | String equality (after trim) between expected and observed.      | `<expected> <observed>`                  | `passed`; `issue` (`finding_kind: upstream_drift`); `skipped` if expected empty; `inconclusive` if observed empty. |
+| `upstream-semver-drift`         | Semver ordering via `sort -V` after optional leading `v` strip.  | `<observed_version> <reference_version>` | `passed`; `issue` (`finding_kind: upstream_drift`) if observed older; `inconclusive` if either operand empty.      |
 
-A **maintainer-edited, machine-readable** YAML file under `builds/<build>/<slug>/audit.manifest.yaml`, where `<slug>` is the same directory name as the per-component install path (hyphens in the CSV token become underscores). Keep it concise and scalar-oriented for values **`audit.sh`** reads directly. **`review.result.json`** is **runner-written** (last merged run); do not hand-edit that file.
 
-### What maintainers should do
+Audit catalogue under `[src/review/audit-checks/](../src/review/audit-checks/)`. All check modules receive `<check_id>` as `argv[1]` (set automatically by `auditFlowRunCheckModuleName`), emit one JSON line on stdout, and use non-zero exit only for uncontrolled failures.
 
-- Keep `component` correct and aligned with `conf.sh` / dispatch.
-- Update `installer_validated` when you have **verified** the install path still matches reality (and adjust any thresholds your audit uses).
-- Set `last_known_upstream` when you want **exact-match** (or related) checks to mean something concrete; leave empty if that check should **skip**.
-- Add **component-specific** single-line scalars only when `<slug>/audit.sh` reads them (see pilot `shellcheck/audit.manifest.yaml`). Prefer simple `key: value` rows: helpers like `readManifestScalarLine` do not parse folded YAML blocks for machine fields.
-- Keep the manifest concise; put longer rationale in `<slug>/audit.sh` comments (or a short optional `notes` scalar when a single line suffices).
+Need a check that is not in the catalogue? Add a new module under `[src/review/audit-checks/](../src/review/audit-checks/)` following the existing modules and the [v1 spec](../docs/automated-builds-review-v1-spec.md).
 
-Full field list and types: [Maintainer manifest (v1 minimal shape)](../docs/automated-builds-review-v1-spec.md#maintainer-manifest-v1-minimal-shape).
+### `audit.manifest.yaml`
 
-### Keys (v1 minimal shape + common extensions)
+Maintainer-edited, machine-readable. Keep it concise and scalar-oriented — `readManifestScalarLine` handles plain top-level `key: value` lines only, not folded YAML blocks.
 
-| Key | Tier | Purpose |
-| --- | ---- | ------- |
-| `component` | Required | Canonical CSV token; must match review JSON `component`; file lives at `<slug>/audit.manifest.yaml`. |
-| `upstream_tracking` | Recommended | Plain language: apt vs tarball vs API — **not** parsing rules (those stay in `<slug>/audit.sh`). |
-| `last_known_upstream` | Optional | Maintainer-known upstream/deb string for drift checks (**interpretation** in the audit script). |
-| `installer_validated` | Optional | `YYYY-MM-DD` (recommended): last time someone validated the installer approach. |
-| `notes` | Optional | Short maintainer note; keep concise—interpretation belongs in `<slug>/audit.sh`. |
 
-**Extensions (examples):** audits may read additional **single-line** scalars — for example `installer_staleness_max_days` (optional per-component override of [`review/review-policy.yaml`](review-policy.yaml) / resolver fallback), `compare_cli_to_github_semver` — defined and documented in the manifest and `<slug>/audit.sh` where used.
+| Key                   | Tier        | Purpose                                                                         |
+| --------------------- | ----------- | ------------------------------------------------------------------------------- |
+| `component`           | Required    | Canonical CSV token; must match review JSON `component`.                        |
+| `upstream_tracking`   | Recommended | Plain-language packaging summary (apt, tarball, API, …).                        |
+| `last_known_upstream` | Optional    | Maintainer-known upstream/deb string for drift checks. Empty → check `skipped`. |
+| `installer_validated` | Optional    | `YYYY-MM-DD` you last validated the install path. Empty → staleness `skipped`.  |
+| `notes`               | Optional    | One-line maintainer note.                                                       |
 
-## Debug harness (`review/review-debug.sh`)
 
-`review/review-debug.sh` is a maintainer-only helper for developing audits and audit-check modules. It does not modify the runner contract — it just shells out to existing pieces in isolation.
+Per-component policy overrides: add single-line scalars only when `audit.sh` reads them. Examples: `installer_staleness_max_days` (overrides `[review/review-policy.yaml](review-policy.yaml)` and the `resolveInstallerStalenessMaxDays` fallback), `compare_cli_to_github_semver`. Document each in the manifest beside the key.
 
-| Mode | What it does |
-| ---- | ------------ |
-| `run-check` | Run one `src/review/audit-checks/<name>.sh` module directly; derive `audit_check_id` from the module stem and pass it as argv[1], then append caller `--args`. |
-| `run-audit` | Run one `builds/<build>/<slug>/audit.sh`, validate its measurement envelope, and print stdout. |
-| `run-review` | Invoke `./review/component-review.sh <build> <component>` and print the persisted `<slug>/review.result.json`. |
-| `run-e2e` | Convenience wrapper: run `run-audit` then `run-review`. Default `--build` is `fixture-review`. |
+Full schema: [Maintainer manifest (v1 minimal shape)](../docs/automated-builds-review-v1-spec.md#maintainer-manifest-v1-minimal-shape).
 
-Output options:
+### `audit.sh` skeleton
 
-- `--json` — print the relevant JSON payload (compact).
-- `--pretty` — pretty-print the JSON payload through `jq .`.
-- `--show-concerns` — also derive and print the runner-owned `concerns` object from the audit envelope (works in `run-audit` and `run-e2e`).
+`audit.sh` only **measures** — it does not install. Use `audit-flow.sh` so module orchestration stays declarative and reads as a check plan:
 
-Examples:
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/../../../src/common/bootstrap-common.sh"
+resolveRepoRootFromAuditScript "${BASH_SOURCE[0]}" || exit 1
+source "${REPO_ROOT}/src/review/audit-check-helpers/audit-flow.sh"
+source "${REPO_ROOT}/src/review/audit-check-helpers/review-policy-defaults.sh"
+
+manifest="${SCRIPT_DIR}/audit.manifest.yaml"
+installer_validated=$(readManifestScalarLine "${manifest}" installer_validated)
+installer_staleness_max_days=$(resolveInstallerStalenessMaxDays "${manifest}")
+
+auditFlowInit 'mytool/audit.sh' '["cli-reported-version","installer-validated-staleness"]' || exit 1
+
+auditFlowRunCheckModuleName cli-reported-version mytool || exit 1
+auditFlowRunCheckModuleName installer-validated-staleness "${installer_validated}" "${installer_staleness_max_days}" || exit 1
+
+auditFlowEmitMeasurementJson
+```
+
+Rules:
+
+- Stdout: exactly one measurement-envelope JSON line (printed by `auditFlowEmitMeasurementJson`). Stderr: diagnostics only.
+- Requires `jq`; the HTTP module also needs `curl`.
+- Reuse evidence between modules with `auditFlowEvidenceField <check_id> <evidence_key>` (`<check_id>` maps to the `audit_check_id` JSON field).
+- Record an intentional skip without invoking the check module via `auditFlowAppendSkippedFromCheckModuleName <check module name> "<reason>"`.
+- The `required_check_ids` array passed to `auditFlowInit` lists `check_id` values whose absence or inconclusive outcome should mark the result `incomplete`.
+
+### What you get back
+
+`review.result.json` includes the audit `checks` array (with optional per-check `evidence`) plus a runner-derived `concerns` object with four booleans: `security`, `freshness`, `skipped`, `incomplete`. These are measurement-aligned facts (computed from `checks`, `required_check_ids`, and an optional `custom_issue_policy` you may emit), not pass/fail verdicts. Use them as advisory input for humans.
+
+## Developing and Debugging
+
+For developing audits and modules in isolation, use the maintainer debug harness:
+
+
+| Mode         | What it does                                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `run-check`  | Run one `src/review/audit-checks/<name>.sh` directly; check module name becomes `check_id` (stored as `audit_check_id`), then your `--args` follow as check module args. |
+| `run-audit`  | Run one `<slug>/audit.sh` and validate its measurement envelope.                                                       |
+| `run-review` | Run `./review/component-review.sh` and print the persisted `review.result.json`.                                       |
+| `run-e2e`    | `run-audit` then `run-review` (default `--build fixture-review`).                                                      |
+
+
+Output flags: `--json` (compact), `--pretty` (`jq .`), `--show-concerns` (also derive the runner-owned `concerns`; works in `run-audit` and `run-e2e`).
 
 ```bash
 ./review/review-debug.sh --help
@@ -97,12 +130,37 @@ Examples:
 ./review/review-debug.sh run-e2e    --component policy-none-route --show-concerns --pretty
 ```
 
-The harness exits non-zero on bad args, missing modules/audit scripts, or runner failures, and forwards the underlying exit code where applicable.
+The harness exits non-zero on bad args, missing modules or audit scripts, and runner failures, forwarding the underlying exit code where applicable.
 
-## Review fixture (`builds/fixture-review/`)
+---
 
-`builds/fixture-review/` provides deterministic offline scenarios for both the Docker Bats suite (`test/docker/review-fixture-tests.bats`) and the debug harness above. Each component token maps to one scenario whose `<slug>/audit.sh` emits a fixed, hand-written JSON line — no jq, helpers, or network — so the runner contract (envelope validation, `concerns` derivation, persisted artefact shape, no-overwrite-on-failure) can be exercised reliably.
+## Framework internals (maintainers)
 
-See [`builds/fixture-review/README.md`](../builds/fixture-review/README.md) for the scenario table and expected `concerns` per token.
+Read this section if you change how the runner, validation, or `concerns` derivation work. Source of truth: `[docs/automated-builds-review-v1-spec.md](../docs/automated-builds-review-v1-spec.md)`.
 
-Normative contract: [Automated builds review (v1 spec)](../docs/automated-builds-review-v1-spec.md).
+### Layout
+
+
+| Piece                         | Location                                                                                | Role                                                                                                                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Shared bootstrap, printing    | `src/common/bootstrap-common.sh`, `src/common/print.sh`                                 | Repo-root resolution and messaging; sourced before review libraries.                                                                                                     |
+| Component review runner       | `review/component-review.sh`                                                            | Invoke `<slug>/audit.sh`; validate envelope; merge `build`, `component`, `review_completed`; derive `concerns`; validate merged JSON; write `<slug>/review.result.json`. |
+| Build review runner (planned) | `review/build-review.sh`                                                                | Walk `VALID_INSTALL_COMPONENTS` in CSV order; build-level roll-up. Orchestrator implementation will live under `src/review/`.                                            |
+| Path / token helpers          | `src/review/runner-common.sh`                                                           | Repo-root resolution, CSV token → `<slug>` mapping, install/audit/manifest/result paths.                                                                                 |
+| Merged JSON validation        | `src/review/merged-result-validation.sh`                                                | Audit envelope shape; persisted `concerns` shape; forbid verdict-only fields after merge.                                                                                |
+| Concerns derivation           | `src/review/checks-rollup.sh`, `src/review/checks-rollup.jq` (`emitConcernsFromChecks`) | `checks` plus policy → `concerns` (runner only).                                                                                                                         |
+| Audit-check modules           | `src/review/audit-checks/*.sh`                                                          | Catalogue. One stdout JSON line per run; non-zero exit = uncontrolled failure.                                                                                           |
+| Audit helpers                 | `src/review/audit-check-helpers/*.sh`                                                   | Composition (`audit-flow.sh`), HTTP fetch with retry, manifest scalars, repo policy resolution, module-path resolver. No stdout contract.                                |
+
+
+### Facts vs policy
+
+The persisted `concerns` object is a set of measurement-aligned facts. Verdict-shaped fields — `review_result`, fixed phrase labels, `summary`, `reasons` — belong to the future build-level review (`build-review.sh`), **not** to the component artefact. Audits emit `checks` plus `required_check_ids` plus optional `custom_issue_policy`; `component-review.sh` does the rest, and `merged-result-validation.sh` rejects verdict-only fields if any leak in.
+
+### Repo-level policy
+
+`[review/review-policy.yaml](review-policy.yaml)` holds repo defaults (flat `key: value`, same constraints as component manifests). Resolution order is **component manifest → `review/review-policy.yaml` → fallback constant** in `src/review/audit-check-helpers/review-policy-defaults.sh` (for example `resolveInstallerStalenessMaxDays`).
+
+### Review fixture
+
+`[builds/fixture-review/](../builds/fixture-review/)` provides deterministic offline scenarios for both the Docker Bats suite (`test/docker/review-fixture-tests.bats`) and the debug harness above. Each component's `audit.sh` emits a hand-written JSON line — no jq, helpers, or network — so envelope validation, `concerns` derivation, persisted artefact shape, and no-overwrite-on-failure can all be exercised reliably. Scenario table: `[builds/fixture-review/README.md](../builds/fixture-review/README.md)`.

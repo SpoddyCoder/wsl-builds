@@ -22,11 +22,11 @@
     {
       "audit_check_id": "installer-validated-staleness",
       "outcome": "passed",
-      "detail": "installer_validated is within 90 days (3 days old).",
+      "detail": "installer_validated is within 180 days (4 days old).",
       "evidence": {
         "installer_validated": "2026-05-06",
-        "installer_age_days": 3,
-        "installer_staleness_max_days": 90
+        "installer_age_days": 4,
+        "installer_staleness_max_days": 180
       }
     },
     {
@@ -51,7 +51,7 @@
   ],
   "build": "dev-bash",
   "component": "shellcheck",
-  "review_completed": "2026-05-09T17:37:55Z",
+  "review_completed": "2026-05-10T13:28:47Z",
   "concerns": {
     "security": false,
     "freshness": false,

@@ -28,9 +28,9 @@ Modes:
 
 Defaults:
   run-e2e --build defaults to '${DEFAULT_FIXTURE_BUILD}'.
-  --module is the catalogue stem under src/review/audit-checks/ (no path, no .sh).
+  --module is the check module name under src/review/audit-checks/ (no path, no .sh).
   run-check always derives audit_check_id from --module via auditCheckIdFromModulePath.
-  --args is split by shell word-splitting and passed after the derived check_id.
+  --args is split by shell word-splitting and passed as check module args after the derived check_id.
 
 Legacy aliases (deprecated): check, audit, component, scenario.
 

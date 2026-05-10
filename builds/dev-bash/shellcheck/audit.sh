@@ -51,24 +51,24 @@ auditFlowInit 'shellcheck/audit.sh' "${requiredCheckIdsJson}" || exit 1
 # Run audit-checks
 #
 
-auditFlowRunModuleStem cli-reported-version shellcheck || exit 1
+auditFlowRunCheckModuleName cli-reported-version shellcheck || exit 1
 
-auditFlowRunModuleStem deb-installed-version shellcheck || exit 1
+auditFlowRunCheckModuleName deb-installed-version shellcheck || exit 1
 
-auditFlowRunModuleStem installer-validated-staleness "${installer_validated}" "${installer_staleness_max_days}" || exit 1
+auditFlowRunCheckModuleName installer-validated-staleness "${installer_validated}" "${installer_staleness_max_days}" || exit 1
 
-auditFlowRunModuleStem http-json-upstream-version "${_github_latest_url}" '.tag_name' || exit 1
+auditFlowRunCheckModuleName http-json-upstream-version "${_github_latest_url}" '.tag_name' || exit 1
 
 deb_ver=$(auditFlowEvidenceField 'deb-installed-version' 'deb_installed_version')
-auditFlowRunModuleStem upstream-exact-match "${last_known_upstream}" "${deb_ver}" || exit 1
+auditFlowRunCheckModuleName upstream-exact-match "${last_known_upstream}" "${deb_ver}" || exit 1
 
 cli_ver=$(auditFlowEvidenceField 'cli-reported-version' 'cli_reported_version')
 gh_tag=$(auditFlowEvidenceField 'http-json-upstream-version' 'http_json_extracted')
 compare_cli_to_github_semver=$(readManifestScalarLine "${_manifest}" compare_cli_to_github_semver)
 if [ "${compare_cli_to_github_semver}" = "true" ]; then
-    auditFlowRunModuleStem upstream-semver-drift "${cli_ver}" "${gh_tag}" || exit 1
+    auditFlowRunCheckModuleName upstream-semver-drift "${cli_ver}" "${gh_tag}" || exit 1
 else
-    auditFlowAppendSkippedFromModuleStem upstream-semver-drift \
+    auditFlowAppendSkippedFromCheckModuleName upstream-semver-drift \
         "compare_cli_to_github_semver is not true in shellcheck/audit.manifest.yaml; skipping CLI vs GitHub release compare (typical for apt-installed shellcheck)." || exit 1
 fi
 

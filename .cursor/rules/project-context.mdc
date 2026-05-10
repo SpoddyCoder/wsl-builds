@@ -12,6 +12,7 @@ alwaysApply: true
 - `CONTRIBUTING.md`: Humans—PR expectations, **Linting** / **Testing** / **CI**, short pointer to `.cursor/rules` and skills for scaffolding. It is **not** the canonical home for dispatch, component patterns, or Build List columns.
 - `test/README.md`: `./test/run-tests.sh`, Docker/Bats harness, **build-fixture** and **wizard** test pointers.
 - `review/README.md`: **maintainers** — automated advisory builds review (what it does, run **`./review/component-review.sh`** / **`./review/review-debug.sh`**, libraries under `src/review/`, per-component files under `builds/<build>/<slug>/` (`install.sh`, `audit.sh`, `audit.manifest.yaml`, `review.result.json`)). Normative contract: `docs/automated-builds-review-v1-spec.md`; further **maintainer-facing** prose for this system belongs here, not root `README.md`.
+- Review terminology should follow the spec language contract: `audit catalogue`, `check module`, `check module name`, `check_id`, `check module args`; treat `stem` as deprecated prose.
 - `.cursor/rules/` + `.cursor/skills/`: Agent execution details. Build/component/install conventions and root Build List rules: **[bash-component-patterns.mdc](bash-component-patterns.mdc)**. Keep `alwaysApply` rules short; defer depth to glob-scoped rules.
 
 ## Project behaviour

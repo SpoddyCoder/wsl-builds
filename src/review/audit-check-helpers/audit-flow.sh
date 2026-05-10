@@ -66,20 +66,20 @@ auditFlowRunModuleWithSuffix() {
     auditFlowAppendCheckLine "${check_line}"
 }
 
-auditFlowRunModuleStem() {
-    local stem="${1:?auditFlowRunModuleStem: catalogue stem required}"
+auditFlowRunCheckModuleName() {
+    local check_module_name="${1:?auditFlowRunCheckModuleName: check module name required}"
     shift
     local module_path
-    module_path=$(auditCheckModulePath "${stem}") || return 1
+    module_path=$(auditCheckModulePath "${check_module_name}") || return 1
     auditFlowRunModule "${module_path}" "$@"
 }
 
-auditFlowRunModuleStemWithSuffix() {
-    local stem="${1:?auditFlowRunModuleStemWithSuffix: catalogue stem required}"
-    local id_suffix="${2:?auditFlowRunModuleStemWithSuffix: id suffix required}"
+auditFlowRunCheckModuleNameWithSuffix() {
+    local check_module_name="${1:?auditFlowRunCheckModuleNameWithSuffix: check module name required}"
+    local id_suffix="${2:?auditFlowRunCheckModuleNameWithSuffix: id suffix required}"
     shift 2
     local module_path
-    module_path=$(auditCheckModulePath "${stem}") || return 1
+    module_path=$(auditCheckModulePath "${check_module_name}") || return 1
     auditFlowRunModuleWithSuffix "${module_path}" "${id_suffix}" "$@"
 }
 
@@ -94,11 +94,11 @@ auditFlowAppendSkippedFromModule() {
         '{ audit_check_id: $audit_check_id, outcome: "skipped", detail: $detail }')"
 }
 
-auditFlowAppendSkippedFromModuleStem() {
-    local stem="${1:?auditFlowAppendSkippedFromModuleStem: catalogue stem required}"
-    local detail="${2:?auditFlowAppendSkippedFromModuleStem: detail required}"
+auditFlowAppendSkippedFromCheckModuleName() {
+    local check_module_name="${1:?auditFlowAppendSkippedFromCheckModuleName: check module name required}"
+    local detail="${2:?auditFlowAppendSkippedFromCheckModuleName: detail required}"
     local module_path
-    module_path=$(auditCheckModulePath "${stem}") || return 1
+    module_path=$(auditCheckModulePath "${check_module_name}") || return 1
     auditFlowAppendSkippedFromModule "${module_path}" "${detail}"
 }
 

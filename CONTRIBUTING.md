@@ -42,6 +42,7 @@ Only two rules for PR submissions;
 ### Automated Component Reviews
 * Requirements: `jq,curl` (`./wsl-builder.sh dev essentials`)
 * Run from repo root: `./review/component-review.sh`, maintainer debug harness `./review/review-debug.sh` — see [review/README.md](review/README.md) and [`docs/automated-builds-review-v1-spec.md`](docs/automated-builds-review-v1-spec.md).
+* Terminology for review docs/scripts is standardized in the spec language contract (`audit catalogue`, `check module`, `check module name`, `check_id`, `check module args`); `stem` is deprecated in prose.
 
 ---
 

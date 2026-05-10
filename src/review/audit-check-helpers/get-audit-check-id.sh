@@ -4,19 +4,19 @@
 # src/review/audit-checks/). Sourced only.
 
 # Args: path_to_module.sh [suffix]
-# Prints: basename without .sh, or stem_suffix when suffix is non-empty (rare second use of same module).
+# Prints: basename without .sh, or <check-module-name>_<suffix> when suffix is non-empty (rare second use of same module).
 auditCheckIdFromModulePath() {
     local module_path="${1:?audit-check module path required}"
     local suffix="${2:-}"
     local base="${module_path##*/}"
-    local stem="${base%.sh}"
-    if [ -z "${stem}" ]; then
-        printf '%s\n' "auditCheckIdFromModulePath: empty stem from path ${module_path}" >&2
+    local check_module_name="${base%.sh}"
+    if [ -z "${check_module_name}" ]; then
+        printf '%s\n' "auditCheckIdFromModulePath: empty check module name from path ${module_path}" >&2
         return 1
     fi
     if [ -n "${suffix}" ]; then
-        printf '%s_%s' "${stem}" "${suffix}"
+        printf '%s_%s' "${check_module_name}" "${suffix}"
     else
-        printf '%s' "${stem}"
+        printf '%s' "${check_module_name}"
     fi
 }

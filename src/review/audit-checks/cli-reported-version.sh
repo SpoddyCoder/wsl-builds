@@ -7,7 +7,7 @@
 # Usage:
 #   cli-reported-version.sh <check_id> <cli_command> [sed_extract_script]
 #
-# - check_id: stable audit_check_id for the checks[] row (e.g. catalogue stem cli-reported-version, or stem_suffix if the module runs twice).
+# - check_id: stable audit_check_id for the checks[] row (e.g. check module name cli-reported-version, or <check-module-name>_<suffix> if the module runs twice).
 # - cli_command: name or path tested with command -v and invoked as <cli_command> --version.
 # - sed_extract_script: optional argument to sed -n (default strips leading "version:" lines like shellcheck).
 #
