@@ -94,3 +94,15 @@ teardown() {
 	[[ "${output:?}" =~ Building\ fixture-builder\ v1\.0\.0 ]]
 	rm -f "${TEST_ROOT}/stacks/${flat}.wslb"
 }
+
+@test 'S7: builder children do not inherit recipe file as stdin' {
+	mkdir -p "${_STACKER_TMP}/st/stdin"
+	{
+		echo 'fixture-builder stdin-probe'
+		echo 'fixture-builder noop'
+	} >"${_STACKER_TMP}/st/stdin/two-step.wslb"
+	run ./wsl-stacker.sh "${_STACKER_TMP}/st" stdin/two-step
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" =~ stdin-probe\ stdin:\ \<eof\> ]]
+	[[ ! "${output:?}" =~ stdin-probe\ stdin:\ fixture-builder\ noop ]]
+}

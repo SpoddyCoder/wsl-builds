@@ -117,11 +117,14 @@ stackerMain() {
         exit 1
     fi
 
+    local recipeLines=()
+    mapfile -t recipeLines <"${recipeFile}"
+
     local line buildDir components
-    while IFS= read -r line || [[ -n "${line}" ]]; do
+    for line in "${recipeLines[@]}"; do
         [[ "${line}" =~ ^[[:space:]]*$ ]] && continue
         [[ "${line}" =~ ^[[:space:]]*# ]] && continue
         read -r buildDir components <<< "${line}"
         invokeBuilderForLine "${buildDir}" "${components}" "${force}"
-    done <"${recipeFile}"
+    done
 }
