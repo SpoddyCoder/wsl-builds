@@ -1,13 +1,13 @@
-# SpoddyCoder Stacks
+# SpoddyCoder stack definitions
 
 List stacks: `./wsl-stacker.sh spoddycoder`
 
 
-| Stack                             | Components                                                                                                                                                                                                     |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dev.wslb` Base development build | **system:** update, essentials, qol, apt-mirror-switch **dev:** essentials, qol, cursor **devops:** docker **dev-bash:** shellcheck, bats                                                                      |
-| `devops.wslb` DevOps build        | **system:** update, essentials, qol, apt-mirror-switch **dev:** essentials, qol, cursor **devops:** docker-desktop, terraform, kubectl, k9s, packer **devops-aws:** awscli, qol **dev-bash:** shellcheck, bats |
-| `dev-ai.wslb` AI build            | **system:** update, essentials, qol, apt-mirror-switch **dev:** essentials, qol, cursor **devops:** docker **dev-bash:** shellcheck, bats **ai:** cuda132, ollama **dev-python:** python3, conda               |
-| `dev-js.wslb` JavaScript build    | **system:** update, essentials, qol, apt-mirror-switch **dev:** essentials, qol, cursor **devops:** docker **dev-js:** essentials, node, npm, nvm, yarn **dev-ssg:** hugo **dev-bash:** shellcheck, bats       |
+| Stack | Components|
+| ------|---------- |
+| `dev.wslb` <br/>Base development build | **system:** update, essentials, qol, apt-mirror-switch <br/>**dev:** essentials, qol, cursor <br/>**devops:** docker <br/>**dev-bash:** shellcheck, bats                                                                      |
+| `devops.wslb `<br/>DevOps build        | **system:** update, essentials, qol, apt-mirror-switch <br/>**dev:** essentials, qol, cursor <br/>**devops:** docker-desktop, terraform, kubectl, k9s, packer <br/>**devops-aws:** awscli, qol <br/>**dev-bash:** shellcheck, bats |
+| `dev-ai.wslb` <br/>AI build            | **system:** update, essentials, qol, apt-mirror-switch <br/>**dev:** essentials, qol, cursor <br/>**devops:** docker <br/>**dev-bash:** shellcheck, bats <br/>**ai:** cuda132, ollama <br/>**dev-python:** python3, conda               |
+| `dev-js.wslb` <br/>JavaScript build    | **system:** update, essentials, qol, apt-mirror-switch <br/>**dev:** essentials, qol, cursor <br/>**devops:** docker <br/>**dev-js:** essentials, node, npm, nvm, yarn <br/>**dev-ssg:** hugo <br/>**dev-bash:** shellcheck, bats       |
 
 

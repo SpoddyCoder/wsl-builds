@@ -23,10 +23,10 @@ teardown() {
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Usage: ]]
 	[[ ! "${output:?}" =~ Invalid\ arguments ]]
-	[[ "${output:?}" =~ Available\ stack\ namespaces: ]]
+	[[ "${output:?}" =~ Available\ namespaces: ]]
 }
 
-@test 'S1b: namespace-only invocation lists recipes like builder component listing' {
+@test 'S1b: namespace-only invocation lists stacks like builder component listing' {
 	local ns="bats_stacker_ns_list_${RANDOM}"
 	mkdir -p "${TEST_ROOT}/stacks/${ns}"
 	echo 'fixture-builder noop' >"${TEST_ROOT}/stacks/${ns}/alpha.wslb"
@@ -34,20 +34,20 @@ teardown() {
 	run ./wsl-stacker.sh "${ns}"
 	[[ "${status:?}" -ne 0 ]]
 	[[ "${output:?}" =~ Usage: ]]
-	[[ "${output:?}" =~ Available\ recipes\ for\ ${ns}: ]]
+	[[ "${output:?}" =~ Available\ stacks\ for\ ${ns}: ]]
 	[[ "${output:?}" =~ alpha ]]
 	[[ "${output:?}" =~ beta ]]
 	rm -rf "${TEST_ROOT}/stacks/${ns}"
 }
 
-@test 'S2: missing recipe file exits nonzero' {
+@test 'S2: missing stack file exits nonzero' {
 	mkdir -p "${_STACKER_TMP}/empty-stacks"
-	run ./wsl-stacker.sh "${_STACKER_TMP}/empty-stacks" no-such-recipe
+	run ./wsl-stacker.sh "${_STACKER_TMP}/empty-stacks" no-such-stack
 	[[ "${status:?}" -ne 0 ]]
-	[[ "${output:?}" =~ Recipe\ not\ found: ]]
+	[[ "${output:?}" =~ Stack\ not\ found: ]]
 }
 
-@test 'S3: minimal recipe fixture-builder noop succeeds' {
+@test 'S3: minimal stack fixture-builder noop succeeds' {
 	mkdir -p "${_STACKER_TMP}/st/a"
 	echo 'fixture-builder noop' >"${_STACKER_TMP}/st/a/b.wslb"
 	run ./wsl-stacker.sh "${_STACKER_TMP}/st" a/b
@@ -55,7 +55,7 @@ teardown() {
 	[[ "${output:?}" =~ Building\ fixture-builder\ v1\.0\.0 ]]
 }
 
-@test 'S3b: multi-step recipe prints config path once across builder children' {
+@test 'S3b: multi-step stack prints config path once across builder children' {
 	mkdir -p "${_STACKER_TMP}/st/multi"
 	{
 		echo 'fixture-builder noop'
@@ -68,7 +68,7 @@ teardown() {
 	[[ "${using_count:?}" -eq 1 ]]
 }
 
-@test 'S4: recipe may be passed with redundant .wslb suffix' {
+@test 'S4: stack name may be passed with redundant .wslb suffix' {
 	mkdir -p "${_STACKER_TMP}/st2/a"
 	echo 'fixture-builder noop' >"${_STACKER_TMP}/st2/a/b.wslb"
 	run ./wsl-stacker.sh "${_STACKER_TMP}/st2" a/b.wslb
@@ -76,7 +76,7 @@ teardown() {
 	[[ "${output:?}" =~ Building\ fixture-builder\ v1\.0\.0 ]]
 }
 
-@test 'S5: shorthand namespace recipe resolves to stacks/<namespace>/<recipe>.wslb' {
+@test 'S5: shorthand namespace stack resolves to stacks/<namespace>/<stack>.wslb' {
 	local ns="bats_stacker_ns_${RANDOM}"
 	mkdir -p "${TEST_ROOT}/stacks/${ns}"
 	echo 'fixture-builder noop' >"${TEST_ROOT}/stacks/${ns}/minimal.wslb"
@@ -86,7 +86,7 @@ teardown() {
 	rm -rf "${TEST_ROOT}/stacks/${ns}"
 }
 
-@test 'S6: long form when shorthand file missing (stacks-dir stacks, flat recipe name)' {
+@test 'S6: long form when shorthand file missing (stacks directory stacks, flat stack name)' {
 	local flat="bats_stacker_flat_${RANDOM}"
 	echo 'fixture-builder noop' >"${TEST_ROOT}/stacks/${flat}.wslb"
 	run ./wsl-stacker.sh stacks "${flat}"
@@ -95,7 +95,7 @@ teardown() {
 	rm -f "${TEST_ROOT}/stacks/${flat}.wslb"
 }
 
-@test 'S7: builder children do not inherit recipe file as stdin' {
+@test 'S7: builder children do not inherit stack file as stdin' {
 	mkdir -p "${_STACKER_TMP}/st/stdin"
 	{
 		echo 'fixture-builder stdin-probe'

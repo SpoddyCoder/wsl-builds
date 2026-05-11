@@ -1,18 +1,18 @@
-# Stacker main: run ./wsl-builder.sh once per non-comment line in a .wslb recipe file.
+# Stacker main: run ./wsl-builder.sh once per non-comment line in a stacks/<namespace>/<stack>.wslb file.
 
-normalizeRecipeBaseName() {
-    local recipeName="${1:?}"
-    if [[ "${recipeName}" == *.wslb ]]; then
-        recipeName="${recipeName%.wslb}"
+normalizeStackBaseName() {
+    local stackName="${1:?}"
+    if [[ "${stackName}" == *.wslb ]]; then
+        stackName="${stackName%.wslb}"
     fi
-    printf '%s' "${recipeName}"
+    printf '%s' "${stackName}"
 }
 
-# True when args may use shorthand stacks/<namespace>/<recipe>.wslb under REPO_ROOT (single-segment names only).
+# True when args may use shorthand stacks/<namespace>/<stack>.wslb under REPO_ROOT (single-segment names only).
 stackerArgsEligibleForNamespaceShorthand() {
-    local stacksDirArg="${1:?}"
-    local recipeArg="${2:?}"
-    [[ "${stacksDirArg}" != /* ]] && [[ "${stacksDirArg}" != */* ]] && [[ "${recipeArg}" != */* ]]
+    local namespaceArg="${1:?}"
+    local stackArg="${2:?}"
+    [[ "${namespaceArg}" != /* ]] && [[ "${namespaceArg}" != */* ]] && [[ "${stackArg}" != */* ]]
 }
 
 canonicalizeExistingDirectory() {
@@ -64,24 +64,28 @@ stackerMain() {
 
     if [[ "${#positional[@]}" -eq 0 ]]; then
         showStackerUsage
-        showAvailableStackNamespaces
+        showAvailableNamespaces
         exit 1
     fi
 
     if [[ "${#positional[@]}" -eq 1 ]]; then
-        local stacksDirArg="${positional[0]}"
-        if [[ -d "${REPO_ROOT}/stacks/${stacksDirArg}" ]]; then
+        local firstArg="${positional[0]}"
+        if [[ -d "${REPO_ROOT}/stacks/${firstArg}" ]]; then
             showStackerUsage
-            showAvailableStackRecipes "${stacksDirArg}"
+            showAvailableStacksForNamespace "${firstArg}"
             exit 1
         fi
         local stacksAbs
-        if stacksAbs="$(canonicalizeExistingDirectory "${stacksDirArg}")"; then
+        if stacksAbs="$(canonicalizeExistingDirectory "${firstArg}")"; then
             showStackerUsage
-            showAvailableStackRecipesForStacksDir "${stacksDirArg}" "${stacksAbs}"
+            showAvailableStacksForStacksDir "${firstArg}" "${stacksAbs}"
             exit 1
         fi
-        printError "Stack namespace '${stacksDirArg}' not found"
+        if stackerArgsEligibleForNamespaceShorthand "${firstArg}" "_"; then
+            printError "Namespace '${firstArg}' not found"
+        else
+            printError "Stacks directory not found or inaccessible: ${firstArg}"
+        fi
         exit 1
     fi
 
@@ -90,38 +94,38 @@ stackerMain() {
         exit 1
     fi
 
-    local stacksDirArg="${positional[0]}"
-    local recipeArg="${positional[1]}"
+    local firstArg="${positional[0]}"
+    local stackArg="${positional[1]}"
 
-    local recipeBase shorthandPath stacksAbs recipeFile
-    recipeBase="$(normalizeRecipeBaseName "${recipeArg}")"
-    recipeFile=""
+    local stackBase shorthandPath stacksAbs stackFile
+    stackBase="$(normalizeStackBaseName "${stackArg}")"
+    stackFile=""
 
-    if stackerArgsEligibleForNamespaceShorthand "${stacksDirArg}" "${recipeArg}"; then
-        shorthandPath="${REPO_ROOT}/stacks/${stacksDirArg}/${recipeBase}.wslb"
+    if stackerArgsEligibleForNamespaceShorthand "${firstArg}" "${stackArg}"; then
+        shorthandPath="${REPO_ROOT}/stacks/${firstArg}/${stackBase}.wslb"
         if [[ -f "${shorthandPath}" ]]; then
-            recipeFile="${shorthandPath}"
+            stackFile="${shorthandPath}"
         fi
     fi
 
-    if [[ -z "${recipeFile}" ]]; then
-        if ! stacksAbs="$(canonicalizeExistingDirectory "${stacksDirArg}")"; then
-            printError "Stacks directory not found or inaccessible: ${stacksDirArg}"
+    if [[ -z "${stackFile}" ]]; then
+        if ! stacksAbs="$(canonicalizeExistingDirectory "${firstArg}")"; then
+            printError "Stacks directory not found or inaccessible: ${firstArg}"
             exit 1
         fi
-        recipeFile="${stacksAbs}/${recipeBase}.wslb"
+        stackFile="${stacksAbs}/${stackBase}.wslb"
     fi
 
-    if [[ ! -f "${recipeFile}" ]]; then
-        printError "Recipe not found: ${recipeFile}"
+    if [[ ! -f "${stackFile}" ]]; then
+        printError "Stack not found: ${stackFile}"
         exit 1
     fi
 
-    local recipeLines=()
-    mapfile -t recipeLines <"${recipeFile}"
+    local stackLines=()
+    mapfile -t stackLines <"${stackFile}"
 
     local line buildDir components
-    for line in "${recipeLines[@]}"; do
+    for line in "${stackLines[@]}"; do
         [[ "${line}" =~ ^[[:space:]]*$ ]] && continue
         [[ "${line}" =~ ^[[:space:]]*# ]] && continue
         read -r buildDir components <<< "${line}"
