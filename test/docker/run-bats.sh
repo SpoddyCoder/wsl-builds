@@ -14,6 +14,8 @@ fail=0
 
 bats "${SCRIPT_DIR}/builder-tests.bats" || fail=1
 
+bats "${SCRIPT_DIR}/stacker-tests.bats" || fail=1
+
 bats "${SCRIPT_DIR}/review-tests.bats" || fail=1
 
 bats "${SCRIPT_DIR}/review-fixture-tests.bats" || fail=1

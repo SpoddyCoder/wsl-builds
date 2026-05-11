@@ -32,12 +32,14 @@ else
     shopt -s globstar nullglob
     shellcheck --shell=bash --external-sources --source-path=SCRIPTDIR -- \
         wsl-builder.sh \
+        wsl-stacker.sh \
         configure.sh \
         review/*.sh \
         test/run-tests.sh \
         test/docker/run-bats.sh \
         test/lint.sh \
         src/common/**/*.sh \
+        src/stacker/**/*.sh \
         src/builder/**/*.sh \
         src/configure/**/*.sh \
         src/review/**/*.sh \
@@ -58,12 +60,14 @@ else
     # Syntax-only sanity check on Bash-shaped scripts (.bats use bats syntax and are omitted here).
     for _lint_bash_file in \
         "${REPO_ROOT}/wsl-builder.sh" \
+        "${REPO_ROOT}/wsl-stacker.sh" \
         "${REPO_ROOT}/configure.sh" \
         "${REPO_ROOT}"/review/*.sh \
         "${REPO_ROOT}/test/run-tests.sh" \
         "${REPO_ROOT}/test/docker/run-bats.sh" \
         "${REPO_ROOT}/test/lint.sh" \
         "${REPO_ROOT}"/src/common/**/*.sh \
+        "${REPO_ROOT}"/src/stacker/**/*.sh \
         "${REPO_ROOT}"/src/builder/**/*.sh \
         "${REPO_ROOT}"/src/configure/**/*.sh \
         "${REPO_ROOT}"/src/review/**/*.sh \
