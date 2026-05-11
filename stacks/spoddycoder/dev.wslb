@@ -1,4 +1,4 @@
-# Good Dev Base
+# SpoodyCoder - Base Development Stack
 
 system      update,essentials,qol,apt-mirror-switch
 dev         essentials,qol,cursor

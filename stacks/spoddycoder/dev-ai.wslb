@@ -1,0 +1,8 @@
+# SpoodyCoder - AI Development Stack
+
+system      update,essentials,qol,apt-mirror-switch
+dev         essentials,qol,cursor
+devops      docker
+dev-bash    shellcheck,bats
+ai          cuda132,ollama
+dev-python  python3,conda
