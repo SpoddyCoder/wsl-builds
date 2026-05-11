@@ -36,6 +36,16 @@ resolveRepoRootFromAuditScript() {
     export REPO_ROOT
 }
 
+# Announce the loaded config path once per invocation chain (exported for child entrypoints).
+printWslBuildsConfPathOnce() {
+    local confPath="${1:?}"
+    if [ -n "${WSL_BUILDS_CONF_INFO_PRINTED:-}" ]; then
+        return 0
+    fi
+    export WSL_BUILDS_CONF_INFO_PRINTED=1
+    printInfo "Using: ${confPath}"
+}
+
 # Single implementation for WSL_BUILDS_CONF vs ~/.wsl-builds.conf. Caller must source src/common/print.sh first.
 loadWslBuildsConfOrExit() {
     local userConf="${HOME}/.wsl-builds.conf"
@@ -46,7 +56,7 @@ loadWslBuildsConfOrExit() {
         fi
         # shellcheck source=wsl-builds.conf.example
         source "${WSL_BUILDS_CONF}"
-        printInfo "Using: ${WSL_BUILDS_CONF}"
+        printWslBuildsConfPathOnce "${WSL_BUILDS_CONF}"
         return 0
     fi
     if [ ! -r "${userConf}" ]; then
@@ -55,5 +65,5 @@ loadWslBuildsConfOrExit() {
     fi
     # shellcheck source=wsl-builds.conf.example
     source "${userConf}"
-    printInfo "Using: ${userConf}"
+    printWslBuildsConfPathOnce "${userConf}"
 }

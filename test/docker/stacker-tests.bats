@@ -55,6 +55,19 @@ teardown() {
 	[[ "${output:?}" =~ Building\ fixture-builder\ v1\.0\.0 ]]
 }
 
+@test 'S3b: multi-step recipe prints config path once across builder children' {
+	mkdir -p "${_STACKER_TMP}/st/multi"
+	{
+		echo 'fixture-builder noop'
+		echo 'fixture-builder noop'
+	} >"${_STACKER_TMP}/st/multi/two-step.wslb"
+	run ./wsl-stacker.sh "${_STACKER_TMP}/st" multi/two-step
+	[[ "${status:?}" -eq 0 ]]
+	local using_count
+	using_count="$(printf '%s\n' "${output:?}" | grep -c 'Using: ' || true)"
+	[[ "${using_count:?}" -eq 1 ]]
+}
+
 @test 'S4: recipe may be passed with redundant .wslb suffix' {
 	mkdir -p "${_STACKER_TMP}/st2/a"
 	echo 'fixture-builder noop' >"${_STACKER_TMP}/st2/a/b.wslb"
