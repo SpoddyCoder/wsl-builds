@@ -1,0 +1,6 @@
+# Good Dev Base
+
+system      update,essentials,qol,apt-mirror-switch
+dev         essentials,qol,cursor
+devops      docker
+dev-bash    shellcheck,bats

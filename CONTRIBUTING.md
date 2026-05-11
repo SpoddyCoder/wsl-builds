@@ -21,10 +21,10 @@ Only two rules for PR submissions;
 * Install ShellCheck `./wsl-builder.sh dev-bash shellcheck`
 
 ### Entrypoint bootstrap
-* Top-level scripts (`./wsl-builder.sh`, `./configure.sh`, review runners, test drivers) use `set -euo pipefail` where they are the process entrypoint and share [`src/common/bootstrap-common.sh`](src/common/bootstrap-common.sh) for repository root resolution and, where user config is loaded, `loadWslBuildsConfOrExit`. Normative checklist and rationale: [`docs/standardise-bootstrap-plan.md`](docs/standardise-bootstrap-plan.md).
+* Top-level scripts (`./wsl-builder.sh`, `./wsl-stacker.sh`, `./configure.sh`, review runners, test drivers) use `set -euo pipefail` where they are the process entrypoint and share [`src/common/bootstrap-common.sh`](src/common/bootstrap-common.sh) for repository root resolution and, where user config is loaded, `loadWslBuildsConfOrExit`. Normative checklist and rationale: [`docs/standardise-bootstrap-plan.md`](docs/standardise-bootstrap-plan.md).
 
 ### Source tree (CLI vs `src/`)
-* **Entrypoints** (run from repo root): [`./wsl-builder.sh`](wsl-builder.sh), [`./configure.sh`](configure.sh); review maintainer scripts under [`review/`](review/) (for example `./review/component-review.sh`, `./review/review-debug.sh`); test drivers under [`test/`](test/) (for example `./test/run-tests.sh`, `./test/lint.sh`).
+* **Entrypoints** (run from repo root): [`./wsl-builder.sh`](wsl-builder.sh), [`./wsl-stacker.sh`](wsl-stacker.sh) (multi-step stacks from `.wslb` recipes), [`./configure.sh`](configure.sh); review maintainer scripts under [`review/`](review/) (for example `./review/component-review.sh`, `./review/review-debug.sh`); test drivers under [`test/`](test/) (for example `./test/run-tests.sh`, `./test/lint.sh`).
 * **`src/`** is for **sourced** libraries only, grouped by domain: [`src/common/`](src/common/), [`src/builder/`](src/builder/), [`src/configure/`](src/configure/), [`src/review/`](src/review/) (framework code sourced by those entrypoints). The intentional exception is [`src/review/audit-checks/`](src/review/audit-checks/): those modules are **executed** as subprocesses by the review framework, not invoked directly as user CLIs.
 * Full layout rationale and phase history: [`docs/source-tree-refactor.md`](docs/source-tree-refactor.md).
 
