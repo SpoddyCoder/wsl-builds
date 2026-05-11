@@ -57,6 +57,19 @@ change-hostname python-ai
 * Build history is kept in `~/.wsl-build.info`
 * Maintainers: optional advisory component reviews (no installs) are documented in [review/README.md](review/README.md).
 
+### Stacks
+Saved build sequences live under `stacks/<namespace>/` as `.wslb` files (one `build-dir` and comma-separated components per line; blank lines and `#` comments are ignored). `./wsl-stacker.sh` runs **the builder** once per line:
+```
+./wsl-stacker.sh <namespace> <stack-name> [--force]
+```
+* With no arguments, or with a namespace only, it prints usage and available namespaces or stacks (same idea as listing builds or components with **the builder**).
+* The first argument may be a stacks directory path instead of a repo `stacks/<namespace>` shorthand.
+* Shipped examples: [stacks/spoddycoder/README.md](stacks/spoddycoder/README.md).
+
+```bash
+./wsl-stacker.sh spoddycoder dev
+```
+
 ## Build List
 
 | Build | Packages, Frameworks, Tools & Extras | Additional Conf |
