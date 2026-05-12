@@ -15,11 +15,8 @@ sh "$ollama_install_script"
 
 cleanupGetFiles
 
-if command -v systemctl >/dev/null 2>&1 && [ -f /etc/systemd/system/ollama.service ]; then
-    if promptYesNo "Disable the Ollama systemd service from starting on boot"; then
-        sudo systemctl disable --now ollama
-        printInfo "Ollama is stopped and will not start automatically on boot"
-    fi
+if promptDisableSystemdUnitsOnBoot "Disable the Ollama systemd service from starting on boot" ollama.service; then
+    printInfo "Ollama is stopped and will not start automatically on boot"
 fi
 
 if [ -n "${OLLAMA_MODELS:-}" ]; then
@@ -41,7 +38,7 @@ if [ -n "${OLLAMA_MODELS:-}" ]; then
     if [ -f /etc/systemd/system/ollama.service ]; then
         sudo install -d -m 0755 "$(dirname "$ollama_systemd_dropin")"
         printf '%s\n' '[Service]' "EnvironmentFile=${ollama_systemd_env}" | sudo tee "$ollama_systemd_dropin" >/dev/null
-        if command -v systemctl >/dev/null 2>&1; then
+        if isSystemdManagerRunning; then
             sudo systemctl daemon-reload
             if systemctl is-enabled ollama >/dev/null 2>&1 || systemctl is-active ollama >/dev/null 2>&1; then
                 printInfo "Restarting ollama systemd unit to apply OLLAMA_MODELS"

@@ -4,6 +4,8 @@
 _helpers_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # shellcheck source=../common/prompt-yesno.sh
 source "${_helpers_dir}/../common/prompt-yesno.sh"
+# shellcheck source=systemd-boot.sh
+source "${_helpers_dir}/systemd-boot.sh"
 
 # Sets nameref $1 to stale-cache threshold in whole days (default 60; WARN_IF_CACHED_FILE_OLDER_THAN must be a positive integer).
 resolveGetFileStaleCacheDays() {

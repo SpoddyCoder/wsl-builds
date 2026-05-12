@@ -28,25 +28,9 @@ printInfo "Docker version: $(docker --version)"
 printInfo "Docker Compose version: $(docker compose version | head -n1)"
 printWarning "Restart your WSL session before running Docker without sudo."
 
-if command -v systemctl >/dev/null 2>&1; then
-    _docker_have_any_unit=0
-    for _docker_u in docker.service docker.socket containerd.service; do
-        if [ -f "/lib/systemd/system/${_docker_u}" ] || [ -f "/etc/systemd/system/${_docker_u}" ]; then
-            _docker_have_any_unit=1
-            break
-        fi
-    done
-    if [ "${_docker_have_any_unit}" -eq 1 ]; then
-        if promptYesNo "Disable Docker Engine, docker.socket, and containerd from starting on boot"; then
-            # Stop/disable dependency-first: Engine (and socket) before containerd
-            for _docker_u in docker.service docker.socket containerd.service; do
-                if [ -f "/lib/systemd/system/${_docker_u}" ] || [ -f "/etc/systemd/system/${_docker_u}" ]; then
-                    sudo systemctl disable --now "${_docker_u}"
-                fi
-            done
-            printInfo "Docker-related systemd units are stopped and will not start automatically on boot"
-        fi
-    fi
+if promptDisableSystemdUnitsOnBoot "Disable Docker Engine, docker.socket, and containerd from starting on boot" \
+    docker.service docker.socket containerd.service; then
+    printInfo "Docker-related systemd units are stopped and will not start automatically on boot"
 fi
 
 printInfo "Docker installed"

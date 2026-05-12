@@ -8,7 +8,7 @@ Essential DevOps tools for infrastructure management and container orchestration
 ### `docker`
 * Installs Docker Engine, Buildx, and the Compose plugin from Docker's official repository
 * Adds the current user to the `docker` group; restart WSL before running Docker without `sudo`
-* After install, if `systemd` is available and Docker-related unit files are present, you are optionally prompted to `systemctl disable --now` `docker.service`, `docker.socket` (if present), and `containerd.service` so they stop immediately if running and do not start on boot (default **Y**)
+* After install, if the systemd manager is running and Docker-related unit files are present, you are optionally prompted to `systemctl disable --now` `docker.service`, `docker.socket` (if present), and `containerd.service` so they stop immediately if running and do not start on boot (default **Y**)
 * https://docs.docker.com/engine/install/ubuntu/
 
 ### `terraform`
