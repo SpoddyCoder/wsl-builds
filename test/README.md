@@ -135,3 +135,4 @@ Each test uses a fresh fake `$HOME`; [`run-bats.sh`](docker/run-bats.sh) runs th
 | W17 | Shell hint warns when `WSL_BUILDS_CONF` is set in env | `WSL_BUILDS_CONF=/path … --noninteractive` → `WARN: WSL_BUILDS_CONF still set`. |
 | W18 | Shell hint silent when `WSL_BUILDS_CONF` is unset | `--noninteractive` with no env var → no `still set` line. |
 | W19 | `replaceManagedShellRcRegion` with bash and zsh | When both rc files exist, each gets exactly one `wsl-builds-conf` block and the same `export`. |
+| W20 | `resolveUserProfileUnix` ignores cmd.exe nonzero exit | Stub `cmd.exe` prints `C:\Users\test` then exits 1; stub `wslpath` maps it; function succeeds. |

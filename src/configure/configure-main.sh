@@ -47,14 +47,26 @@ autoNonInteractiveIfNoTTY() {
 }
 
 resolveUserProfileUnix() {
-    local winprofile
-    if ! winprofile=$(cmd.exe /c "echo %USERPROFILE%" 2>/dev/null | tr -d '\r'); then
-        return 1
+    local winprofile launch_dir
+
+    launch_dir=/mnt/c/Windows
+    if [ ! -d "${launch_dir}" ]; then
+        launch_dir=/mnt/c
     fi
+    if [ ! -d "${launch_dir}" ]; then
+        launch_dir=/
+    fi
+
+    # CMD can exit nonzero when started from a WSL UNC cwd even after printing %USERPROFILE%.
+    winprofile=$( (cd "${launch_dir}" && cmd.exe /c "echo %USERPROFILE%") 2>/dev/null | tr -d '\r')
     if [ -z "${winprofile}" ]; then
         return 1
     fi
-    wslpath -u "$winprofile" 2>/dev/null || return 1
+    winprofile="${winprofile##*$'\n'}"
+    if [[ "${winprofile}" != [A-Za-z]:* ]]; then
+        return 1
+    fi
+    wslpath -u "${winprofile}" 2>/dev/null || return 1
 }
 
 defaultHostConfPath() {

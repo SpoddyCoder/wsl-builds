@@ -212,3 +212,26 @@ EOF
 	[[ "${status:?}" -eq 0 ]]
 	[[ ! "${output:?}" =~ WSL_BUILDS_CONF\ still\ set ]]
 }
+
+@test 'W20: resolveUserProfileUnix accepts cmd.exe profile output with nonzero exit' {
+	local mock_bin
+	mock_bin="$(mktemp -d)"
+	cat >"${mock_bin}/cmd.exe" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\r\n' 'C:\Users\test'
+exit 1
+EOF
+	cat >"${mock_bin}/wslpath" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\n' '/mnt/c/Users/test'
+exit 0
+EOF
+	chmod +x "${mock_bin}/cmd.exe" "${mock_bin}/wslpath"
+	PATH="${mock_bin}:${PATH}"
+	# shellcheck disable=SC1091
+	source "${TEST_ROOT}/configure.sh"
+	run resolveUserProfileUnix
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" == '/mnt/c/Users/test' ]]
+	rm -rf "${mock_bin}"
+}
