@@ -65,6 +65,7 @@ Saved build sequences live under `stacks/<namespace>/` as `.wslb` files (one `bu
 * With no arguments, or with a namespace only, it prints usage and available namespaces or stacks (same idea as listing builds or components with **the builder**).
 * The first argument may be a stacks directory path instead of a repo `stacks/<namespace>` shorthand.
 * Shipped examples: [stacks/spoddycoder/README.md](stacks/spoddycoder/README.md).
+* Each line is a separate **the builder** run; apt index refresh is throttled across those runs in the same stack session (shared stamp and package-list freshness).
 
 ```bash
 ./wsl-stacker.sh spoddycoder dev

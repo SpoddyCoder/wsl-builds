@@ -2,7 +2,7 @@
 
 printInfo "Installing PostgreSQL server"
 
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y postgresql postgresql-contrib
 
 printInfo "psql version: $(psql --version)"

@@ -2,7 +2,7 @@
 
 printInfo "Installing MySQL client"
 
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y mysql-client
 
 printInfo "MySQL client version: $(mysql --version)"

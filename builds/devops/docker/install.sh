@@ -3,7 +3,7 @@
 printInfo "Installing Docker"
 
 printInfo "Installing dependencies"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y ca-certificates curl gnupg
 
 printInfo "Adding Docker GPG key"
@@ -17,7 +17,7 @@ ubuntu_codename=$(grep -oP '(?<=VERSION_CODENAME=).*' /etc/os-release || lsb_rel
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu ${ubuntu_codename} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 printInfo "Installing Docker Engine"
-sudo apt update
+aptUpdateRequired
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 printInfo "Adding ${USER} to the docker group"

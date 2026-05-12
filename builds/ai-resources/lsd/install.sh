@@ -20,7 +20,7 @@ pip install mega.py    # couldn't find this on conda
 pip install .    # make the lucidsonicdreams package available in this conda environment
 printInfo "Installing ubuntu ffmpeg with h264 codec"    # TODO: should be able to install this via conda
 conda remove --force ffmpeg
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y libx264-dev ffmpeg
 
 printInfo "Note: to use the lucid-sonic-dreams project:"

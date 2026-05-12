@@ -3,7 +3,7 @@
 printInfo "Installing Ollama"
 
 printInfo "Installing dependencies"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y zstd
 
 ollama_install_url="https://ollama.com/install.sh"

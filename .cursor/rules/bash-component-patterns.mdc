@@ -28,7 +28,7 @@ alwaysApply: false
 
 ## apt (Ubuntu)
 
-- Run `sudo apt update` before repo-backed `sudo apt install`; always pass `-y`; use `apt` not `apt-get`. Skip `apt update` for local `.deb` / `dpkg -i` only. Flow: `printInfo "Installing X"` → `sudo apt update` → `sudo apt install -y …` → optional `printInfo "X version: …"` → `printInfo "X installed"`.
+- Before repo-backed `sudo apt install`, call **`aptUpdateIfStale`** from [`src/builder/install-helpers.sh`](../../src/builder/install-helpers.sh); after changing apt sources or mirrors, call **`aptUpdateRequired`**. Do not use bare `sudo apt update` in new components. Always pass `-y` on install; use `apt` not `apt-get`. Skip apt index refresh for local `.deb` / `dpkg -i` only. Flow: `printInfo "Installing X"` → `aptUpdateIfStale` → `sudo apt install -y …` → optional `printInfo "X version: …"` → `printInfo "X installed"`.
 
 ## Downloads, caches, `set -e`
 

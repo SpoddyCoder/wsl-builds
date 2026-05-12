@@ -2,7 +2,7 @@
 
 printInfo "Installing MySQL server"
 
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y mysql-server
 
 printInfo "MySQL server version: $(mysqld --version)"

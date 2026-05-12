@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 printInfo "Installing System essentials"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y \
     htop \
     rsync

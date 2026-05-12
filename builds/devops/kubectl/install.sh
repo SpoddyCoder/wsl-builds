@@ -3,7 +3,7 @@
 printInfo "Installing kubectl"
 
 printInfo "Installing dependencies"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y curl
 
 # Get the latest stable version

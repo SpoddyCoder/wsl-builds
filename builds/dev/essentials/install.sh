@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 printInfo "Installing Dev essentials"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y \
     curl \
     wget \

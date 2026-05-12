@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 printInfo "Installing Python3 development basics"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y python3-pip
 
 # TODO make this an additional arg

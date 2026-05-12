@@ -58,6 +58,11 @@ Each row is one `@test`. The `#` column is the stable **B**… id (same order as
 | B24 | `file-edit-harness updates shell rc and /etc/wsl.conf` | Seeds dummy `/etc/wsl.conf`, runs harness component, asserts `ensureShellRcRegion` block in `~/.bashrc` and `ensureWslConfIniLine` under `[wsl-builds-fixture-builder]`; restores `/etc/wsl.conf` after. |
 | B25 | `getfile-stale-harness stale cache default yes keeps seeded payload` | `WARN_IF_CACHED_FILE_OLDER_THAN=1` in harness conf; aged cache + `printf '\n'` → stale warning and “Using locally cached version”; payload matches seed; `WSL_BUILDS_GETFILE_STALE_EXPECT=cache`. |
 | B26 | `getfile-stale-harness stale cache n refreshes from fixture URL` | Same aged cache; `printf 'n\n'` → “Downloading fresh copy”; payload matches HTTP fixture; `WSL_BUILDS_GETFILE_STALE_EXPECT=refresh`. |
+| B34 | `apt-update-interval-harness default interval skips fresh indexes` | Default `APT_UPDATE_INTERVAL_MINS` (360); fresh stamp and lists; `aptUpdateIfStale` skips with interval message; `WSL_BUILDS_APT_UPDATE_INTERVAL_EXPECT=skip`. |
+| B35 | `apt-update-interval-harness zero interval always updates` | `APT_UPDATE_INTERVAL_MINS=0` in conf; fresh stamp; `aptUpdateIfStale` runs update (no skip message). |
+| B36 | `apt-update-interval-harness configured interval skips fresh indexes` | `APT_UPDATE_INTERVAL_MINS=120`; fresh stamp; skip message names 120-minute interval. |
+| B37 | `apt-update-interval-harness required always updates fresh indexes` | `aptUpdateRequired` with fresh stamp still runs update. |
+| B38 | `apt-update-interval-harness invalid interval warns and uses default skip` | Invalid `APT_UPDATE_INTERVAL_MINS` warns and falls back to 360; fresh stamp skips. |
 
 ## Review catalog (`docker/review-tests.bats`)
 

@@ -312,3 +312,49 @@ EOF
 	[[ "${output:?}" =~ Downloading\ fresh\ copy ]]
 	grep -Fxq 'fixture-builder v1.0.0 (getfile-stale-harness)' "${HOME}/.wsl-build.info"
 }
+
+@test 'B34: apt-update-interval-harness default interval skips fresh indexes' {
+	run bash -c 'export WSL_BUILDS_APT_UPDATE_HARNESS_MODE=ifstale WSL_BUILDS_APT_UPDATE_INTERVAL_EXPECT=skip; ./wsl-builder.sh fixture-builder apt-update-interval-harness'
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" =~ Skipping\ apt\ update\ \(package\ indexes\ were\ updated\ recently\ within\ the\ 360-minute\ interval\) ]]
+	grep -Fxq 'fixture-builder v1.0.0 (apt-update-interval-harness)' "${HOME}/.wsl-build.info"
+}
+
+@test 'B35: apt-update-interval-harness zero interval always updates' {
+	alt_conf="${BATS_TEST_TMPDIR}/apt-update-zero.conf"
+	cp "${TEST_DIR}/wsl-builds.conf" "${alt_conf}"
+	printf '\nAPT_UPDATE_INTERVAL_MINS=0\n' >>"${alt_conf}"
+	WSL_BUILDS_CONF="${alt_conf}" run bash -c 'export WSL_BUILDS_APT_UPDATE_HARNESS_MODE=ifstale WSL_BUILDS_APT_UPDATE_INTERVAL_EXPECT=update; ./wsl-builder.sh fixture-builder apt-update-interval-harness'
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" != *'Skipping apt update'* ]]
+	grep -Fxq 'fixture-builder v1.0.0 (apt-update-interval-harness)' "${HOME}/.wsl-build.info"
+}
+
+@test 'B36: apt-update-interval-harness configured interval skips fresh indexes' {
+	alt_conf="${BATS_TEST_TMPDIR}/apt-update-interval.conf"
+	cp "${TEST_DIR}/wsl-builds.conf" "${alt_conf}"
+	printf '\nAPT_UPDATE_INTERVAL_MINS=120\n' >>"${alt_conf}"
+	WSL_BUILDS_CONF="${alt_conf}" run bash -c 'export WSL_BUILDS_APT_UPDATE_HARNESS_MODE=ifstale WSL_BUILDS_APT_UPDATE_INTERVAL_EXPECT=skip; ./wsl-builder.sh fixture-builder apt-update-interval-harness'
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" =~ Skipping\ apt\ update\ \(package\ indexes\ were\ updated\ recently\ within\ the\ 120-minute\ interval\) ]]
+	grep -Fxq 'fixture-builder v1.0.0 (apt-update-interval-harness)' "${HOME}/.wsl-build.info"
+}
+
+@test 'B37: apt-update-interval-harness required always updates fresh indexes' {
+	run bash -c 'export WSL_BUILDS_APT_UPDATE_HARNESS_MODE=required WSL_BUILDS_APT_UPDATE_INTERVAL_EXPECT=update; ./wsl-builder.sh fixture-builder apt-update-interval-harness'
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" != *'Skipping apt update'* ]]
+	grep -Fxq 'fixture-builder v1.0.0 (apt-update-interval-harness)' "${HOME}/.wsl-build.info"
+}
+
+@test 'B38: apt-update-interval-harness invalid interval warns and uses default skip' {
+	alt_conf="${BATS_TEST_TMPDIR}/apt-update-invalid.conf"
+	cp "${TEST_DIR}/wsl-builds.conf" "${alt_conf}"
+	printf '\nAPT_UPDATE_INTERVAL_MINS=not-a-number\n' >>"${alt_conf}"
+	WSL_BUILDS_CONF="${alt_conf}" run bash -c 'export WSL_BUILDS_APT_UPDATE_HARNESS_MODE=ifstale WSL_BUILDS_APT_UPDATE_INTERVAL_EXPECT=skip; ./wsl-builder.sh fixture-builder apt-update-interval-harness'
+	[[ "${status:?}" -eq 0 ]]
+	[[ "${output:?}" =~ APT_UPDATE_INTERVAL_MINS\ must\ be\ a\ non-negative\ integer ]]
+	[[ "${output:?}" =~ using\ 360 ]]
+	[[ "${output:?}" =~ Skipping\ apt\ update\ \(package\ indexes\ were\ updated\ recently\ within\ the\ 360-minute\ interval\) ]]
+	grep -Fxq 'fixture-builder v1.0.0 (apt-update-interval-harness)' "${HOME}/.wsl-build.info"
+}

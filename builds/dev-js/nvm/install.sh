@@ -4,7 +4,7 @@ printInfo "Installing NVM"
 
 # NVM needs libatomic1
 printInfo "Installing dependency: libatomic1"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y libatomic1
 
 # Download the NVM installation script from the official GitHub repository

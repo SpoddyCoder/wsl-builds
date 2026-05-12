@@ -4,7 +4,7 @@ printInfo "Installing Hugo"
 
 # Install Hugo extended edition via apt package manager
 printInfo "Installing Hugo extended edition from Ubuntu repository"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y hugo
 
 # Verify installation

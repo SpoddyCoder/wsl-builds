@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 printInfo "Installing Cursor"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y \
     tree
 

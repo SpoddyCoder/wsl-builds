@@ -3,7 +3,8 @@
 printInfo "Installing Packer"
 
 printInfo "Installing dependencies"
-sudo apt update && sudo apt install -y gnupg software-properties-common
+aptUpdateIfStale
+sudo apt install -y gnupg software-properties-common
 
 printInfo "Adding HashiCorp GPG key"
 wget -O- https://apt.releases.hashicorp.com/gpg | \
@@ -19,7 +20,8 @@ printInfo "Adding HashiCorp repository"
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 
 printInfo "Installing Packer"
-sudo apt update && sudo apt install -y packer
+aptUpdateRequired
+sudo apt install -y packer
 
 printInfo "Installing Packer autocomplete"
 packer -autocomplete-install

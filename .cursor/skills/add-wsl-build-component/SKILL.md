@@ -46,6 +46,7 @@ Full conventions: [`.cursor/rules/bash-component-patterns.mdc`](../../rules/bash
 - **Close** with one final line: `printInfo "<Name> installed"` — past tense, no "successfully", no ellipsis, no trailing period. Must be the **last** user-facing status (after any verification).
 - **Channels:** use `printInfo`, `printWarning`, and `printError` for step/status output. Use `echo` only for data written into files or heredocs, not for install progress.
 - **Optional:** if a natural version command exists, prefer `printInfo "<Name> version: $(cmd …)"` (or the first line of output) instead of raw `--version` stdout as the script’s last impression.
+- Before repo-backed `sudo apt install`, call `aptUpdateIfStale`; after changing apt sources or mirrors, call `aptUpdateRequired` from `src/builder/install-helpers.sh` — do not use bare `sudo apt update` in components.
 - Use `getFile` for downloads so files are cached through `CACHE_DIR`.
 - Call `cleanupGetFiles` after using downloaded installers when cleanup is appropriate.
 - Prefer existing helper functions in `src/` over new helpers.

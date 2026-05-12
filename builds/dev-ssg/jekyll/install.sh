@@ -4,7 +4,7 @@ printInfo "Installing Jekyll"
 
 # Install Ruby and development dependencies
 printInfo "Installing Ruby and build dependencies"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y ruby-full build-essential zlib1g-dev
 
 # Set up gem installation directory for user (avoid root gems)

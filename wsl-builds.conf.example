@@ -5,6 +5,7 @@
 # builder
 # CACHE_DIR=/mnt/c/WSL/cache                # cache large downloads on Windows host
 # WARN_IF_CACHED_FILE_OLDER_THAN=60         # positive integer; stale cache prompt after this many days (default 60 when unset)
+# APT_UPDATE_INTERVAL_MINS=360              # Minimum time between apt updates; default if left unset = 360 (6 hours). 0 to disable and always update (not recommended)
 # EXTERNAL_BUILDS_ROOT=/mnt/c/my-builds     # absolute path or ~/path/; replaces repo builds/ with your own builds/ tree
 # EXTERNAL_STACKS_ROOT=/mnt/c/my-stacks     # absolute path or ~/path/; replaces repo stacks/ with your own stacks/ tree
 

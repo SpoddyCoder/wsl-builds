@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 printInfo "Installing systemd tools"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y \
     systemd \
     systemd-sysv

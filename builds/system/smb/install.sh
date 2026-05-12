@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 printInfo "Installing SMB client tools"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y \
     smbclient \
     cifs-utils

@@ -2,7 +2,7 @@
 
 printInfo "Installing PostgreSQL client"
 
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y postgresql-client
 
 printInfo "psql version: $(psql --version)"

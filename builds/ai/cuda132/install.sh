@@ -15,7 +15,7 @@ getFile "${cuda_keyring_filename}" "${cuda_keyring_url}" "/tmp" cuda_keyring_deb
 # shellcheck disable=SC2154 # cuda_keyring_deb is set by getFile via nameref
 sudo dpkg -i "$cuda_keyring_deb"
 
-sudo apt update
+aptUpdateRequired
 sudo apt install -y "${cuda_toolkit_apt}"
 cleanupGetFiles
 

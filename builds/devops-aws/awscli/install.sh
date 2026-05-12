@@ -3,7 +3,7 @@
 printInfo "Installing AWS CLI"
 
 printInfo "Installing dependencies"
-sudo apt update
+aptUpdateIfStale
 sudo apt install -y curl unzip
 
 printInfo "Downloading and installing AWS CLI v2"

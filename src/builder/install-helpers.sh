@@ -24,6 +24,100 @@ resolveGetFileStaleCacheDays() {
     _getfile_stale_days_out=60
 }
 
+# Sets nameref $1 to minimum minutes between apt updates (default 360; APT_UPDATE_INTERVAL_MINS=0 always updates).
+resolveAptUpdateIntervalMins() {
+    local -n _apt_update_interval_mins_out=$1
+    local raw
+    raw="${APT_UPDATE_INTERVAL_MINS-}"
+    if [[ -z "${raw}" ]]; then
+        _apt_update_interval_mins_out=360
+        return 0
+    fi
+    if [[ "${raw}" =~ ^[0-9]+$ ]]; then
+        _apt_update_interval_mins_out="${raw}"
+        return 0
+    fi
+    printWarning "APT_UPDATE_INTERVAL_MINS must be a non-negative integer; using 360"
+    _apt_update_interval_mins_out=360
+}
+
+aptUpdateStampPath() {
+    printf '%s/apt-update.stamp' "${CACHE_DIR}"
+}
+
+aptListsLookUninitialized() {
+    if [[ ! -d /var/lib/apt/lists ]]; then
+        return 0
+    fi
+    if [[ -z "$(find /var/lib/apt/lists -mindepth 1 -maxdepth 1 -print -quit 2>/dev/null)" ]]; then
+        return 0
+    fi
+    return 1
+}
+
+aptIndexesFreshWithinInterval() {
+    local interval_mins now fresh_seconds stamp_path stamp_mtime lists_mtime
+    resolveAptUpdateIntervalMins interval_mins
+    if (( interval_mins == 0 )); then
+        return 1
+    fi
+    fresh_seconds=$(( interval_mins * 60 ))
+    now=$(date +%s)
+    stamp_path="$(aptUpdateStampPath)"
+    if [[ -f "${stamp_path}" ]]; then
+        stamp_mtime=$(stat -c %Y "${stamp_path}")
+        if (( now - stamp_mtime < fresh_seconds )); then
+            return 0
+        fi
+    fi
+    if [[ -d /var/lib/apt/lists ]]; then
+        lists_mtime=$(stat -c %Y /var/lib/apt/lists)
+        if (( now - lists_mtime < fresh_seconds )); then
+            return 0
+        fi
+    fi
+    return 1
+}
+
+recordAptUpdateStamp() {
+    mkdir -p "${CACHE_DIR}"
+    touch "$(aptUpdateStampPath)"
+}
+
+runAptUpdate() {
+    if ! sudo apt update; then
+        return 1
+    fi
+    recordAptUpdateStamp
+}
+
+# inline command
+# Runs sudo apt update when package indexes are older than APT_UPDATE_INTERVAL_MINS (or lists are uninitialized).
+aptUpdateIfStale() {
+    local interval_mins stamp_path
+    resolveAptUpdateIntervalMins interval_mins
+    if (( interval_mins == 0 )); then
+        runAptUpdate
+        return
+    fi
+    stamp_path="$(aptUpdateStampPath)"
+    if [[ ! -f "${stamp_path}" ]] && aptListsLookUninitialized; then
+        runAptUpdate
+        return
+    fi
+    if aptIndexesFreshWithinInterval; then
+        printInfo "Skipping apt update (package indexes were updated recently within the ${interval_mins}-minute interval)"
+        return 0
+    fi
+    runAptUpdate
+}
+
+# inline command
+# Always runs sudo apt update (for example after changing apt sources).
+aptUpdateRequired() {
+    runAptUpdate
+}
+
 # inline command
 # $1 - component name
 # Records successful component installation to ~/.wsl-build.info and sets BUILD_UPDATED=true

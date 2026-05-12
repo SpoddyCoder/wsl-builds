@@ -12,7 +12,7 @@ sudo bash "$nodesource_script"
 
 # Update package cache and install Node.js
 printInfo "Installing Node.js and npm"
-sudo apt update
+aptUpdateRequired
 sudo apt install -y nodejs
 
 cleanupGetFiles

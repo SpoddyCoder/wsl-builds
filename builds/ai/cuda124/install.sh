@@ -18,7 +18,7 @@ getFile ${cuda_wsl_filename} ${cuda_wsl_url} "/tmp" cuda_installer
 sudo dpkg -i "$cuda_installer"
 sudo cp /var/cuda-repo-wsl-ubuntu-${cuda_version}-local/cuda-*-keyring.gpg /usr/share/keyrings/
 # - install the cuda toolkit
-sudo apt update
+aptUpdateRequired
 sudo apt install -y cuda-toolkit-${cuda_version}
 cleanupGetFiles
 
