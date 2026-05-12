@@ -2,6 +2,10 @@
 
 printInfo "Installing Ollama"
 
+printInfo "Installing dependencies"
+sudo apt update
+sudo apt install -y zstd
+
 ollama_install_url="https://ollama.com/install.sh"
 getFile "ollama_install.sh" "${ollama_install_url}" "" ollama_install_script
 
