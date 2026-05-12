@@ -9,7 +9,7 @@ showStackerUsage() {
 showAvailableNamespaces() {
     echo
     echo "Available namespaces:"
-    local stacksRoot="${REPO_ROOT}/stacks"
+    local stacksRoot="${STACKS_ROOT}"
     if [[ ! -d "${stacksRoot}" ]]; then
         echo
         return
@@ -26,7 +26,7 @@ showAvailableNamespaces() {
 
 showAvailableStacksForNamespace() {
     local namespace="${1:?}"
-    local nsDir="${REPO_ROOT}/stacks/${namespace}"
+    local nsDir="${STACKS_ROOT}/${namespace}"
     echo
     echo "Available stacks for ${namespace}:"
     local stackFile stackName

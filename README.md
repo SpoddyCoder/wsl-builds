@@ -102,6 +102,9 @@ Saved build sequences live under `stacks/<namespace>/` as `.wslb` files (one `bu
 * Each inner build directory must have `conf.sh`, `install.sh`, and `README.md` at its root; component install scripts live at `builds/<build-dir>/<slug>/install.sh` (CSV hyphens in the token map to underscores in `slug`, same as **the builder** dispatch).
 * See [CONTRIBUTING.md](CONTRIBUTING.md) for more info.
 
+### External Stacks Root
+* `EXTERNAL_STACKS_ROOT` in `wsl-builds.conf` can point at another `stacks/` directory outside the repo.
+
 ## Enabling + Configuring WSL2 on the Windows Host
 * Open PowerShell as an Administrator
 * `wsl --install`

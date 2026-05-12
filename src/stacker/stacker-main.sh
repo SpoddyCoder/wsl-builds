@@ -51,6 +51,10 @@ invokeBuilderForLine() {
 stackerMain() {
     loadWslBuildsConfOrExit
 
+    # shellcheck source=src/stacker/stacks-root.sh
+    source "${REPO_ROOT}/src/stacker/stacks-root.sh"
+    resolveStacksRootFromRepoRoot "${REPO_ROOT}" || exit 1
+
     # shellcheck source=src/stacker/stacker-arg-helpers.sh
     source "${REPO_ROOT}/src/stacker/stacker-arg-helpers.sh"
 
@@ -70,7 +74,7 @@ stackerMain() {
 
     if [[ "${#positional[@]}" -eq 1 ]]; then
         local firstArg="${positional[0]}"
-        if [[ -d "${REPO_ROOT}/stacks/${firstArg}" ]]; then
+        if [[ -d "${STACKS_ROOT}/${firstArg}" ]]; then
             showStackerUsage
             showAvailableStacksForNamespace "${firstArg}"
             exit 1
@@ -102,7 +106,7 @@ stackerMain() {
     stackFile=""
 
     if stackerArgsEligibleForNamespaceShorthand "${firstArg}" "${stackArg}"; then
-        shorthandPath="${REPO_ROOT}/stacks/${firstArg}/${stackBase}.wslb"
+        shorthandPath="${STACKS_ROOT}/${firstArg}/${stackBase}.wslb"
         if [[ -f "${shorthandPath}" ]]; then
             stackFile="${shorthandPath}"
         fi
