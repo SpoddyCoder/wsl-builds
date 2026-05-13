@@ -8,6 +8,7 @@ A good basic base for AI work using CUDA.
 ## Build Components
 ### `cuda132`
 * Install CUDA **13.2** toolkit via the **WSL-Ubuntu network** repo: `cuda-wsl-ubuntu.pin`, `cuda-keyring`, then `cuda-toolkit-13-2` (recommended method in the [CUDA Installation Guide for Linux — WSL](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#wsl)).
+* When `/usr/local/cuda/bin` exists, refreshes a `wsl-builds:cuda-toolkit-path` block in `~/.bashrc` / `~/.zshrc` so `nvcc` and other toolkit binaries are on `PATH` in new shells (open a new terminal or `source` your rc file).
 * Do not install `cuda`, `cuda-drivers`, or other meta-packages that pull the Linux GPU driver into WSL. Same rules as the WSL user guide.
 * https://docs.nvidia.com/cuda/wsl-user-guide/index.html
 * https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_network
@@ -15,6 +16,7 @@ A good basic base for AI work using CUDA.
 
 ### `cuda124`
 * Install WSL-specific **CUDA 12.4** toolkit (local `.deb` repo), for environments that must stay on 12.4.
+* When `/usr/local/cuda/bin` exists, refreshes the same `wsl-builds:cuda-toolkit-path` shell block as **cuda132** so `nvcc` is on `PATH` in new shells.
 * IMPORTANT: always use the WSL version; generic Ubuntu CUDA installs can overwrite the WSL driver stub.
 * https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local
 * Useful: https://forums.developer.nvidia.com/c/accelerated-computing/cuda/cuda-on-windows-subsystem-for-linux/303
@@ -28,6 +30,11 @@ A good basic base for AI work using CUDA.
 * After install, if the systemd manager is running and `/etc/systemd/system/ollama.service` is present, you are prompted whether to `systemctl disable --now ollama` so the service stops immediately if running and does not start on boot (default **Y**). Choosing **n** leaves vendor enablement as-is.
 * Optional: set `OLLAMA_MODELS` in `wsl-builds.conf` to store pulled models outside the default `~/.ollama`. When set, the install creates that directory, sets ownership for the `ollama` service user when it exists, wires `EnvironmentFile` into `ollama.service` when that unit is present, and adds `/etc/profile.d/wsl-builds-ollama-models.sh` so login shells see the same value.
 * https://ollama.com/download/linux
+
+### `llama-cpp`
+* Clone [llama.cpp](https://github.com/ggerganov/llama.cpp), configure with CMake (Ninja), and install release binaries into your prefix (default `~/.local/bin`). Re-runs `git pull` when the clone already exists.
+* If `nvcc` is on `PATH` (after **cuda124** / **cuda132**, use a new shell or `source` your rc so the `cuda-toolkit-path` block applies), the build enables **GGML_CUDA**. Otherwise you get a CPU-only build; install a CUDA component first, then run this component again with `--force` if you need GPU support.
+* Optional `wsl-builds.conf`: `LLAMA_CPP_SRC_DIR` (default `~/llama.cpp`) and `LLAMA_CPP_INSTALL_PREFIX` (default `~/.local`). The install sets CMake `INSTALL_RPATH` to the prefix `lib` directory and refreshes a `wsl-builds:llama-cpp` block in `~/.bashrc` / `~/.zshrc` so the prefix `bin` is on `PATH` and `lib` is on `LD_LIBRARY_PATH` (shared libraries such as `libllama-common.so`).
 
 ## Build Arguments
 * No additional arguments for this build

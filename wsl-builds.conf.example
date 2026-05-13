@@ -26,6 +26,10 @@
 # ai / ollama - (default is on the WSL instance: /usr/share/ollama/.ollama/models/)
 # OLLAMA_MODELS=/mnt/c/WSL/ollama-models    # store models on Windows host
 
+# ai / llama.cpp - (defaults: clone under ~/llama.cpp, install binaries to ~/.local/bin)
+# LLAMA_CPP_SRC_DIR=/mnt/c/WSL/llama.cpp-src
+# LLAMA_CPP_INSTALL_PREFIX=/mnt/c/WSL/llama.cpp
+
 # ai-resources - (default is on the WSL instance: ~/ai-resources)
 # AI_RESOURCES_PROJECT_DIR=/mnt/c/WSL/ai-resources              # where the projects are cloned
 

@@ -26,4 +26,8 @@ elif command -v nvcc >/dev/null 2>&1; then
     printInfo "CUDA WSL version: $(nvcc --version 2>&1 | tail -n1)"
 fi
 
+if [[ -d /usr/local/cuda/bin ]]; then
+    replaceManagedShellRcRegion cuda-toolkit-path "$(printf "export PATH=\"/usr/local/cuda/bin:\${PATH}\"\n")"
+fi
+
 printInfo "CUDA WSL 13.2 installed"

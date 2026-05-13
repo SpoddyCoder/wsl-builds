@@ -22,13 +22,8 @@ aptUpdateRequired
 sudo apt install -y cuda-toolkit-${cuda_version}
 cleanupGetFiles
 
-printInfo "CUDA WSL 12.4 installed"
+if [[ -d /usr/local/cuda/bin ]]; then
+    replaceManagedShellRcRegion cuda-toolkit-path "$(printf "export PATH=\"/usr/local/cuda/bin:\${PATH}\"\n")"
+fi
 
-# TODO: not required at this stage, but may be useful in the future
-# Add the cuda install to the PATH inside .profile so nvcc works
-# sudo tee -a ~/.profile > /dev/null <<EOF
-# # include nvidia toolkit
-# if [ -d "/usr/local/cuda/bin" ] ; then
-#     PATH="/usr/local/cuda/bin:$PATH"
-# Fi
-# EOF
+printInfo "CUDA WSL 12.4 installed"
