@@ -5,4 +5,4 @@ dev         essentials,qol,cursor
 dev-bash    shellcheck,bats
 dev-python  python3,conda
 devops      docker
-ai          cuda132,ollama
+ai          cuda132
