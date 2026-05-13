@@ -1,8 +1,8 @@
 # SpoodyCoder - JS Development Stack
 
-system      update,essentials,qol,apt-mirror-switch
+system      update,systemd,essentials,qol,apt-mirror-switch
 dev         essentials,qol,cursor
-devops      docker
+dev-bash    shellcheck,bats
 dev-js      essentials,node,npm,nvm,yarn
 dev-ssg     hugo
-dev-bash    shellcheck,bats
+devops      docker
