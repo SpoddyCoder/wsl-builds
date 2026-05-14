@@ -169,6 +169,8 @@ warnComponentAlreadyInstalled() {
 # $3 - download directory (optional, defaults to /tmp)
 # $4 - result variable name (required)
 # sets the result variable to the full path of the downloaded file
+# After a successful wget, the file is touched so mtime reflects last local fetch;
+# wget otherwise often sets mtime from the server's Last-Modified (artifact date).
 getFile() {
     local filename="$1"
     local url="$2" 
@@ -226,6 +228,7 @@ getFile() {
                 rm -f "$tmp"
                 return 1
             fi
+            touch "$cache_file"
             if ! cp "$cache_file" "$target_file"; then
                 printError "Failed to copy refreshed cache to $target_file"
                 return 1
@@ -237,6 +240,7 @@ getFile() {
             printError "Failed to download $filename from $url"
             return 1
         fi
+        touch "$target_file"
         if ! cp "$target_file" "$cache_file"; then
             printWarning "Failed to cache file, continuing anyway"
         fi
