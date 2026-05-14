@@ -31,6 +31,12 @@ A good basic base for AI work using CUDA.
 * Optional: set `OLLAMA_MODELS` in `wsl-builds.conf` to store pulled models outside the default `~/.ollama`. When set, the install creates that directory, sets ownership for the `ollama` service user when it exists, wires `EnvironmentFile` into `ollama.service` when that unit is present, and adds `/etc/profile.d/wsl-builds-ollama-models.sh` so login shells see the same value.
 * https://ollama.com/download/linux
 
+### `huggingface-cli`
+* Installs the [Hugging Face Hub](https://huggingface.co/docs/huggingface_hub) CLI (`hf`) with `python3 -m pip install --user` and the official `huggingface_hub[cli]` extra. On Ubuntu 24.04 and newer, the install passes `--break-system-packages` so a user-site install works with the distro-managed Python (same idea as upstream PEP 668 guidance for explicit tooling installs).
+* After install, the script prints the CLI version (`hf version` when `~/.local/bin/hf` is present; otherwise the `huggingface_hub` package version via Python).
+* Ensure `~/.local/bin` is on your `PATH` in interactive shells (many Ubuntu images already include it via `/etc/skel` defaults; open a new terminal or adjust your rc file if `hf` is not found).
+* Optional: set `HF_HOME` and/or `HF_HUB_CACHE` in `wsl-builds.conf` to keep Hub config and/or the model cache on a host path. When either is set (non-empty), the install creates the directory with `0755`, `chown` to your user (same owner pattern as **ollama** when no dedicated service user applies), writes `/etc/profile.d/wsl-builds-huggingface-env.sh` exporting only the variables you set (quoted with `%q` for safe login shells), and sets `0644` on that snippet.
+
 ### `llama-cpp`
 * Clone [llama.cpp](https://github.com/ggerganov/llama.cpp), configure with CMake (Ninja), and install release binaries into your prefix (default `~/.local/bin`). Re-runs `git pull` when the clone already exists. Source tree defaults to `~/llama.cpp`.
 * If `nvcc` is on `PATH` (after **cuda124** / **cuda132**, use a new shell or `source` your rc so the `cuda-toolkit-path` block applies), the build enables **GGML_CUDA**. Otherwise you get a CPU-only build; install a CUDA component first, then run this component again with `--force` if you need GPU support.

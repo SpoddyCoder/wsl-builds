@@ -26,6 +26,10 @@
 # ai / ollama - (default is on the WSL instance: /usr/share/ollama/.ollama/models/)
 # OLLAMA_MODELS=/mnt/c/WSL/ollama-models    # store models on Windows host
 
+# ai / huggingface-cli - (default is on the WSL instance: ~/.cache/huggingface)
+# HF_HOME=/mnt/c/WSL/huggingface              # Hub config and default cache root
+# HF_HUB_CACHE=/mnt/c/WSL/huggingface/hub     # Hub model/repo cache directory
+
 # ai-resources - (default is on the WSL instance: ~/ai-resources)
 # AI_RESOURCES_PROJECT_DIR=/mnt/c/WSL/ai-resources              # where the projects are cloned
 
