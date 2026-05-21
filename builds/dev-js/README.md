@@ -12,6 +12,11 @@ JavaScript development environments with modern tooling and frameworks.
 ### `yarn`
 * Installs Yarn package manager as an alternative to npm
 
+### `pnpm`
+* Installs pnpm via Corepack (requires the `node` component first)
+* npm remains available from Node.js; use pnpm for project installs when you prefer its defaults
+* pnpm disables lifecycle scripts on dependencies by default (reduces install-time supply-chain risk) and supports `minimumReleaseAge` to avoid pulling packages published too recently — see [pnpm supply chain security](https://pnpm.io/supply-chain-security)
+
 ### `nvm`
 * Installs Node Version Manager for managing multiple Node.js versions
 

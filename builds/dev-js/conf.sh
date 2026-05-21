@@ -1,1 +1,1 @@
-registerBuildMetadata "dev-js" "1.0.0" "node,essentials,nvm,yarn,react,nextjs,vue,angular,express" 0
+registerBuildMetadata "dev-js" "1.0.0" "node,essentials,nvm,yarn,pnpm,react,nextjs,vue,angular,express" 0
