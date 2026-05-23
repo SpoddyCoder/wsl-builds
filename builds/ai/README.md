@@ -38,7 +38,8 @@ A good basic base for AI work using CUDA.
 * Optional: set `HF_HOME` and/or `HF_HUB_CACHE` in `wsl-builds.conf` to keep Hub config and/or the model cache on a host path. When either is set (non-empty), the install creates the directory with `0755`, `chown` to your user (same owner pattern as **ollama** when no dedicated service user applies), writes `/etc/profile.d/wsl-builds-huggingface-env.sh` exporting only the variables you set (quoted with `%q` for safe login shells), and sets `0644` on that snippet.
 
 ### `llama-cpp`
-* Clone [llama.cpp](https://github.com/ggerganov/llama.cpp), configure with CMake (Ninja), and install release binaries into your prefix (default `~/.local/bin`). Re-runs `git pull` when the clone already exists. Source tree defaults to `~/llama.cpp`.
+* Installs build dependencies including `libssl-dev` so CMake can enable HTTPS/TLS (e.g. downloading models from URLs).
+* Clone [llama.cpp](https://github.com/ggml-org/llama.cpp), configure with CMake (Ninja), and install release binaries into your prefix (default `~/.local/bin`). Re-runs `git pull` when the clone already exists. Source tree defaults to `~/llama.cpp`.
 * If `nvcc` is on `PATH` (after **cuda124** / **cuda132**, use a new shell or `source` your rc so the `cuda-toolkit-path` block applies), the build enables **GGML_CUDA**. Otherwise you get a CPU-only build; install a CUDA component first, then run this component again with `--force` if you need GPU support.
 * The install sets CMake `INSTALL_RPATH` to the prefix `lib` directory and refreshes a `wsl-builds:llama-cpp` block in `~/.bashrc` / `~/.zshrc` so the prefix `bin` is on `PATH` and `lib` is on `LD_LIBRARY_PATH` (shared libraries such as `libllama-common.so`).
 

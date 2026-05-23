@@ -8,7 +8,7 @@ _llama_build="${_llama_src}/build"
 
 printInfo "Installing build dependencies"
 aptUpdateIfStale
-sudo apt install -y git build-essential cmake ninja-build pkg-config
+sudo apt install -y git build-essential cmake ninja-build pkg-config libssl-dev
 
 if [[ -d "${_llama_src}/.git" ]]; then
     printInfo "Updating llama.cpp source tree"
@@ -16,7 +16,7 @@ if [[ -d "${_llama_src}/.git" ]]; then
 else
     printInfo "Cloning llama.cpp"
     mkdir -p "$(dirname "${_llama_src}")"
-    git clone https://github.com/ggerganov/llama.cpp.git "${_llama_src}"
+    git clone https://github.com/ggml-org/llama.cpp.git "${_llama_src}"
 fi
 
 _cmake_cuda=()
