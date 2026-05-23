@@ -5,6 +5,20 @@ printInfo "Installing llama.cpp"
 _llama_src="${LLAMA_CPP_SRC_DIR:-$HOME/llama.cpp}"
 _llama_prefix="${LLAMA_CPP_INSTALL_PREFIX:-$HOME/.local}"
 _llama_build="${_llama_src}/build"
+_llama_clean_build=false
+
+if (isBuildForced "$@"); then
+    _llama_install_check_args=()
+    for _llama_arg in "$@"; do
+        [[ "${_llama_arg}" == "--force" ]] && continue
+        _llama_install_check_args+=("${_llama_arg}")
+    done
+    if isComponentInstalled "llama-cpp" "${_llama_install_check_args[@]}"; then
+        if promptYesNoDefaultNo "Existing llama-cpp install detected. Remove the build tree and rebuild from source"; then
+            _llama_clean_build=true
+        fi
+    fi
+fi
 
 printInfo "Installing build dependencies"
 aptUpdateIfStale
@@ -17,6 +31,11 @@ else
     printInfo "Cloning llama.cpp"
     mkdir -p "$(dirname "${_llama_src}")"
     git clone https://github.com/ggml-org/llama.cpp.git "${_llama_src}"
+fi
+
+if [[ "${_llama_clean_build}" == true ]]; then
+    printInfo "Removing llama.cpp build directory for clean rebuild"
+    rm -rf "${_llama_build}"
 fi
 
 _cmake_cuda=()

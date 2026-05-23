@@ -41,6 +41,7 @@ A good basic base for AI work using CUDA.
 * Installs build dependencies including `libssl-dev` so CMake can enable HTTPS/TLS (e.g. downloading models from URLs).
 * Clone [llama.cpp](https://github.com/ggml-org/llama.cpp), configure with CMake (Ninja), and install release binaries into your prefix (default `~/.local/bin`). Re-runs `git pull` when the clone already exists. Source tree defaults to `~/llama.cpp`.
 * If `nvcc` is on `PATH` (after **cuda124** / **cuda132**, use a new shell or `source` your rc so the `cuda-toolkit-path` block applies), the build enables **GGML_CUDA**. Otherwise you get a CPU-only build; install a CUDA component first, then run this component again with `--force` if you need GPU support.
+* With `--force` when **llama-cpp** is already recorded in `~/.wsl-build.info`, you are prompted whether to remove the CMake build tree under `~/llama.cpp/build` (or `LLAMA_CPP_SRC_DIR/build`) and rebuild from source (default **N** keeps the existing build tree and runs an incremental rebuild after `git pull`).
 * The install sets CMake `INSTALL_RPATH` to the prefix `lib` directory and refreshes a `wsl-builds:llama-cpp` block in `~/.bashrc` / `~/.zshrc` so the prefix `bin` is on `PATH` and `lib` is on `LD_LIBRARY_PATH` (shared libraries such as `libllama-common.so`).
 
 ## Build Arguments
