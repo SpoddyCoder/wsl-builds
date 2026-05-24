@@ -12,6 +12,7 @@ Basic system utilities and services for system admin and network file sharing.
 ### `qol`
 * Set default user
 * Add bash safety aliases
+* When login `PWD` is under `/mnt/c/Program Files/WSL2 Distro Manager`, interactive shells `cd` to `$HOME` (managed `wsl-builds:wsl-distro-manager-home` block in `~/.bashrc` / `~/.zshrc`)
 * Installs `change-hostname` to `/usr/local/bin` for renaming the WSL instance (restart required)
 ```bash
 sudo change-hostname <new-hostname>

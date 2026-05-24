@@ -20,6 +20,16 @@ if ! grep -q '# safety aliases' ~/.bash_aliases 2>/dev/null; then
 	} >> ~/.bash_aliases
 fi
 
+ensureShellRcRegion wsl-distro-manager-home "$(cat <<'EOF'
+# WSL2 Distro Manager starts in its install dir; return to $HOME for interactive shells
+case "${PWD-}" in
+"/mnt/c/Program Files/WSL2 Distro Manager"*)
+	cd ~ || true
+	;;
+esac
+EOF
+)"
+
 sudo install -o root -g root -m 0755 "${BUILD_DIR}/change-hostname" /usr/local/bin/change-hostname
 
 printInfo "Installed change-hostname to /usr/local/bin (restart WSL after changing hostname)"
