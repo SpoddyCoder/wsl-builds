@@ -53,5 +53,25 @@ python gen_video.py --output ../ai-music-viz/expt-renders/lerp.mp4 --trunc=1 --s
 * Clone ru-dalle repo and initialise the `ru-dalle` conda environment
 * https://github.com/ai-forever/ru-dalle
 
+### `bfcl-eval`
+* Clone the [Gorilla](https://github.com/ShishirPatil/gorilla) repo and editable-install [Berkeley Function Calling Leaderboard](https://github.com/ShishirPatil/gorilla/tree/main/berkeley-function-call-leaderboard) (`bfcl_eval`) in a `bfcl-eval` conda environment (Python 3.10)
+* Base deps only; optional `vllm` / `sglang` extras are not installed (add manually if you need self-hosted model evaluation)
+* Copies `bfcl_eval/.env.example` to the project root as `.env` when missing
+* Optional: set `BFCL_PROJECT_ROOT` in `wsl-builds.conf` to store results, scores, and config outside the package checkout (defaults to the leaderboard directory under the gorilla clone)
+
+```
+BFCL_PROJECT_ROOT=/mnt/c/WSL/bfcl-eval    # project root on Windows host
+```
+
+* Test everything installed OK...
+```
+conda activate bfcl-eval
+bfcl generate --model MODEL_NAME --test-category simple_python
+```
+
+#### Extra Info
+* https://github.com/ShishirPatil/gorilla/tree/main/berkeley-function-call-leaderboard
+* https://gorilla.cs.berkeley.edu/leaderboard.html
+
 ## Build Arguments
 * No additional arguments for this build

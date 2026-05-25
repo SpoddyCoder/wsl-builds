@@ -76,7 +76,7 @@ Saved build sequences live under `stacks/<namespace>/` as `.wslb` files (one `bu
 | Build | Packages, Frameworks, Tools & Extras | Additional Conf |
 | ----- | -------------------------------------- | --------------- |
 | [ai](builds/ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**<br>**huggingface-cli**: Hub `hf` CLI (pip)<br>**llama-cpp**: build from source, optional CUDA<br>**cuda-wsl-lib-symlinks**: fix 'not symlinks' issue | **ollama**: `OLLAMA_MODELS`<br/>**huggingface-cli**: `HF_HOME`,<br/>`HF_HUB_CACHE` |
-| [ai-resources](builds/ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle** | **sg3**, **lsd**, **spleeter**,<br/>**rudalle**:<br/>`AI_RESOURCES_PROJECT_DIR`<br/>**sg3**: `STYLEGAN3_PKL_CACHE`,<br/>`STYLEGAN3_PYTORCH_CACHE` |
+| [ai-resources](builds/ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle**<br>**bfcl-eval**: Gorilla BFCL benchmark | **sg3**, **lsd**, **spleeter**,<br/>**rudalle**, **bfcl-eval**:<br/>`AI_RESOURCES_PROJECT_DIR`<br/>**sg3**: `STYLEGAN3_PKL_CACHE`,<br/>`STYLEGAN3_PYTORCH_CACHE`<br/>**bfcl-eval**: `BFCL_PROJECT_ROOT` |
 | [db](builds/db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
 | [dev](builds/dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq<br>**vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias | **essentials**: `GIT_*`,<br/>`GIT_CREDENTIALS_HELPER`<br/>**qol**: `CODE_HOME_SYMLINK`,<br/>`CODE_HOME_TARGET` |
 | [dev-bash](builds/dev-bash/) | **shellcheck**<br>**bats** | |

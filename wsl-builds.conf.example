@@ -33,6 +33,9 @@
 # ai-resources - (default is on the WSL instance: ~/ai-resources)
 # AI_RESOURCES_PROJECT_DIR=/mnt/c/WSL/ai-resources              # where the projects are cloned
 
+# ai-resources / bfcl-eval - (default is the berkeley-function-call-leaderboard checkout under the gorilla clone)
+# BFCL_PROJECT_ROOT=/mnt/c/WSL/bfcl-eval                        # BFCL results, scores, and .env location
+
 # ai-resource / stylegan3 - (default is on the WSL instance: ~/.cache/)
 # STYLEGAN3_PKL_CACHE=/mnt/c/WSL/stylegan3/pkl-cache            # cache pkls on Windows host
 # STYLEGAN3_PYTORCH_CACHE=/mnt/c/WSL/stylegan3/pytorch-cache    # cache pytorch extensions on Windows host
