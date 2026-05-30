@@ -358,3 +358,15 @@ EOF
 	[[ "${output:?}" =~ Skipping\ apt\ update\ \(package\ indexes\ were\ updated\ recently\ within\ the\ 360-minute\ interval\) ]]
 	grep -Fxq 'fixture-builder v1.0.0 (apt-update-interval-harness)' "${HOME}/.wsl-build.info"
 }
+
+@test 'B39: system symlinks creates SYMLINK_HOST_* links under HOME' {
+	mkdir -p /tmp/wsl-test-c-home-target /tmp/wsl-test-code-home-target
+	run ./wsl-builder.sh system symlinks
+	[[ "${status:?}" -eq 0 ]]
+	[[ -L "${HOME}/c-home" ]]
+	[[ "$(readlink "${HOME}/c-home")" == "/tmp/wsl-test-c-home-target" ]]
+	[[ -L "${HOME}/code-home" ]]
+	[[ "$(readlink "${HOME}/code-home")" == "/tmp/wsl-test-code-home-target" ]]
+	[[ "${output:?}" =~ Host\ symlinks\ installed ]]
+	[[ "${output:?}" =~ Creating\ host\ symlink ]]
+}

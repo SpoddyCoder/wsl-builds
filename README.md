@@ -40,14 +40,14 @@ cd wsl-builds
 ./wsl-builder.sh dev-js     # show components for build dev-js
 
 # build a gen dev env
-./wsl-builder.sh system update,qol
-./wsl-builder.sh dev essentials,qol,vscode
+./wsl-builder.sh system update,qol,symlinks
+./wsl-builder.sh dev essentials,vscode
 ./wsl-builder.sh dev-js node,yarn,nvm,essentials
 change-hostname my-dev-box
 
 # build a python environment for AI coding
-./wsl-builder.sh system update,qol
-./wsl-builder.sh dev essentials,qol,cursor
+./wsl-builder.sh system update,qol,symlinks
+./wsl-builder.sh dev essentials,cursor
 ./wsl-builder.sh dev-python conda
 ./wsl-builder.sh ai cuda132
 change-hostname python-ai
@@ -74,18 +74,18 @@ Saved build sequences live under `stacks/<namespace>/` as `.wslb` files (one `bu
 ## Build List
 
 | Build | Packages, Frameworks, Tools & Extras | Additional Conf |
-| ----- | -------------------------------------- | --------------- |
+| ----- | ------------------------------------ | --------------- |
 | [ai](builds/ai/) | **cuda124**: CUDA 12.4<br>**cuda132**: CUDA 13.2<br>**ollama**<br>**huggingface-cli**: Hub `hf` CLI (pip)<br>**llama-cpp**: build from source, optional CUDA<br>**cuda-wsl-lib-symlinks**: fix 'not symlinks' issue | **ollama**: `OLLAMA_MODELS`<br/>**huggingface-cli**: `HF_HOME`,<br/>`HF_HUB_CACHE` |
 | [ai-resources](builds/ai-resources/) | **sg3**: stylegan3, pkl cache, pytorch cache<br>**lsd**: lucid-sonic-dreams<br>**spleeter**<br>**rudalle**<br>**bfcl-eval**: Gorilla BFCL benchmark | **sg3**, **lsd**, **spleeter**,<br/>**rudalle**, **bfcl-eval**:<br/>`AI_RESOURCES_PROJECT_DIR`<br/>**sg3**: `STYLEGAN3_PKL_CACHE`,<br/>`STYLEGAN3_PYTORCH_CACHE`<br/>**bfcl-eval**: `BFCL_PROJECT_ROOT` |
 | [db](builds/db/) | **mysql-client**<br>**mysql-server**<br>**postgres-client**<br>**postgres-server** | |
-| [dev](builds/dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq<br>**vscode**<br>**qol**: code home symlink<br>**cursor**: tree, `code` alias | **essentials**: `GIT_*`,<br/>`GIT_CREDENTIALS_HELPER`<br/>**qol**: `CODE_HOME_SYMLINK`,<br/>`CODE_HOME_TARGET` |
+| [dev](builds/dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq<br>**vscode**<br>**cursor**: tree, `code` alias | **essentials**: `GIT_*`,<br/>`GIT_CREDENTIALS_HELPER` |
 | [dev-bash](builds/dev-bash/) | **shellcheck**<br>**bats** | |
 | [dev-js](builds/dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn**<br>**pnpm**<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express**<br>**essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve | |
 | [dev-python](builds/dev-python/) | **python3**<br>**conda**: Anaconda | |
 | [dev-ssg](builds/dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
 | [devops](builds/devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
 | [devops-aws](builds/devops-aws/) | **awscli**<br>**qol**: `aws-profile` alias | |
-| [system](builds/system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys<br>**qol**: safety aliases, `change-hostname`, default user, WSL2 Distro Manager login → `$HOME`<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config | **qol**: `WIN_HOME_SYMLINK`,<br/>`WIN_HOME_TARGET` |
+| [system](builds/system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys<br>**qol**: safety aliases, `change-hostname`, default user, WSL2 Distro Manager login → `$HOME`<br>**symlinks**: host path → `~/…` links<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config | **symlinks**: `SYMLINK_HOST_*` |
 
 ## Advanced Configuration
 * The builder loads `WSL_BUILDS_CONF` (full path) if set, else `~/.wsl-builds.conf`.

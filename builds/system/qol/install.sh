@@ -6,11 +6,6 @@ printInfo "Installing QoL bits"
 # ensure our user started by default
 ensureWslConfIniLine user '[user]' "default=${LOGNAME}"
 
-if [ ! -L "${WIN_HOME_SYMLINK}" ] && [ -n "${WIN_HOME_TARGET}" ]; then
-	printInfo "Creating win home symlink"
-	ln -s "${WIN_HOME_TARGET}" "${WIN_HOME_SYMLINK}"
-fi
-
 if ! grep -q '# safety aliases' ~/.bash_aliases 2>/dev/null; then
 	printInfo "Adding bash safety aliases"
 	{

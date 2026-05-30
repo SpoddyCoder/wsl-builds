@@ -1,7 +1,7 @@
 # SpoodyCoder - DevOps Development Stack
 
-system      update,systemd,essentials,qol,apt-mirror-switch
-dev         essentials,qol,cursor
+system      update,systemd,essentials,qol,symlinks,apt-mirror-switch
+dev         essentials,cursor
 dev-bash    shellcheck,bats
 devops-aws  awscli,qol
 devops      docker-desktop,terraform,kubectl,k9s,packer

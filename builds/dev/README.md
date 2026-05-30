@@ -16,14 +16,6 @@ A good basic base for general purpose development work.
 * Install basic packages that Cursor editor likes to use (includes `tree`)
 * See the [Cursor section](../../README.md#cursor-integration) of the main README for more info.
 
-### `qol`
-* Quality of life bits
-* Symlink configuration picked up from your `wsl-builds.conf`:
-```bash
-CODE_HOME_SYMLINK=/home/me/code     # Symlink placed in your home dir on the WSL instance
-CODE_HOME_TARGET=/mnt/c/code        # Location on your Windows host where you store code projects
-```
-
 ### `essentials`
 * Essential dev tools: `curl`, `wget`, `git`, `vim`, `nano`, `jq`, `yq`
 * Optional global git config picked up from your `wsl-builds.conf` (each key is independent; unset keys are skipped):

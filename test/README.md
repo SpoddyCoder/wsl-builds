@@ -63,6 +63,7 @@ Each row is one `@test`. The `#` column is the stable **B**… id (same order as
 | B36 | `apt-update-interval-harness configured interval skips fresh indexes` | `APT_UPDATE_INTERVAL_MINS=120`; fresh stamp; skip message names 120-minute interval. |
 | B37 | `apt-update-interval-harness required always updates fresh indexes` | `aptUpdateRequired` with fresh stamp still runs update. |
 | B38 | `apt-update-interval-harness invalid interval warns and uses default skip` | Invalid `APT_UPDATE_INTERVAL_MINS` warns and falls back to 360; fresh stamp skips. |
+| B39 | `system symlinks creates SYMLINK_HOST_* links under HOME` | Harness `SYMLINK_HOST_*` targets under `/tmp`; `system symlinks` → symlinks `${HOME}/c-home` and `${HOME}/code-home`; output includes create and installed messages. |
 
 ## Review catalog (`docker/review-tests.bats`)
 

@@ -1,1 +1,1 @@
-registerBuildMetadata "dev" "1.0.0" "essentials,vscode,cursor,qol" 0
+registerBuildMetadata "dev" "1.0.1" "essentials,vscode,cursor" 0

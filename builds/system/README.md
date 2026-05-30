@@ -17,11 +17,10 @@ Basic system utilities and services for system admin and network file sharing.
 ```bash
 sudo change-hostname <new-hostname>
 ```
-* Add symlinks if defined in your `wsl-builds.conf`...
-```bash
-WIN_HOME_SYMLINK=/home/me/c-home    # Symlink placed in your home dir on the WSL instance
-WIN_HOME_TARGET=/mnt/c/Users/me     # Location of your Windows host home dir on the WSL instance
-```
+### `symlinks`
+* Host path → home symlink: `SYMLINK_HOST_<NAME>=/mnt/c/...` creates `~/<name>` (`_` → `-`, lowercased)
+* Example keys: `SYMLINK_HOST_C_HOME` → `~/c-home`, `SYMLINK_HOST_CODE_HOME` → `~/code-home`
+* Optional: use `SYMLINK_HOST_CODE` for `~/code` if you prefer that name
 
 ### `apt-mirror-switch`
 * Installs `apt-mirror-switch` on `PATH` for switching Ubuntu **archive/security** APT mirrors (`/etc/apt/sources.list` or `sources.list.d/ubuntu.sources`)
