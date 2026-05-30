@@ -14,6 +14,7 @@
 # GIT_USER_NAME="me"
 # GIT_USER_EMAIL="my@email.com"
 # GIT_PULL_REBASE=false
+# GIT_INIT_DEFAULT_BRANCH=main
 
 # system / symlinks — SYMLINK_HOST_<NAME>=/mnt/c/... creates ~/<name> (_ → -, lowercased)
 # SYMLINK_HOST_C_HOME=/mnt/c/Users/me

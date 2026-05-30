@@ -27,5 +27,9 @@ if [ -n "${GIT_PULL_REBASE:-}" ]; then
     printInfo "Configuring git pull.rebase from wsl-builds.conf: ${GIT_PULL_REBASE}"
     git config --global pull.rebase "${GIT_PULL_REBASE}"
 fi
+if [ -n "${GIT_INIT_DEFAULT_BRANCH:-}" ]; then
+    printInfo "Configuring git init.defaultBranch from wsl-builds.conf: ${GIT_INIT_DEFAULT_BRANCH}"
+    git config --global init.defaultBranch "${GIT_INIT_DEFAULT_BRANCH}"
+fi
 
 printInfo "Dev essentials installed"
