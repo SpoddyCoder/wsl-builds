@@ -1,1 +1,1 @@
-registerBuildMetadata "ai" "1.5.4" "cuda124,cuda132,cuda-wsl-lib-symlinks,ollama,huggingface-cli,llama-cpp" 0
+registerBuildMetadata "ai" "1.6.0" "cuda124,cuda132,cuda-wsl-lib-symlinks,ollama,huggingface-cli,llama-cpp,langchain" 0

@@ -44,5 +44,14 @@ A good basic base for AI work using CUDA.
 * With `--force` when **llama-cpp** is already recorded in `~/.wsl-build.info`, you are prompted whether to remove the CMake build tree under `~/llama.cpp/build` (or `LLAMA_CPP_SRC_DIR/build`) and rebuild from source (default **N** keeps the existing build tree and runs an incremental rebuild after `git pull`).
 * The install sets CMake `INSTALL_RPATH` to the prefix `lib` directory and refreshes a `wsl-builds:llama-cpp` block in `~/.bashrc` / `~/.zshrc` so the prefix `bin` is on `PATH` and `lib` is on `LD_LIBRARY_PATH` (shared libraries such as `libllama-common.so`).
 
+### `langchain`
+* Requires `./wsl-builder.sh dev-python conda` (Anaconda). Exits with an error if `~/anaconda3/etc/profile.d/conda.sh` is missing.
+* Creates a conda environment named `agents` with Python 3.11, then installs LangChain with `pip install -U langchain` (core dependencies are pulled transitively).
+* If an `agents` env already exists, you are prompted `Recreate existing agents conda environment` (default **N** keeps the existing env).
+* Optional Ollama integration: when you accept `Install LangChain Ollama integration (langchain-ollama)`, the install runs `pip install langchain-ollama`. If the `ollama` CLI is not on `PATH`, the script prints a warning but still installs the package.
+* Optional llama.cpp integration: when you accept `Install LangChain llama.cpp integration (langchain-community and llama-cpp-python)`, the install adds `cmake` and `build-essential`, then `pip install langchain-community llama-cpp-python`. This is not the same as the **llama-cpp** component above, which builds native llama.cpp binaries from source.
+* When `nvcc` is available (`/usr/local/cuda/bin/nvcc` or on `PATH` after **cuda124** / **cuda132**), accepting the llama.cpp integration prompts whether to `Build llama-cpp-python with CUDA support` (default **Y**). **Y** sets `CMAKE_ARGS=-DGGML_CUDA=on` and `FORCE_CMAKE=1` for the pip install; **n** installs CPU-only wheels.
+* After install, activate the env with `conda activate agents`.
+
 ## Build Arguments
 * No additional arguments for this build
