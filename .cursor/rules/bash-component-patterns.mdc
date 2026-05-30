@@ -23,7 +23,7 @@ alwaysApply: false
 ## Shell and WSL config
 
 - `~/.bashrc` / `~/.zshrc`: use `ensureShellRcRegion`, `replaceManagedShellRcRegion`, or `removeManagedShellRcRegion` from [`src/builder/shell-rc.sh`](../../src/builder/shell-rc.sh) (named `wsl-builds:<id>` blocks), not ad hoc `grep` + `>>`.
-- `/etc/wsl.conf`: use `ensureWslConfIniLine` from [`src/builder/wsl-conf.sh`](../../src/builder/wsl-conf.sh) for idempotent section lines (with `sudo`).
+- `/etc/wsl.conf`: use `ensureWslConfIniLine` or `ensureWslConfSectionLine` from [`src/builder/wsl-conf.sh`](../../src/builder/wsl-conf.sh) for idempotent section lines (with `sudo`). Prefer `ensureWslConfSectionLine` when the same line text may appear under different `[section]` headers.
 - Put component logic in `builds/<name>/<slug>/install.sh` (`slug` = token with hyphens mapped to underscores).
 
 ## apt (Ubuntu)

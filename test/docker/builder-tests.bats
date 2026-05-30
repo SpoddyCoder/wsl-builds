@@ -289,6 +289,16 @@ EOF
 	[[ "${output:?}" =~ installed! ]]
 	grep -qF '[wsl-builds-fixture-builder]' /etc/wsl.conf
 	grep -qF 'fixture = true' /etc/wsl.conf
+	grep -qF '[wsl-builds-fixture-automount]' /etc/wsl.conf
+	grep -qF '[wsl-builds-fixture-interop]' /etc/wsl.conf
+	awk -v a=0 -v i=0 '
+		/^\[wsl-builds-fixture-automount\]/ { in_a=1; in_i=0; next }
+		/^\[wsl-builds-fixture-interop\]/ { in_i=1; in_a=0; next }
+		/^\[/ { in_a=0; in_i=0; next }
+		in_a && index($0, "enabled = false") { a=1 }
+		in_i && index($0, "enabled = false") { i=1 }
+		END { exit !(a && i) }
+	' /etc/wsl.conf
 	grep -qF '# harness dummy seed' /etc/wsl.conf
 	grep -qF '# >>> wsl-builds:fixture-builder-file-harness >>>' "${HOME}/.bashrc"
 	grep -qF 'export WSL_BUILDS_FIXTURE_BUILDER_HARNESS=1' "${HOME}/.bashrc"

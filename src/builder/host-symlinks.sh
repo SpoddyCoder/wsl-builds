@@ -43,3 +43,30 @@ installHostSymlinksFromConf() {
         printInfo "No SYMLINK_HOST_* entries configured, skipping host symlinks"
     fi
 }
+
+# promptRemoveHostHomeSymlinks
+# Offers to remove symlinks directly under $HOME whose target is under /mnt/ (host paths).
+promptRemoveHostHomeSymlinks() {
+    local link target resolved had_host_symlink=false
+
+    while IFS= read -r -d '' link; do
+        target=$(readlink "${link}")
+        resolved="${target}"
+        if [[ -e "${link}" ]]; then
+            resolved=$(readlink -f "${link}" 2>/dev/null || echo "${target}")
+        fi
+        if [[ "${resolved}" != /mnt/* ]]; then
+            continue
+        fi
+        had_host_symlink=true
+        printInfo "Host symlink ${link} -> ${target}"
+        if promptYesNoDefaultNo "Remove symlink ${link} -> ${target}?"; then
+            rm "${link}"
+            printInfo "Removed host symlink ${link}"
+        fi
+    done < <(find "${HOME}" -maxdepth 1 -type l -print0 2>/dev/null)
+
+    if [[ "${had_host_symlink}" == false ]]; then
+        printInfo "No host symlinks under ${HOME} pointing at /mnt"
+    fi
+}

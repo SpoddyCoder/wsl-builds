@@ -85,6 +85,7 @@ Saved build sequences live under `stacks/<namespace>/` as `.wslb` files (one `bu
 | [dev-ssg](builds/dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
 | [devops](builds/devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
 | [devops-aws](builds/devops-aws/) | **awscli**<br>**qol**: `aws-profile` alias | |
+| [security](builds/security/) | **harden-sandbox**: DrvFs automount off,<br>interop off, optional `~/` → `/mnt` symlink removal | |
 | [system](builds/system/) | **update**: apt update + upgrade<br>**essentials**: htop, rsync<br>**x11**: Windows native GUI<br>**smb**: smbclient, cifs-utils<br>**nfs**: nfs-common<br>**systemd**<br>**wslu**: wslview, wslsys<br>**qol**: safety aliases, `change-hostname`, default user, WSL2 Distro Manager login → `$HOME`<br>**symlinks**: host path → `~/…` links<br>**apt-mirror-switch**: Canonical vs Uni of Kent apt mirror helper<br>**fstab**: WSL mount config | **symlinks**: `SYMLINK_HOST_*` |
 
 ## Advanced Configuration

@@ -26,7 +26,7 @@ GIT_USER_EMAIL="my@email.com"
 GIT_PULL_REBASE=false
 GIT_INIT_DEFAULT_BRANCH=main
 ```
-* Using the credntials helper from the host machine can be convenient to avoid having to setup auth on each WSL instance.
+* Using the credntials helper from the host machine can be convenient to avoid having to setup auth on each WSL instance; if you plan to run `security,harden-sandbox`, see [builds/security/README.md](../security/README.md) for host GCM limitations after harden.
 * See the [Git section](../../README.md#git-integration) of the main README for more info.
 
 ## Build Arguments
