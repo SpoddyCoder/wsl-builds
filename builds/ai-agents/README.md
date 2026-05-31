@@ -2,7 +2,7 @@
 
 LangChain, LangGraph, OpenAI Agents SDK, and related tooling on a shared conda environment named `agents`.
 
-Recommended install order: **setup-env** → **langchain** and/or **openai-agents** → optional **langchain-ollama** / **langchain-llama-cpp** for local models → **langgraph** when you need graph workflows → **langsmith** / **langfuse** for observability.
+Recommended install order: **setup-env** → **langchain** and/or **openai-agents** → optional **langchain-ollama** / **langchain-llama-cpp** for local models → **langgraph** when you need graph workflows → **langsmith** / **langfuse** for observability → optional **mcp** for Model Context Protocol servers and clients.
 
 **Migration:** If you previously relied on optional prompts inside **langchain** for Ollama or llama.cpp integrations, install **langchain-ollama** and/or **langchain-llama-cpp** separately (or use a stack under `stacks/` that lists those components).
 
@@ -14,6 +14,7 @@ Examples:
 ./wsl-builder.sh ai-agents setup-env,langchain,langchain-llama-cpp
 ./wsl-builder.sh ai-agents setup-env,langchain,langgraph
 ./wsl-builder.sh ai-agents setup-env,openai-agents
+./wsl-builder.sh ai-agents setup-env,mcp
 ```
 
 Pair **langchain-ollama** with `./wsl-builder.sh ai ollama`. Pair **langchain-llama-cpp** with `./wsl-builder.sh ai cuda132` (or **cuda124**) when you want GPU-backed `llama-cpp-python` wheels.
@@ -98,6 +99,14 @@ Pair **langchain-ollama** with `./wsl-builder.sh ai ollama`. Pair **langchain-ll
   * `LANGFUSE_SECRET_KEY` — project secret key (`sk-lf-...`)
   * `LANGFUSE_BASE_URL` — cloud host for your data region (default EU: `https://cloud.langfuse.com`; US: `https://us.cloud.langfuse.com`; see [Langfuse docs](https://langfuse.com/docs/observability/get-started) for other regions)
 * After install: `conda activate agents`, then use the SDK directly or trace LangChain runs with `from langfuse.langchain import CallbackHandler` and pass `config={"callbacks": [langfuse_handler]}` to your chain — see the [LangChain integration guide](https://langfuse.com/integrations/frameworks/langchain).
+
+### `mcp`
+
+* Requires **setup-env** (and thus `./wsl-builder.sh dev-python conda`). Exits with an error if `~/anaconda3/etc/profile.d/conda.sh` is missing.
+* If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai-agents setup-env`.
+* Installs the official [Model Context Protocol Python SDK](https://modelcontextprotocol.io/docs/sdk) with `pip install -U mcp` inside `agents`.
+* Use this for building MCP servers and clients in Python. It is separate from MCP server configuration in editors such as Cursor.
+* After install: `conda activate agents`, then follow the [MCP Python SDK docs](https://modelcontextprotocol.io/docs/sdk) to author or connect MCP servers.
 
 ## Build Arguments
 
