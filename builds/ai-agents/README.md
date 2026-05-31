@@ -2,9 +2,7 @@
 
 LangChain, LangGraph, OpenAI Agents SDK, and related tooling on a shared conda environment named `agents`.
 
-Recommended install order: **setup-env** → **langchain** and/or **openai-agents** → optional **langchain-ollama** / **langchain-llama-cpp** for local models → **langgraph** when you need graph workflows → **langsmith** / **langfuse** for observability → optional **mcp** for Model Context Protocol servers and clients.
-
-**Migration:** If you previously relied on optional prompts inside **langchain** for Ollama or llama.cpp integrations, install **langchain-ollama** and/or **langchain-llama-cpp** separately (or use a stack under `stacks/` that lists those components).
+Recommended install order: **setup-env** → **langchain** and/or **openai-agents** → optional **langchain-ollama** / **langchain-llama-cpp** for local models → **langgraph** when you need graph workflows → **langsmith** / **langfuse** for observability → optional **mcp** for Model Context Protocol servers and clients → optional **mcp-inspector** to test MCP servers in the browser.
 
 Examples:
 
@@ -15,6 +13,7 @@ Examples:
 ./wsl-builder.sh ai-agents setup-env,langchain,langgraph
 ./wsl-builder.sh ai-agents setup-env,openai-agents
 ./wsl-builder.sh ai-agents setup-env,mcp
+./wsl-builder.sh ai-agents setup-env,mcp,mcp-inspector
 ```
 
 Pair **langchain-ollama** with `./wsl-builder.sh ai ollama`. Pair **langchain-llama-cpp** with `./wsl-builder.sh ai cuda132` (or **cuda124**) when you want GPU-backed `llama-cpp-python` wheels.
@@ -23,6 +22,7 @@ Pair **langchain-ollama** with `./wsl-builder.sh ai ollama`. Pair **langchain-ll
 
 * `Ubuntu 22.04` or greater
 * `./wsl-builder.sh dev-python conda`
+* For **mcp-inspector**, `./wsl-builder.sh dev-js node` (Node.js ^22.7.5 per [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector))
 * For local model backends, pair with the [ai](../ai/) build (**cuda124** / **cuda132**, **ollama**, **llama-cpp**) when you need CUDA or Ollama
 
 ## Build Components
@@ -107,6 +107,29 @@ Pair **langchain-ollama** with `./wsl-builder.sh ai ollama`. Pair **langchain-ll
 * Installs the official [Model Context Protocol Python SDK](https://modelcontextprotocol.io/docs/sdk) with `pip install -U mcp` inside `agents`.
 * Use this for building MCP servers and clients in Python. It is separate from MCP server configuration in editors such as Cursor.
 * After install: `conda activate agents`, then follow the [MCP Python SDK docs](https://modelcontextprotocol.io/docs/sdk) to author or connect MCP servers.
+
+### `mcp-inspector`
+
+* Requires `./wsl-builder.sh dev-js node` (npm on `PATH`). Exits with an error if `npm` is missing.
+* **mcp** is recommended when you are developing Python MCP servers in the `agents` env, but not required — the inspector works with any MCP server.
+* Installs the official [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) with `npm install -g @modelcontextprotocol/inspector`.
+* Upstream requires Node.js ^22.7.5; use a current Node.js LTS from **dev-js node**.
+* Browser UI: `http://localhost:6274`. Examples:
+
+```bash
+# UI only — empty inspector; connect to a server or transport from the browser
+npx @modelcontextprotocol/inspector
+
+# UI + server — inspector launches your server and attaches over stdio
+conda activate agents
+npx @modelcontextprotocol/inspector python path/to/server.py
+
+# CLI — no browser; scriptable checks (tools, resources, prompts)
+npx @modelcontextprotocol/inspector --cli python path/to/server.py --method tools/list
+```
+
+* Replace `path/to/server.py` with your MCP entrypoint. For Node servers use `node build/index.js`; for published npm servers use `npx @modelcontextprotocol/inspector npx @modelcontextprotocol/server-filesystem /path/to/dir`.
+* Remote servers, env vars, and headers: [MCP Inspector docs](https://modelcontextprotocol.io/docs/tools/inspector).
 
 ## Build Arguments
 
