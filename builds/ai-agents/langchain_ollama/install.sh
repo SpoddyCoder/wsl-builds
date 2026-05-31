@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing LangChain"
+printInfo "Installing LangChain Ollama integration"
 
 _conda_sh="${HOME}/anaconda3/etc/profile.d/conda.sh"
 if [[ ! -f "${_conda_sh}" ]]; then
@@ -17,8 +17,12 @@ fi
 
 conda activate agents
 
-pip install -U langchain
+if ! command -v ollama >/dev/null 2>&1; then
+    printWarning "Ollama is not installed"
+fi
 
-printInfo "LangChain version: $(python -c "from importlib.metadata import version; print(version('langchain'))")"
+pip install langchain-ollama
+
+printInfo "LangChain Ollama integration version: $(python -c "from importlib.metadata import version; print(version('langchain-ollama'))")"
 printInfo "    conda activate agents"
-printInfo "LangChain installed"
+printInfo "LangChain Ollama integration installed"

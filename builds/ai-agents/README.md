@@ -1,21 +1,28 @@
 # `ai-agents`
 
-LangChain, OpenAI Agents SDK, and related tooling on a shared conda environment named `agents`.
+LangChain, LangGraph, OpenAI Agents SDK, and related tooling on a shared conda environment named `agents`.
 
-Recommended install order: **setup-env** → **langchain** and/or **openai-agents** → **langsmith** / **langfuse**.
+Recommended install order: **setup-env** → **langchain** and/or **openai-agents** → optional **langchain-ollama** / **langchain-llama-cpp** for local models → **langgraph** when you need graph workflows → **langsmith** / **langfuse** for observability.
 
-Example:
+**Migration:** If you previously relied on optional prompts inside **langchain** for Ollama or llama.cpp integrations, install **langchain-ollama** and/or **langchain-llama-cpp** separately (or use a stack under `stacks/` that lists those components).
+
+Examples:
 
 ```bash
-./wsl-builder.sh ai-agents setup-env,openai-agents
 ./wsl-builder.sh ai-agents setup-env,langchain,langsmith
+./wsl-builder.sh ai-agents setup-env,langchain,langchain-ollama
+./wsl-builder.sh ai-agents setup-env,langchain,langchain-llama-cpp
+./wsl-builder.sh ai-agents setup-env,langchain,langgraph
+./wsl-builder.sh ai-agents setup-env,openai-agents
 ```
+
+Pair **langchain-ollama** with `./wsl-builder.sh ai ollama`. Pair **langchain-llama-cpp** with `./wsl-builder.sh ai cuda132` (or **cuda124**) when you want GPU-backed `llama-cpp-python` wheels.
 
 ## Requires
 
 * `Ubuntu 22.04` or greater
 * `./wsl-builder.sh dev-python conda`
-* For optional LangChain integrations with local models, pair with the [ai](../ai/) build (**cuda124** / **cuda132**, **ollama**, **llama-cpp**) when you need CUDA or Ollama backends
+* For local model backends, pair with the [ai](../ai/) build (**cuda124** / **cuda132**, **ollama**, **llama-cpp**) when you need CUDA or Ollama
 
 ## Build Components
 
@@ -31,10 +38,32 @@ Example:
 
 * Requires **setup-env** (and thus `./wsl-builder.sh dev-python conda`). Exits with an error if `~/anaconda3/etc/profile.d/conda.sh` is missing.
 * If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai-agents setup-env`.
-* Installs LangChain with `pip install -U langchain` (core dependencies are pulled transitively).
-* Optional Ollama integration: when you accept `Install LangChain Ollama integration (langchain-ollama)`, the install runs `pip install langchain-ollama`. If the `ollama` CLI is not on `PATH`, the script prints a warning but still installs the package. For Ollama itself, install **ollama** from the [ai](../ai/) build.
-* Optional llama.cpp integration: when you accept `Install LangChain llama.cpp integration (langchain-community and llama-cpp-python)`, the install adds `cmake` and `build-essential`, then `pip install langchain-community llama-cpp-python`. This is not the same as the **llama-cpp** component in the [ai](../ai/) build, which builds native llama.cpp binaries from source.
-* When `nvcc` is available (`/usr/local/cuda/bin/nvcc` or on `PATH` after **cuda124** / **cuda132** from the [ai](../ai/) build), accepting the llama.cpp integration prompts whether to `Build llama-cpp-python with CUDA support` (default **Y**). **Y** sets `CMAKE_ARGS=-DGGML_CUDA=on` and `FORCE_CMAKE=1` for the pip install; **n** installs CPU-only wheels.
+* Installs LangChain core with `pip install -U langchain` (transitive dependencies are pulled as needed).
+* For Ollama or llama.cpp LangChain integrations, install **langchain-ollama** and/or **langchain-llama-cpp** separately.
+* After install: `conda activate agents`.
+
+### `langchain-ollama`
+
+* Requires **setup-env**. **langchain** is recommended first.
+* If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai-agents setup-env`.
+* Installs `langchain-ollama` with pip inside `agents`.
+* If the `ollama` CLI is not on `PATH`, the script prints a warning but still installs the package. For Ollama itself, install **ollama** from the [ai](../ai/) build.
+* After install: `conda activate agents`.
+
+### `langchain-llama-cpp`
+
+* Requires **setup-env**. **langchain** is recommended first.
+* If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai-agents setup-env`.
+* Installs `cmake` and `build-essential` via apt, then `pip install langchain-community llama-cpp-python` inside `agents`.
+* This is not the same as the **llama-cpp** component in the [ai](../ai/) build, which builds native llama.cpp binaries from source.
+* When `nvcc` is available (`/usr/local/cuda/bin/nvcc` or on `PATH` after **cuda124** / **cuda132** from the [ai](../ai/) build), you are prompted whether to `Build llama-cpp-python with CUDA support` (default **Y**). **Y** sets `CMAKE_ARGS=-DGGML_CUDA=on` and `FORCE_CMAKE=1` for the pip install; **n** installs CPU-only wheels. Without `nvcc`, the install uses CPU-only wheels.
+* After install: `conda activate agents`.
+
+### `langgraph`
+
+* Requires **setup-env**. **langchain** is recommended when you use LangChain types alongside graphs.
+* If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai-agents setup-env`.
+* Installs LangGraph with `pip install -U langgraph` inside `agents`.
 * After install: `conda activate agents`.
 
 ### `openai-agents`
@@ -48,7 +77,7 @@ Example:
 
 ### `langsmith`
 
-* Requires **setup-env**. **langchain** is recommended when you want LangChain tracing workflows (installs the LangSmith Python SDK into the existing conda `agents` env; does not create that env).
+* Requires **setup-env**. **langchain** and/or **langgraph** are recommended when you want LangChain tracing workflows (installs the LangSmith Python SDK into the existing conda `agents` env; does not create that env).
 * Requires `./wsl-builder.sh dev-python conda` (Anaconda). Exits with an error if `~/anaconda3/etc/profile.d/conda.sh` is missing.
 * If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai-agents setup-env`.
 * Installs the official [LangSmith Python SDK](https://docs.smith.langchain.com/) with `pip install -U langsmith` inside `agents`.
@@ -60,7 +89,7 @@ Example:
 
 ### `langfuse`
 
-* Requires **setup-env**. **langchain** is recommended when you want LangChain tracing workflows (installs the Langfuse Python SDK into the existing conda `agents` env; does not create that env).
+* Requires **setup-env**. **langchain** and/or **langgraph** are recommended when you want LangChain tracing workflows (installs the Langfuse Python SDK into the existing conda `agents` env; does not create that env).
 * Requires `./wsl-builder.sh dev-python conda` (Anaconda). Exits with an error if `~/anaconda3/etc/profile.d/conda.sh` is missing.
 * If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai-agents setup-env`.
 * Installs the official [Langfuse Python SDK](https://langfuse.com/docs/observability/sdk/overview) with `pip install -U langfuse` inside `agents`.

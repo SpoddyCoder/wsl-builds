@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing LangChain"
+printInfo "Installing LangGraph"
 
 _conda_sh="${HOME}/anaconda3/etc/profile.d/conda.sh"
 if [[ ! -f "${_conda_sh}" ]]; then
@@ -17,8 +17,8 @@ fi
 
 conda activate agents
 
-pip install -U langchain
+pip install -U langgraph
 
-printInfo "LangChain version: $(python -c "from importlib.metadata import version; print(version('langchain'))")"
+printInfo "LangGraph version: $(python -c "from importlib.metadata import version; print(version('langgraph'))")"
 printInfo "    conda activate agents"
-printInfo "LangChain installed"
+printInfo "LangGraph installed"
