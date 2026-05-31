@@ -19,6 +19,7 @@ alwaysApply: true
 
 - **Terminology:** In prose, **the builder** = `./wsl-builder.sh`; use the literal path in commands, lint lists, and `bash -n` examples.
 - Bash **function** names: **camelCase**. Not a package manager; small, explicit changes.
+- **Backward compatibility:** Default to clean implementation—no aliases, migration prose, or dual naming unless the user asks. See [no-backward-compatibility.mdc](no-backward-compatibility.mdc).
 - Builds: `./wsl-builder.sh` `<build-dir> <component>[,<component>...] [additionalargs]... [--force]`.
 - Stacks: `./wsl-stacker.sh` `<namespace> <stack-name> [--force]` (or stacks directory path then stack name) runs **the builder** once per non-comment line in `stacks/<namespace>/<stack>.wslb` (or the same filename under an explicit stacks directory).
 - Each build under `builds/<name>/`: `conf.sh` (`registerBuildMetadata`), `install.sh` (sources `install-dispatch.sh` only), and per-component `builds/<name>/<slug>/install.sh` for each CSV token (`slug` = hyphens → underscores). Dispatch runs at top level when **the builder** sources `install.sh`. Details: [bash-component-patterns.mdc](bash-component-patterns.mdc).

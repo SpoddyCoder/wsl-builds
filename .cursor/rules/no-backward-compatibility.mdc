@@ -1,0 +1,34 @@
+---
+description: Default to clean implementation; no backward-compatibility remnants unless requested
+alwaysApply: true
+---
+
+# No backward compatibility (default)
+
+Internal tooling—not a versioned public API. Unless the user explicitly asks for backward compatibility or a migration path, assume none is required.
+
+## Clean implementation
+
+- Implement and document the **current** design only.
+- Rename identifiers, files, functions, and docs to match the new approach; update all references in the same change.
+- Remove superseded code, config keys, and docs — do not leave aliases, wrappers, or parallel paths.
+
+## Do not add unless requested
+
+- Prose or comments such as "previously", "formerly", "replaces", migration guides, or changelog-style history.
+- Dual naming (`oldX` / `newX`), deprecated aliases, or comments explaining the old design.
+- Commented-out old code kept "for reference".
+
+## Explicit confirmation
+
+When the user says "no backward compatibility", "clean break", "full rename", or similar, treat that as confirmation—execute a full replacement without asking again.
+
+## When to ask first
+
+Before **large** changes, ask whether backward compatibility matters if the change affects:
+
+- `./wsl-builder.sh` / `./wsl-stacker.sh` CLI or stack file formats
+- `wsl-builds.conf` keys (users may have local gitignored configs)
+- Cross-build renames or entrypoints with many touch points
+
+For deeper refactor checklists, see [no-backward-compatibility/SKILL.md](../skills/no-backward-compatibility/SKILL.md).
