@@ -53,5 +53,16 @@ A good basic base for AI work using CUDA.
 * When `nvcc` is available (`/usr/local/cuda/bin/nvcc` or on `PATH` after **cuda124** / **cuda132**), accepting the llama.cpp integration prompts whether to `Build llama-cpp-python with CUDA support` (default **Y**). **Y** sets `CMAKE_ARGS=-DGGML_CUDA=on` and `FORCE_CMAKE=1` for the pip install; **n** installs CPU-only wheels.
 * After install, activate the env with `conda activate agents`.
 
+### `langfuse`
+* Requires **langchain** first (installs the Langfuse Python SDK into the existing conda `agents` env; does not create that env).
+* Requires `./wsl-builder.sh dev-python conda` (Anaconda). Exits with an error if `~/anaconda3/etc/profile.d/conda.sh` is missing.
+* If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai langchain`.
+* Installs the official [Langfuse Python SDK](https://langfuse.com/docs/observability/sdk/overview) with `pip install -U langfuse` inside `agents`.
+* **Langfuse Cloud (no self-hosted server in this component):** sign up at [Langfuse Cloud](https://cloud.langfuse.com) (Hobby free tier), create a project, and copy the project API keys. Set credentials in your shell (or project env file) before using the SDK:
+  * `LANGFUSE_PUBLIC_KEY` — project public key (`pk-lf-...`)
+  * `LANGFUSE_SECRET_KEY` — project secret key (`sk-lf-...`)
+  * `LANGFUSE_BASE_URL` — cloud host for your data region (default EU: `https://cloud.langfuse.com`; US: `https://us.cloud.langfuse.com`; see [Langfuse docs](https://langfuse.com/docs/observability/get-started) for other regions)
+* After install: `conda activate agents`, then use the SDK directly or trace LangChain runs with `from langfuse.langchain import CallbackHandler` and pass `config={"callbacks": [langfuse_handler]}` to your chain — see the [LangChain integration guide](https://langfuse.com/integrations/frameworks/langchain).
+
 ## Build Arguments
 * No additional arguments for this build
