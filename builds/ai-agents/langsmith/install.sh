@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printInfo "Installing Langfuse"
+printInfo "Installing LangSmith"
 
 _conda_sh="${HOME}/anaconda3/etc/profile.d/conda.sh"
 if [[ ! -f "${_conda_sh}" ]]; then
@@ -11,14 +11,14 @@ fi
 source "${_conda_sh}"
 
 if ! conda env list | grep -qE '^\s*agents\s'; then
-    printError "Conda environment agents not found; run: ./wsl-builder.sh ai langchain"
+    printError "Conda environment agents not found; run: ./wsl-builder.sh ai-agents setup-env"
     exit 1
 fi
 
 conda activate agents
 
-pip install -U langfuse
+pip install -U langsmith
 
-printInfo "Langfuse version: $(python -c "from importlib.metadata import version; print(version('langfuse'))")"
+printInfo "LangSmith version: $(python -c "from importlib.metadata import version; print(version('langsmith'))")"
 printInfo "    conda activate agents"
-printInfo "Langfuse installed"
+printInfo "LangSmith installed"

@@ -5,6 +5,8 @@ A good basic base for AI work using CUDA.
 * `Ubuntu 22.04` or greater
 * `./wsl-builder.sh dev-python conda` recommended
 
+For LangChain, LangSmith, and Langfuse, use the [ai-agents](../ai-agents/) build instead.
+
 ## Build Components
 ### `cuda132`
 * Install CUDA **13.2** toolkit via the **WSL-Ubuntu network** repo: `cuda-wsl-ubuntu.pin`, `cuda-keyring`, then `cuda-toolkit-13-2` (recommended method in the [CUDA Installation Guide for Linux — WSL](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#wsl)).
@@ -43,26 +45,6 @@ A good basic base for AI work using CUDA.
 * If `nvcc` is on `PATH` (after **cuda124** / **cuda132**, use a new shell or `source` your rc so the `cuda-toolkit-path` block applies), the build enables **GGML_CUDA**. Otherwise you get a CPU-only build; install a CUDA component first, then run this component again with `--force` if you need GPU support.
 * With `--force` when **llama-cpp** is already recorded in `~/.wsl-build.info`, you are prompted whether to remove the CMake build tree under `~/llama.cpp/build` (or `LLAMA_CPP_SRC_DIR/build`) and rebuild from source (default **N** keeps the existing build tree and runs an incremental rebuild after `git pull`).
 * The install sets CMake `INSTALL_RPATH` to the prefix `lib` directory and refreshes a `wsl-builds:llama-cpp` block in `~/.bashrc` / `~/.zshrc` so the prefix `bin` is on `PATH` and `lib` is on `LD_LIBRARY_PATH` (shared libraries such as `libllama-common.so`).
-
-### `langchain`
-* Requires `./wsl-builder.sh dev-python conda` (Anaconda). Exits with an error if `~/anaconda3/etc/profile.d/conda.sh` is missing.
-* Creates a conda environment named `agents` with Python 3.11, then installs LangChain with `pip install -U langchain` (core dependencies are pulled transitively).
-* If an `agents` env already exists, you are prompted `Recreate existing agents conda environment` (default **N** keeps the existing env).
-* Optional Ollama integration: when you accept `Install LangChain Ollama integration (langchain-ollama)`, the install runs `pip install langchain-ollama`. If the `ollama` CLI is not on `PATH`, the script prints a warning but still installs the package.
-* Optional llama.cpp integration: when you accept `Install LangChain llama.cpp integration (langchain-community and llama-cpp-python)`, the install adds `cmake` and `build-essential`, then `pip install langchain-community llama-cpp-python`. This is not the same as the **llama-cpp** component above, which builds native llama.cpp binaries from source.
-* When `nvcc` is available (`/usr/local/cuda/bin/nvcc` or on `PATH` after **cuda124** / **cuda132**), accepting the llama.cpp integration prompts whether to `Build llama-cpp-python with CUDA support` (default **Y**). **Y** sets `CMAKE_ARGS=-DGGML_CUDA=on` and `FORCE_CMAKE=1` for the pip install; **n** installs CPU-only wheels.
-* After install, activate the env with `conda activate agents`.
-
-### `langfuse`
-* Requires **langchain** first (installs the Langfuse Python SDK into the existing conda `agents` env; does not create that env).
-* Requires `./wsl-builder.sh dev-python conda` (Anaconda). Exits with an error if `~/anaconda3/etc/profile.d/conda.sh` is missing.
-* If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai langchain`.
-* Installs the official [Langfuse Python SDK](https://langfuse.com/docs/observability/sdk/overview) with `pip install -U langfuse` inside `agents`.
-* **Langfuse Cloud (no self-hosted server in this component):** sign up at [Langfuse Cloud](https://cloud.langfuse.com) (Hobby free tier), create a project, and copy the project API keys. Set credentials in your shell (or project env file) before using the SDK:
-  * `LANGFUSE_PUBLIC_KEY` — project public key (`pk-lf-...`)
-  * `LANGFUSE_SECRET_KEY` — project secret key (`sk-lf-...`)
-  * `LANGFUSE_BASE_URL` — cloud host for your data region (default EU: `https://cloud.langfuse.com`; US: `https://us.cloud.langfuse.com`; see [Langfuse docs](https://langfuse.com/docs/observability/get-started) for other regions)
-* After install: `conda activate agents`, then use the SDK directly or trace LangChain runs with `from langfuse.langchain import CallbackHandler` and pass `config={"callbacks": [langfuse_handler]}` to your chain — see the [LangChain integration guide](https://langfuse.com/integrations/frameworks/langchain).
 
 ## Build Arguments
 * No additional arguments for this build

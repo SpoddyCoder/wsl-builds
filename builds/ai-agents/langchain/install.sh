@@ -10,14 +10,9 @@ fi
 # shellcheck source=/dev/null # conda.sh is provided by Anaconda at runtime
 source "${_conda_sh}"
 
-if conda env list | grep -qE '^\s*agents\s'; then
-    if promptYesNoDefaultNo "Recreate existing agents conda environment"; then
-        conda env remove --name agents -y
-    fi
-fi
-
 if ! conda env list | grep -qE '^\s*agents\s'; then
-    conda create --name agents python=3.11 -y
+    printError "Conda environment agents not found; run: ./wsl-builder.sh ai-agents setup-env"
+    exit 1
 fi
 
 conda activate agents

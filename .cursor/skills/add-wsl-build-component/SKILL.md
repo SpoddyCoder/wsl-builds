@@ -1,6 +1,6 @@
 ---
 name: add-wsl-build-component
-description: Add or update install components in wsl-builds using the repository's standard component pattern and helper functions. Use when the user asks to create, scaffold, or modify a component in dev, system, devops, ai, db, or related build directories.
+description: Add or update install components in wsl-builds using the repository's standard component pattern and helper functions. Use when the user asks to create, scaffold, or modify a component in dev, system, devops, ai, ai-agents, db, or related build directories.
 ---
 
 # Add WSL Build Component
@@ -10,7 +10,7 @@ Use this skill when adding or changing a build component in this repository.
 ## Workflow
 
 1. Read repo root [`README.md`](../../../README.md) and [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) **in full** (entire files) before editing so the Build List, tone, and contributor expectations stay aligned.
-2. Identify the target build directory under `builds/<name>/`. Valid build directories contain both `conf.sh` and `install.sh`, such as `builds/dev`, `builds/dev-js`, `builds/system`, or `builds/devops`. The `builds/fixture-builder` directory is **testing-only** ([`builds/fixture-builder/README.md`](../../../builds/fixture-builder/README.md); noop harness for CI/agents)—do **not** use it like a production build unless explicitly asked.
+2. Identify the target build directory under `builds/<name>/`. Valid build directories contain both `conf.sh` and `install.sh`, such as `builds/dev`, `builds/dev-js`, `builds/system`, `builds/devops`, or `builds/ai-agents`. The `builds/fixture-builder` directory is **testing-only** ([`builds/fixture-builder/README.md`](../../../builds/fixture-builder/README.md); noop harness for CI/agents)—do **not** use it like a production build unless explicitly asked.
 3. Read the target build's `conf.sh`, `install.sh`, and nearby `builds/<name>/<slug>/install.sh` files before editing.
 4. **WSL2 research:** Before implementing, confirm how the component should be installed on **WSL2** (Ubuntu in WSL). Prefer vendor documentation and WSL-specific guidance (GPU, Docker, networking, systemd) over generic Linux-only paths; skim peer components under `builds/` for established patterns in this repo.
 5. Add the component token to **the third argument (CSV)** of `registerBuildMetadata` in `conf.sh`.

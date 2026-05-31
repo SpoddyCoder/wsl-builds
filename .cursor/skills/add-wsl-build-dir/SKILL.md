@@ -10,7 +10,7 @@ Use this skill to scaffold a brand-new build directory with no components yet. C
 ## Workflow
 
 1. Read repo root [`README.md`](../../../README.md) and [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) **in full** (entire files) before scaffolding so the Build List row and contributor expectations match the rest of the repo.
-2. Confirm the new build directory name. Use lowercase with hyphens, matching the convention of existing dirs (`dev`, `dev-js`, `devops-aws`, `ai-resources`).
+2. Confirm the new build directory name. Use lowercase with hyphens, matching the convention of existing dirs (`dev`, `dev-js`, `devops-aws`, `ai-agents`, `ai-resources`).
 3. Verify `builds/<build-dir>` does not already exist.
 4. Create `builds/<build-dir>/conf.sh` with the metadata call below (`registerBuildMetadata`).
 5. Create `builds/<build-dir>/install.sh` using only the `source` line below (no wrapper function call — dispatch runs inside `src/builder/install-dispatch.sh`).
