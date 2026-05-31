@@ -5,7 +5,7 @@ A good basic base for AI work using CUDA.
 * `Ubuntu 22.04` or greater
 * `./wsl-builder.sh dev-python conda` recommended
 
-For LangChain, LangSmith, and Langfuse, use the [ai-agents](../ai-agents/) build instead.
+For LangChain, the OpenAI Agents SDK, LangSmith, and Langfuse, use the [ai-agents](../ai-agents/) build instead.
 
 ## Build Components
 ### `cuda132`

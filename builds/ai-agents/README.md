@@ -1,12 +1,13 @@
 # `ai-agents`
 
-LangChain and agent tooling on a shared conda environment named `agents`.
+LangChain, OpenAI Agents SDK, and related tooling on a shared conda environment named `agents`.
 
-Recommended install order: **setup-env** → **langchain** → **langsmith** / **langfuse**.
+Recommended install order: **setup-env** → **langchain** and/or **openai-agents** → **langsmith** / **langfuse**.
 
 Example:
 
 ```bash
+./wsl-builder.sh ai-agents setup-env,openai-agents
 ./wsl-builder.sh ai-agents setup-env,langchain,langsmith
 ```
 
@@ -34,6 +35,15 @@ Example:
 * Optional Ollama integration: when you accept `Install LangChain Ollama integration (langchain-ollama)`, the install runs `pip install langchain-ollama`. If the `ollama` CLI is not on `PATH`, the script prints a warning but still installs the package. For Ollama itself, install **ollama** from the [ai](../ai/) build.
 * Optional llama.cpp integration: when you accept `Install LangChain llama.cpp integration (langchain-community and llama-cpp-python)`, the install adds `cmake` and `build-essential`, then `pip install langchain-community llama-cpp-python`. This is not the same as the **llama-cpp** component in the [ai](../ai/) build, which builds native llama.cpp binaries from source.
 * When `nvcc` is available (`/usr/local/cuda/bin/nvcc` or on `PATH` after **cuda124** / **cuda132** from the [ai](../ai/) build), accepting the llama.cpp integration prompts whether to `Build llama-cpp-python with CUDA support` (default **Y**). **Y** sets `CMAKE_ARGS=-DGGML_CUDA=on` and `FORCE_CMAKE=1` for the pip install; **n** installs CPU-only wheels.
+* After install: `conda activate agents`.
+
+### `openai-agents`
+
+* Requires **setup-env** (and thus `./wsl-builder.sh dev-python conda`). Exits with an error if `~/anaconda3/etc/profile.d/conda.sh` is missing.
+* If the `agents` conda env does not exist, exits with an error pointing to `./wsl-builder.sh ai-agents setup-env`.
+* Installs the official [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) with `pip install -U openai-agents` inside `agents`.
+* Set your OpenAI API key in your shell (or project env file) before calling OpenAI models: `OPENAI_API_KEY` — see the [Agents SDK guide](https://developers.openai.com/api/docs/guides/agents).
+* Optional pip extras (not installed by this component): `openai-agents[voice]` for voice support, `openai-agents[redis]` for Redis session support — see the [SDK repository](https://github.com/openai/openai-agents-python).
 * After install: `conda activate agents`.
 
 ### `langsmith`
