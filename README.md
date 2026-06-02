@@ -84,7 +84,7 @@ Saved build sequences live under `stacks/<namespace>/` as `.wslb` files (one `bu
 | [dev-js](builds/dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn**<br>**pnpm**<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express**<br>**essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve | |
 | [dev-python](builds/dev-python/) | **python3**<br>**conda**: Anaconda | |
 | [dev-ssg](builds/dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
-| [media](builds/media/) | **ffmpeg**: CLI encoder,<br/>transcoder<br>**ffmpeg-dev**: ffmpeg CLI +<br/>libav dev libs, libx264-dev<br>**libprojectm**: libprojectM<br/>from source, SDL test UI | **libprojectm**:<br/>`LIBPROJECTM_VERSION`,<br/>`LIBPROJECTM_SRC_DIR`,<br/>`LIBPROJECTM_INSTALL_PREFIX` |
+| [media](builds/media/) | **ffmpeg**: CLI encoder,<br/>transcoder<br>**ffmpeg-dev**: ffmpeg CLI +<br/>libav dev libs, libx264-dev<br/>**libprojectm**: libprojectM<br/>from source, SDL UI | **libprojectm**:<br/>`LIBPROJECTM_SRC_DIR`,<br/>`LIBPROJECTM_INSTALL_PREFIX` |
 | [devops](builds/devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
 | [devops-aws](builds/devops-aws/) | **awscli**<br>**qol**: `aws-profile` alias | |
 | [security](builds/security/) | **harden-sandbox**: DrvFs automount off,<br>interop off, optional `~/` → `/mnt` symlink removal | |

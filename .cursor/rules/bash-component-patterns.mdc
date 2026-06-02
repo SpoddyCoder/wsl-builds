@@ -33,7 +33,7 @@ alwaysApply: false
 ## Downloads, caches, `set -e`
 
 - **`getFile`:** caches under `CACHE_DIR`; uses a `/tmp` working area—failed runs do not require manual cleanup across reboot. Pair with **`cleanupGetFiles`** after installers when you want explicit cleanup.
-- **Large / durable caches:** optional `wsl-builds.conf` vars (**UPPER_SNAKE_CASE**, tool-scoped), sourced by **the builder** before installs; gate with `[ -n "${VAR:-}" ]`; add commented examples to `wsl-builds.conf.example` and document in the build `README.md`. See `builds/ai-resources/sg3/install.sh`, `builds/ai/ollama/install.sh`.
+- **Large / durable caches:** optional `wsl-builds.conf` vars (**UPPER_SNAKE_CASE**, tool-scoped), sourced by **the builder** before installs; gate with `[ -n "${VAR:-}" ]`; add commented examples to `wsl-builds.conf.example` and document in the build `README.md`. See `builds/ai-resources/sg3/install.sh`, `builds/ai/ollama/install.sh`. Do **not** put version pins, source-mode switches, or installer version constants in conf—use install-time prompts or in-script resolution instead; conf is for durable paths, prefixes, and caches only.
 - **`./wsl-builder.sh`** uses `set -euo pipefail`—avoid broad error swallowing; you generally cannot rely on in-script cleanup after a failed command. Generic libraries under `src/` do not enable strict mode; new entrypoints should follow [`docs/standardise-bootstrap-plan.md`](../../docs/standardise-bootstrap-plan.md) and [`src/common/bootstrap-common.sh`](../../src/common/bootstrap-common.sh).
 
 ## Component messaging
