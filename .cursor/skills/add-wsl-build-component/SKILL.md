@@ -1,6 +1,6 @@
 ---
 name: add-wsl-build-component
-description: Add or update install components in wsl-builds using the repository's standard component pattern and helper functions. Use when the user asks to create, scaffold, or modify a component in dev, system, devops, ai, ai-agents, db, or related build directories.
+description: Add or update install components in wsl-builds using the repository's standard component pattern and helper functions. Use when the user asks to create, scaffold, or modify a component in dev, system, devops, ai, ai-agents, db, or related build directories. Do not create or modify stacks/ unless the user explicitly requests stack changes in the same task.
 ---
 
 # Add WSL Build Component
@@ -21,7 +21,7 @@ Use this skill when adding or changing a build component in this repository.
 9. **Optional** `wsl-builds.conf` keys (large downloads / durable caches the user may want on a host path): add **commented examples** to `wsl-builds.conf.example` and document usage in the build’s `README.md`. See `.cursor/rules/bash-component-patterns.mdc`.
 10. **Start on boot:** After you know what the component installs, check whether it enables a **systemd unit** (or equivalent) that **starts automatically on boot**. If yes, and the component script does not already offer an optional disable step, **ask the user** in chat whether to add the standard `promptDisableSystemdUnitsOnBoot` / `isSystemdManagerRunning` pattern from `src/builder/systemd-boot.sh` (see `.cursor/rules/bash-component-patterns.mdc`, *Optional: disable start on boot*, and `builds/ai/ollama/install.sh`). Components with multiple systemd units pass unit names in disable order to `promptDisableSystemdUnitsOnBoot`; templated instances (e.g. PostgreSQL) keep local logic. Only implement after they agree—do not assume every daemon should be disabled by default.
 11. **Automated advisory review (optional):** If you add or change `<slug>/audit.sh`, `<slug>/audit.manifest.yaml` (review-only files under `builds/<build>/<slug>/`), or shared code under `src/review/`, follow [`review/README.md`](../../../review/README.md) and [`docs/automated-builds-review-v1-spec.md`](../../../docs/automated-builds-review-v1-spec.md); host tools and `CONTRIBUTING.md` expectations apply.
-12. If the component belongs in a shipped stack, update the relevant `stacks/<namespace>/*.wslb` and namespace `README.md`.
+12. **Do not touch stacks:** When adding or updating a build component, do not create or modify anything under `stacks/` (`.wslb` files, namespace `README.md`, or new stack namespaces). Stack membership is curated separately by maintainers and users. Only change stacks when the user explicitly asks to update a stack in the same task.
 13. Run Bash syntax checks for touched shell files.
 
 ## Dispatcher (`install.sh`)

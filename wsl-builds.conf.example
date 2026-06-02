@@ -36,3 +36,8 @@
 # ai-resource / stylegan3 - (default is on the WSL instance: ~/.cache/)
 # STYLEGAN3_PKL_CACHE=/mnt/c/WSL/stylegan3/pkl-cache            # cache pkls on Windows host
 # STYLEGAN3_PYTORCH_CACHE=/mnt/c/WSL/stylegan3/pytorch-cache    # cache pytorch extensions on Windows host
+
+# media / libprojectm - (default source tree: ~/libprojectM-4.1.6, prefix: ~/.local)
+# LIBPROJECTM_VERSION=4.1.6
+# LIBPROJECTM_SRC_DIR=$HOME/libprojectM-4.1.6
+# LIBPROJECTM_INSTALL_PREFIX=$HOME/.local

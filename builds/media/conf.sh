@@ -1,1 +1,1 @@
-registerBuildMetadata "media" "1.0.0" "ffmpeg,ffmpeg-dev" 0
+registerBuildMetadata "media" "1.0.1" "ffmpeg,ffmpeg-dev,libprojectm" 0
