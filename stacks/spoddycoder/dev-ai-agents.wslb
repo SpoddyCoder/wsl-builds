@@ -1,0 +1,9 @@
+# SpoodyCoder - AI Agents Development Stack
+
+system      update,systemd,essentials,qol,symlinks,apt-mirror-switch
+dev         essentials,cursor
+dev-bash    shellcheck,bats
+dev-python  python3,conda
+devops      docker
+ai          cuda132,llama-cpp,huggingface-cli
+ai-agents   setup-env,langchain,langraph,langchain-llama-cpp,langsmith,langfuse,openai-agents,mcp,mcp-inspector

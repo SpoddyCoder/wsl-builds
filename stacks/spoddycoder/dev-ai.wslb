@@ -6,4 +6,3 @@ dev-bash    shellcheck,bats
 dev-python  python3,conda
 devops      docker
 ai          cuda132
-ai-agents   setup-env,langchain
