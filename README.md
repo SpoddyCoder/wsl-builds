@@ -82,7 +82,7 @@ Saved build sequences live under `stacks/<namespace>/` as `.wslb` files (one `bu
 | [dev](builds/dev/) | **essentials**: curl, wget, git, vim, nano, jq, yq<br>**vscode**<br>**cursor**: tree, `code` alias | **essentials**: `GIT_*`,<br/>`GIT_CREDENTIALS_HELPER` |
 | [dev-bash](builds/dev-bash/) | **shellcheck**<br>**bats** | |
 | [dev-js](builds/dev-js/) | **node**: Node.js, npm<br>**nvm**<br>**yarn**<br>**pnpm**<br>**react**: create-vite, react-devtools<br>**nextjs**<br>**angular**<br>**vue**: create-vue<br>**express**<br>**essentials**: TypeScript, ESLint, Prettier, PM2, nodemon, serve | |
-| [dev-python](builds/dev-python/) | **python3**<br>**conda**: Anaconda | |
+| [dev-python](builds/dev-python/) | **python3**<br>**pipx**<br>**uv**<br>**conda**: Anaconda | |
 | [dev-ssg](builds/dev-ssg/) | **hugo**<br>**jekyll**: Bundler, Ruby deps | |
 | [media](builds/media/) | **ffmpeg**: CLI encoder,<br/>transcoder<br>**ffmpeg-dev**: ffmpeg CLI +<br/>libav dev libs, libx264-dev<br/>**libprojectm**: libprojectM<br/>from source, SDL UI | **libprojectm**:<br/>`LIBPROJECTM_SRC_DIR`,<br/>`LIBPROJECTM_INSTALL_PREFIX` |
 | [devops](builds/devops/) | **docker**<br>**docker-desktop**<br>**terraform**<br>**packer**<br>**kubectl**<br>**k9s** | |
