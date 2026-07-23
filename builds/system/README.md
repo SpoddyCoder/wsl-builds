@@ -34,6 +34,13 @@ sudo apt-mirror-switch uni-of-kent  # Uni of Kent mirrorservice mirror
 ### `x11`
 * Install the X11-Apps package for native Windows GUI support
 
+### `gpu-opengl`
+* Installs `mesa-utils` and probes OpenGL via WSLg
+* When `GALLIUM_DRIVER=d3d12` selects a D3D12 GPU renderer, refreshes a `wsl-builds:gpu-opengl` block in `~/.bashrc` / `~/.zshrc` with `export GALLIUM_DRIVER=d3d12`
+* Optional: set `MESA_D3D12_DEFAULT_ADAPTER_NAME` for hybrid / multi-GPU (substring such as `NVIDIA` or `Intel`)
+* Skips the shell rc change if the D3D12 probe fails (needs WSLg and a Windows GPU driver)
+* Verify with `glxinfo | grep "OpenGL renderer"` (open a new terminal or `source` your rc first)
+
 ### `essentials`
 * Install essential system utilities: htop, rsync
 
