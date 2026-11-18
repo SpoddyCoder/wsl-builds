@@ -66,6 +66,10 @@ if [[ "${_pm_from_git}" == true ]]; then
         printInfo "Updating libprojectM source tree (${_pm_git_ref})"
         git -C "${_pm_src}" fetch origin --tags
         git -C "${_pm_src}" checkout "${_pm_git_ref}"
+        # A branch ref needs the fetched commits merged; a tag checkout is already exact.
+        if git -C "${_pm_src}" rev-parse --verify --quiet "origin/${_pm_git_ref}" >/dev/null; then
+            git -C "${_pm_src}" merge --ff-only "origin/${_pm_git_ref}"
+        fi
         git -C "${_pm_src}" submodule update --init --recursive
     else
         printInfo "Cloning libprojectM (${_pm_git_ref})"
