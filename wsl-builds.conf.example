@@ -40,3 +40,4 @@
 # media / libprojectm - install prompts stable release vs git master; defaults below apply when unset
 # LIBPROJECTM_SRC_DIR=$HOME/libprojectM
 # LIBPROJECTM_INSTALL_PREFIX=$HOME/.local
+# LIBPROJECTM_STATIC_RUNTIME=1  # 0 = link the system libstdc++ instead of bundling the C++ runtime

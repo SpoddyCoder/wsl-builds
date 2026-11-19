@@ -9,6 +9,10 @@ _pm_github_latest='https://api.github.com/repos/projectM-visualizer/projectm/rel
 _pm_stable_fallback='4.1.6' # v4.1.6; latest stable release when GitHub API fetch fails
 _pm_from_git=false
 _pm_clean_build=false
+# Bundle the C++ runtime into the libraries (1 = on, 0 = link the system libstdc++).
+# A process that already loaded a different libstdc++ (conda Python, for example)
+# can crash inside libprojectM otherwise. Turn it off when using ENABLE_CXX_INTERFACE.
+_pm_static_runtime="${LIBPROJECTM_STATIC_RUNTIME:-1}"
 
 if promptYesNo "Install bleeding-edge libprojectM from git master"; then
     _pm_from_git=true
@@ -96,11 +100,19 @@ if [[ "${_pm_clean_build}" == true ]]; then
     rm -rf "${_pm_build}"
 fi
 
+_pm_shared_linker_flags=""
+if [[ "${_pm_static_runtime}" != "0" ]]; then
+    printInfo "Bundling the C++ runtime into libprojectM (LIBPROJECTM_STATIC_RUNTIME=0 to turn off)"
+    _pm_shared_linker_flags="-static-libstdc++ -static-libgcc -Wl,--exclude-libs,ALL"
+fi
+
 printInfo "Configuring and building libprojectM (this may take a while)"
+# The linker flags are always passed, so turning the option off clears a cached value.
 cmake -S "${_pm_src}" -B "${_pm_build}" -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX="${_pm_prefix}" \
     -DCMAKE_INSTALL_RPATH="${_pm_prefix}/lib" \
+    -DCMAKE_SHARED_LINKER_FLAGS="${_pm_shared_linker_flags}" \
     -DENABLE_SDL_UI=ON
 cmake --build "${_pm_build}" -j"$(nproc)"
 cmake --install "${_pm_build}"

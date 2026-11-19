@@ -21,6 +21,7 @@ CLI media processing tools for encoding, transcoding, and filtering audio and vi
 * Optional `wsl-builds.conf` keys:
   * `LIBPROJECTM_SRC_DIR` — source tree (default `~/libprojectM` for git master; `~/libprojectM-<version>` for stable release when unset)
   * `LIBPROJECTM_INSTALL_PREFIX` — install prefix (default `~/.local`)
+  * `LIBPROJECTM_STATIC_RUNTIME` — `1` (default) links the C++ runtime statically into the libprojectM libraries, so they keep working when loaded into a process with a different `libstdc++` (such as a conda Python); `0` links the system `libstdc++` instead, which you want if you enable the C++ interface (`ENABLE_CXX_INTERFACE`)
 * With `--force` when **libprojectm** is already recorded in `~/.wsl-build.info`, you are prompted whether to remove the CMake build tree under `<src>/build` and rebuild from source (default **N**).
 * The SDL test UI binary (`projectM-Test-UI`) lives under the CMake build directory; run it from WSL with [WSLg](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps).
 
